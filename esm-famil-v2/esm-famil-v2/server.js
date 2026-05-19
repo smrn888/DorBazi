@@ -127,6 +127,8 @@ wss.on('connection', (ws) => {
       return;
     }
 
+    if (msg.type === 'ping') { ws.isAlive = true; ws.send(JSON.stringify({type:'pong'})); return; }
+
     if (!currentRoom) return;
     const room = currentRoom;
 
@@ -176,7 +178,16 @@ wss.on('connection', (ws) => {
 
     if (msg.type === 'finish_round') {
       if (room.phase !== 'playing') return;
+      // ذخیره آخرین جواب‌های همه بازیکنا از submit_answers
       room.players[clientId].answers = msg.answers || {};
+      // فقط بازیکنانی که جواب همه فیلدها رو دادن می‌تونن بازی رو تموم کنن
+      const cats = room.cats;
+      const myAnswers = room.players[clientId].answers;
+      const filledAll = cats.every((_, i) => (myAnswers[i] || '').trim().length > 0);
+      if (!filledAll) {
+        ws.send(JSON.stringify({ type: 'error', msg: 'همه فیلدها رو پر کن قبل از تموم کردن!' }));
+        return;
+      }
       endPlaying(room, clientId, false); return;
     }
 
@@ -233,6 +244,8 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
+    if (msg.type === 'ping') { ws.isAlive = true; ws.send(JSON.stringify({type:'pong'})); return; }
+
     if (!currentRoom) return;
     const room = currentRoom;
     const playerName = room.players[clientId]?.name;
