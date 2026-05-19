@@ -1,0 +1,12 @@
+{
+  "name": "esm-famil",
+  "version": "2.0.0",
+  "description": "اسم فامیل چندنفره آنلاین",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.17.0"
+  }
+}

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🎯 اسم فامیل — آنلاین</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#0D0921;overflow:hidden;}
+body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-content:center;}
+#app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+::-webkit-scrollbar{width:0;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.07)}100%{transform:scale(1);opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(155,109,255,.45),0 8px 30px rgba(91,47,219,.5)}50%{box-shadow:0 0 38px rgba(155,109,255,.8),0 8px 40px rgba(91,47,219,.7)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.status-bar{display:flex;justify-content:space-between;padding:14px 22px 0;font-size:12px;font-weight:600;color:#3D3060;}
+.screen{flex:1;overflow-y:auto;padding:20px 18px 30px;display:flex;flex-direction:column;gap:18px;}
+.card{background:rgba(255,255,255,.04);border:1.5px solid rgba(167,139,250,.18);border-radius:20px;padding:18px;}
+.orb{width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#A78BFA,#5B21B6);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;flex-shrink:0;animation:popIn .35s ease;}
+.orb.glow{animation:glow 2.2s ease-in-out infinite;}
+.btn{border:none;border-radius:14px;padding:14px 18px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:800;font-size:15px;width:100%;transition:transform .1s,box-shadow .1s;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;box-shadow:0 6px 22px rgba(124,58,237,.45);}
+.btn-primary:disabled{opacity:.4;box-shadow:none;}
+.btn-danger{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;box-shadow:0 6px 22px rgba(220,38,38,.4);}
+.btn-success{background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;box-shadow:0 6px 22px rgba(22,163,74,.4);}
+.btn-success:disabled{opacity:.4;box-shadow:none;}
+.btn-ghost{background:transparent;border:1.5px solid rgba(167,139,250,.25);color:#7C6FAD;font-size:14px;}
+.inp{width:100%;border:none;outline:none;background:rgba(167,139,250,.08);border-radius:10px;padding:11px 14px;font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:600;color:#EDE9FE;direction:rtl;}
+.inp::placeholder{color:#4A3F6B;}
+.inp-label{font-size:13px;color:#7C6FAD;margin-bottom:6px;}
+.toggle-wrap{display:flex;justify-content:space-between;align-items:center;}
+.toggle{width:52px;height:28px;border-radius:99px;cursor:pointer;position:relative;transition:background .2s;}
+.toggle.on{background:linear-gradient(135deg,#A78BFA,#5B21B6);box-shadow:0 2px 10px rgba(167,139,250,.4);}
+.toggle.off{background:#1E1540;}
+.toggle-thumb{position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:all .2s;}
+.toggle.on .toggle-thumb{right:3px;}
+.toggle.off .toggle-thumb{left:3px;}
+.player-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(167,139,250,.08);}
+.player-row:last-child{border-bottom:none;}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4C1D95);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;}
+.player-name{flex:1;font-size:14px;font-weight:700;color:#DDD6FE;}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;}
+.badge-host{background:rgba(245,158,11,.15);color:#F59E0B;border:1px solid rgba(245,158,11,.3);}
+.badge-ready{background:rgba(22,163,74,.15);color:#4ADE80;border:1px solid rgba(22,163,74,.3);}
+.badge-waiting{background:rgba(167,139,250,.1);color:#7C6FAD;border:1px solid rgba(167,139,250,.2);}
+.badge-done{background:rgba(99,102,241,.15);color:#818CF8;border:1px solid rgba(99,102,241,.3);}
+.room-code{font-size:36px;font-weight:900;letter-spacing:10px;color:#A78BFA;text-align:center;background:rgba(167,139,250,.08);border:1.5px solid rgba(167,139,250,.2);border-radius:16px;padding:14px 12px;}
+.timer-wrap{position:relative;width:64px;height:64px;flex-shrink:0;}
+.timer-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.timer-num{font-size:15px;font-weight:900;line-height:1;}
+.timer-unit{font-size:9px;color:#5B4A8A;}
+.play-header{background:#0D0921;border-bottom:1px solid rgba(167,139,250,.12);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0;position:relative;z-index:10;}
+.ans-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(167,139,250,.13);border-radius:16px;padding:12px 14px;}
+.cat-label{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.cat-emoji{font-size:18px;}
+.cat-name{font-size:13px;font-weight:600;color:#C4B5FD;}
+.score-btns{display:flex;gap:8px;margin-top:10px;}
+.score-btn{flex:1;border-radius:12px;padding:9px 4px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:700;border:2px solid transparent;transition:all .15s;background:transparent;color:#5B4A8A;}
+.score-btn .sb-emoji{font-size:17px;margin-bottom:2px;}
+.score-btn .sb-label{font-size:11px;}
+.score-btn .sb-pts{font-size:10px;opacity:.7;margin-top:1px;}
+.results-table{width:100%;border-collapse:collapse;font-size:12px;}
+.results-table th{background:rgba(167,139,250,.12);color:#9B8BC4;font-weight:700;padding:8px 10px;text-align:right;border-bottom:1px solid rgba(167,139,250,.15);}
+.results-table td{padding:9px 10px;border-bottom:1px solid rgba(167,139,250,.07);color:#DDD6FE;vertical-align:top;}
+.results-table tr:last-child td{border-bottom:none;}
+.lb-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;margin-bottom:8px;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.1);}
+.lb-rank{font-size:22px;width:34px;text-align:center;flex-shrink:0;}
+.lb-name{flex:1;font-size:15px;font-weight:700;color:#DDD6FE;}
+.lb-score{font-size:22px;font-weight:900;color:#A78BFA;}
+.fab{position:fixed;bottom:24px;left:18px;right:18px;max-width:394px;margin:0 auto;z-index:50;}
+.notif{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);border:1.5px solid rgba(167,139,250,.35);color:#DDD6FE;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;padding:10px 20px;border-radius:99px;z-index:999;white-space:nowrap;animation:popIn .3s ease;}
+.spinner{width:36px;height:36px;border:3px solid rgba(167,139,250,.2);border-top-color:#A78BFA;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;}
+.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+.finished-banner{background:linear-gradient(135deg,rgba(220,38,38,.15),rgba(153,27,27,.2));border:1.5px solid rgba(220,38,38,.3);border-radius:14px;padding:14px 16px;text-align:center;animation:popIn .4s ease;}
+.pass-input-wrap{position:relative;}
+.pass-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#7C6FAD;}
+.other-ans-pill{display:inline-block;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:3px 9px;font-size:12px;color:#C4B5FD;margin:2px;}
+.scoring-status-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="blob" style="top:-100px;right:-100px;width:280px;height:280px;background:rgba(124,92,252,.07);"></div>
+<div class="blob" style="bottom:-70px;left:-70px;width:200px;height:200px;background:rgba(91,47,219,.05);"></div>
+
+<div id="app">
+  <div class="status-bar">
+    <span id="time-display">--:--</span>
+    <div style="display:flex;gap:6px">📶 🔋</div>
+  </div>
+  <div id="screen" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1;"></div>
+</div>
+
+<script>
+const S = {
+  ws:null, id:null, isHost:false, code:null,
+  room:null, phase:'connect',
+  answers:{}, myScoring:{},
+  timerLeft:0, timerSec:90, notifTimeout:null,
+};
+
+const CAT_EMOJI = {
+  'اسم دختر':'👧','اسم پسر':'👦','کشور':'🌍','شهر ایران':'🏙️','حیوان':'🐾','میوه':'🍎',
+  'سبزی':'🥦','رنگ':'🎨','غذای ایرانی':'🍲','وسیله نقلیه':'🚗','لباس':'👕','ورزش':'⚽',
+  'اسم گل':'🌸','نوشیدنی':'🥤','شیرینی':'🍬','آلت موسیقی':'🎵',
+  'چیزی که توی آشپزخانه‌ست':'🍳','چیزی که توی حمام پیدا میشه':'🚿',
+  'چیزی که آدم موقع استرس انجام میده':'😤','چیزی که توی پارک میبینی':'🌳',
+  'چیزی که شکستنش ناراحت‌کننده‌ست':'💔','چیزی که آدم توی جیبش میذاره':'👜',
+  'چیزی که موقع قطع برق لازمه':'🕯️','چیزی که صدای بلندی داره':'📢',
+  'چیزی که توی تابستون لازمه':'☀️','یه چیز قرمز':'🔴','یه چیز گرد':'⭕',
+  'چیزی که توی دریا هست':'🌊','چیزی که بوی خوبی داره':'🌺','چیزی که گرونه':'💎',
+  'چیزی که ارزونه':'💰','یه شغل بامزه':'🤹','چیزی که آدم گم میکنه':'🔍',
+  'چیزی که توی زمستون لازمه':'❄️','یه چیز شیرین':'🍯','یه چیز ترش':'🍋',
+  'چیزی که توی فرودگاه میبینی':'✈️','اسم درخت':'🌲','غذای فست فود':'🍔',
+};
+
+const SCORE_OPTS = [
+  {key:'correct',label:'درست',pts:10,color:'#16A34A',bg:'rgba(22,163,74,.12)',border:'rgba(22,163,74,.4)',emoji:'✅'},
+  {key:'dup',label:'تکراری',pts:5,color:'#D97706',bg:'rgba(217,119,6,.12)',border:'rgba(217,119,6,.4)',emoji:'🔁'},
+  {key:'wrong',label:'غلط',pts:0,color:'#DC2626',bg:'rgba(220,38,38,.12)',border:'rgba(220,38,38,.4)',emoji:'❌'},
+];
+
+setInterval(()=>{
+  const now=new Date();
+  document.getElementById('time-display').textContent=
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+},1000);
+
+// ── WebSocket ──────────────────────────────────────────────────────────────
+function connect(cb) {
+  const proto = location.protocol==='https:'?'wss':'ws';
+  const ws = new WebSocket(`${proto}://${location.host}`);
+  S.ws = ws;
+  ws.onopen = ()=>{ if(cb) cb(); };
+  ws.onerror = ()=>showNotif('اتصال برقرار نشد ❌');
+  ws.onclose = ()=>showNotif('اتصال قطع شد');
+  ws.onmessage = (e)=>handleMsg(JSON.parse(e.data));
+}
+function send(obj) { if(S.ws&&S.ws.readyState===1) S.ws.send(JSON.stringify(obj)); }
+
+function handleMsg(msg) {
+  if (msg.type==='error') { showError(msg.msg); return; }
+  if (msg.type==='notify') { showNotif(msg.text); return; }
+
+  if (msg.type==='joined') {
+    S.id=msg.id; S.isHost=msg.isHost; S.code=msg.code; return;
+  }
+
+  if (msg.type==='room_state') {
+    const prevPhase = S.room?.phase;
+    S.room = msg;
+    if (msg.phase !== S.phase) {
+      S.phase = msg.phase;
+      if (msg.phase==='playing') {
+        S.answers={}; S.myScoring={};
+        S.timerLeft=msg.settings.timerSec;
+        S.timerSec=msg.settings.timerSec;
+      }
+    }
+    // finished notification
+    if (msg.finishedByName && msg.phase==='scoring' && prevPhase==='playing') {
+      showNotif(msg.isTimer ? '⏰ وقت تموم شد!' : `🏁 ${msg.finishedByName} بازی رو تموم کرد!`);
+    }
+    render(); return;
+  }
+
+  if (msg.type==='timer_tick') {
+    S.timerLeft=msg.timeLeft; updateTimerUI(); return;
+  }
+}
+
+// ── Notifications ──────────────────────────────────────────────────────────
+function showNotif(text) {
+  const old=document.querySelector('.notif'); if(old) old.remove();
+  const el=document.createElement('div');
+  el.className='notif'; el.textContent=text;
+  document.body.appendChild(el);
+  clearTimeout(S.notifTimeout);
+  S.notifTimeout=setTimeout(()=>el.remove(),3500);
+}
+function showError(text) {
+  const el=document.createElement('div');
+  el.className='notif'; el.textContent=text;
+  el.style.borderColor='rgba(220,38,38,.5)'; el.style.color='#FCA5A5';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+
+// ── Render router ──────────────────────────────────────────────────────────
+function render() {
+  const sc=document.getElementById('screen');
+  const ph=S.room?S.room.phase:S.phase;
+  if (ph==='lobby') renderLobby(sc);
+  else if (ph==='playing') renderPlaying(sc);
+  else if (ph==='scoring') renderScoring(sc);
+  else if (ph==='leaderboard') renderLeaderboard(sc);
+  else renderConnect(sc);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Connect
+// ══════════════════════════════════════════════════════════════════════════
+function renderConnect(sc) {
+  sc.innerHTML=`
+    <div class="screen" style="justify-content:center;align-items:center;gap:20px;">
+      <div style="text-align:center;animation:fadeUp .4s ease;">
+        <div style="font-size:56px;animation:bounce 2.5s ease infinite;">🎯</div>
+        <h1 style="font-size:30px;font-weight:900;color:#fff;margin-top:10px;">اسم فامیل</h1>
+        <p style="font-size:13px;color:#5B4A8A;margin-top:4px;">چندنفره آنلاین</p>
+      </div>
+
+      <div class="card" style="width:100%;animation:fadeUp .4s ease .1s both;">
+        <div class="inp-label">اسمت چیه؟</div>
+        <input class="inp" id="inp-name" placeholder="مثلاً: علی، مریم..." maxlength="20" style="margin-bottom:14px;">
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <button onclick="setTab('create')" id="tab-create" class="btn btn-ghost" style="font-size:13px;padding:10px;">
+            ➕ ساخت اتاق
+          </button>
+          <button onclick="setTab('join')" id="tab-join" class="btn btn-ghost" style="font-size:13px;padding:10px;">
+            🔗 پیوستن
+          </button>
+        </div>
+
+        <div id="tab-content-create" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="inp-label" style="margin-bottom:4px;">🔒 رمز اتاق (اختیاری)</div>
+          <div class="pass-input-wrap" style="margin-bottom:4px;">
+            <input class="inp" id="inp-create-pass" type="password" placeholder="بذار خالی اگه رمز نمیخوای" maxlength="20" style="padding-left:42px;">
+            <button class="pass-toggle" onclick="togglePassView('inp-create-pass')">👁️</button>
+          </div>
+          <button class="btn btn-primary" onclick="doCreate()">🎮 بساز اتاق</button>
+        </div>
+        <div id="tab-content-join" style="display:none;flex-direction:column;gap:10px;">
+          <input class="inp" id="inp-code" placeholder="کد اتاق (4 حرف)" maxlength="4"
+            style="text-align:center;font-size:22px;font-weight:900;letter-spacing:8px;text-transform:uppercase;">
+          <div class="pass-input-wrap">
+            <input class="inp" id="inp-join-pass" type="password" placeholder="رمز اتاق (اگه داره)" maxlength="20" style="padding-left:42px;">
+            <button class="pass-toggle" onclick="togglePassView('inp-join-pass')">👁️</button>
+          </div>
+          <button class="btn btn-primary" onclick="doJoin()">🔗 وصل شو</button>
+        </div>
+      </div>
+      <div id="conn-loading" style="display:none;flex-direction:column;gap:12px;align-items:center;">
+        <div class="spinner"></div>
+        <p style="color:#5B4A8A;font-size:13px;">در حال اتصال...</p>
+      </div>
+    </div>`;
+  setTab('create');
+}
+
+function togglePassView(id) {
+  const inp=document.getElementById(id);
+  if(!inp) return;
+  inp.type = inp.type==='password'?'text':'password';
+}
+
+function setTab(t) {
+  document.getElementById('tab-content-create').style.display=t==='create'?'flex':'none';
+  document.getElementById('tab-content-join').style.display=t==='join'?'flex':'none';
+  document.getElementById('tab-create').style.background=t==='create'?'rgba(124,58,237,.25)':'transparent';
+  document.getElementById('tab-create').style.color=t==='create'?'#C4B5FD':'#7C6FAD';
+  document.getElementById('tab-join').style.background=t==='join'?'rgba(124,58,237,.25)':'transparent';
+  document.getElementById('tab-join').style.color=t==='join'?'#C4B5FD':'#7C6FAD';
+}
+
+function getNameOrAlert() {
+  const name=(document.getElementById('inp-name')||{}).value?.trim();
+  if(!name){showError('اسمت رو بنویس!');return null;}
+  return name;
+}
+function showLoading(v){const el=document.getElementById('conn-loading');if(el) el.style.display=v?'flex':'none';}
+
+function doCreate() {
+  const name=getNameOrAlert(); if(!name) return;
+  const pass=(document.getElementById('inp-create-pass')||{}).value?.trim()||'';
+  showLoading(true);
+  connect(()=>{
+    send({type:'create_room',name,password:pass});
+    showLoading(false); S.phase='lobby'; render();
+  });
+}
+
+function doJoin() {
+  const name=getNameOrAlert(); if(!name) return;
+  const code=(document.getElementById('inp-code')||{}).value?.trim().toUpperCase();
+  if(!code||code.length!==4){showError('کد اتاق 4 حرفه!');return;}
+  const pass=(document.getElementById('inp-join-pass')||{}).value?.trim()||'';
+  showLoading(true);
+  connect(()=>{
+    send({type:'join_room',name,code,password:pass});
+    showLoading(false); S.phase='lobby'; render();
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Lobby
+// ══════════════════════════════════════════════════════════════════════════
+function renderLobby(sc) {
+  if(!S.room){sc.innerHTML='<div class="screen"><div class="spinner" style="margin:auto;margin-top:80px;"></div></div>';return;}
+  const room=S.room;
+  const me=room.players.find(p=>p.id===S.id)||{};
+  const allReady=room.players.every(p=>p.ready);
+  const myReady=me.ready;
+  const timerOn=room.settings.timerOn;
+  const timerSec=room.settings.timerSec;
+
+  const playersHTML=room.players.map(p=>`
+    <div class="player-row" style="animation:fadeUp .3s ease;">
+      <div class="avatar">${p.name.charAt(0)}</div>
+      <span class="player-name">${p.name}${p.id===S.id?' <span style="font-size:11px;color:#A78BFA;">(تو)</span>':''}</span>
+      ${p.id===room.hostId?'<span class="badge badge-host">هاست 👑</span>':''}
+      <span class="badge ${p.ready?'badge-ready':'badge-waiting'}">${p.ready?'✅':'⏳'}</span>
+    </div>`).join('');
+
+  const readyCount=room.players.filter(p=>p.ready).length;
+  const total=room.players.length;
+
+  const settingsHTML=S.isHost?`
+    <div class="card" style="animation:fadeUp .35s ease .1s both;">
+      <p style="font-size:14px;font-weight:700;color:#DDD6FE;margin-bottom:14px;">⚙️ تنظیمات</p>
+      <div class="toggle-wrap" style="margin-bottom:${timerOn?14:0}px;">
+        <div>
+          <p style="font-size:14px;font-weight:600;color:#C4B5FD;">⏱ تایمر</p>
+          <p style="font-size:11px;color:#5B4A8A;margin-top:2px;">${timerOn?timerSec+' ثانیه':'بدون محدودیت'}</p>
+        </div>
+        <div class="toggle ${timerOn?'on':'off'}" onclick="toggleTimer()"><div class="toggle-thumb"></div></div>
+      </div>
+      ${timerOn?`
+        <input type="range" min="30" max="300" step="5" value="${timerSec}"
+          oninput="updateTimerSetting(this.value)"
+          style="width:100%;accent-color:#A78BFA;cursor:pointer;margin-bottom:12px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${[30,60,90,120,180].map(v=>`
+            <button onclick="setPreset(${v})" style="
+              font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:700;
+              padding:5px 13px;border-radius:99px;border:none;cursor:pointer;
+              background:${timerSec===v?'linear-gradient(135deg,#A78BFA,#5B21B6)':'rgba(167,139,250,.1)'};
+              color:${timerSec===v?'#fff':'#7C6FAD'};
+            ">${v<60?v+'ث':v/60+'د'}</button>`).join('')}
+        </div>`:''}
+    </div>`:'';
+
+  sc.innerHTML=`
+    <div class="screen" style="padding-bottom:110px;">
+      <div style="text-align:center;animation:fadeUp .35s ease;">
+        <p style="font-size:12px;color:#5B4A8A;margin-bottom:6px;">کد اتاق${room.hasPassword?' 🔒':''}</p>
+        <div class="room-code">${S.code}</div>
+        <p style="font-size:11px;color:#5B4A8A;margin-top:6px;">بقیه با این کد وصل میشن</p>
+      </div>
+
+      <div class="card" style="animation:fadeUp .35s ease .05s both;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <p style="font-size:13px;color:#7C6FAD;">👥 بازیکنان</p>
+          <span style="font-size:12px;color:#A78BFA;font-weight:700;">${readyCount}/${total} آماده</span>
+        </div>
+        ${playersHTML}
+      </div>
+
+      ${settingsHTML}
+    </div>
+
+    <div class="fab" style="display:flex;flex-direction:column;gap:10px;">
+      ${!myReady&&!S.isHost?`
+        <button class="btn btn-primary" onclick="setReady(true)">✅ آماده‌ام!</button>`:
+      myReady&&!S.isHost?`
+        <button class="btn btn-ghost" onclick="setReady(false)">↩️ هنوز آماده نیستم</button>
+        <div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;">✅ آماده‌ای — منتظر هاست...</div>`:
+      S.isHost?`
+        ${!myReady?`<button class="btn btn-ghost" onclick="setReady(true)" style="font-size:13px;">✅ من هم آماده‌ام</button>`:`
+        <button class="btn btn-ghost" onclick="setReady(false)" style="font-size:13px;">↩️ هنوز آماده نیستم</button>`}
+        <button class="btn btn-primary" onclick="startGame()" ${!allReady&&total>1?'disabled':''}>
+          ${allReady||total<=1?'🚀 شروع بازی!':'⏳ منتظر '+(total-readyCount)+' نفر...'}
+        </button>`:''}
+    </div>`;
+}
+
+function toggleTimer(){if(!S.isHost)return;send({type:'update_settings',settings:{timerOn:!S.room.settings.timerOn}});}
+function updateTimerSetting(v){if(!S.isHost)return;send({type:'update_settings',settings:{timerSec:+v}});}
+function setPreset(v){if(!S.isHost)return;send({type:'update_settings',settings:{timerSec:v}});}
+function setReady(r){send({type:'set_ready',ready:r});}
+function startGame(){send({type:'start_game'});}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Playing
+// ══════════════════════════════════════════════════════════════════════════
+function renderPlaying(sc) {
+  if(!S.room) return;
+  const room=S.room;
+  const timerOn=room.settings.timerOn;
+  const pct=timerOn?S.timerLeft/S.timerSec:1;
+  const col=pct>.4?'#A78BFA':pct>.2?'#F59E0B':'#EF4444';
+  const c=2*Math.PI*26;
+
+  const timerHTML=timerOn?`
+    <div class="timer-wrap">
+      <svg width="64" height="64" style="transform:rotate(-90deg)">
+        <circle cx="32" cy="32" r="26" fill="none" stroke="#1E1540" stroke-width="5"/>
+        <circle id="timer-circle" cx="32" cy="32" r="26" fill="none" stroke="${col}" stroke-width="5"
+          stroke-dasharray="${c*pct} ${c}" stroke-linecap="round"
+          style="transition:stroke-dasharray 1s linear,stroke .5s"/>
+      </svg>
+      <div class="timer-text">
+        <span id="timer-num" class="timer-num" style="color:${col}">${S.timerLeft}</span>
+        <span class="timer-unit">ث</span>
+      </div>
+    </div>`:`<span style="font-size:11px;color:#5B4A8A;background:rgba(167,139,250,.08);border-radius:99px;padding:5px 12px;">∞ آزاد</span>`;
+
+  const catsHTML=room.cats.map((cat,i)=>`
+    <div class="ans-card" style="animation:fadeUp .3s ease ${i*.04}s both;">
+      <div class="cat-label">
+        <span class="cat-emoji">${CAT_EMOJI[cat]||'📝'}</span>
+        <span class="cat-name">${cat}</span>
+      </div>
+      <input class="inp" placeholder="با حرف «${room.letter}» ..."
+        value="${S.answers[i]||''}"
+        oninput="S.answers[${i}]=this.value;syncAnswers()"
+        style="font-size:15px;font-weight:700;">
+    </div>`).join('');
+
+  sc.innerHTML=`
+    <div class="play-header">
+      <div class="orb glow" style="width:50px;height:50px;font-size:20px;">${room.letter}</div>
+      <div style="flex:1;">
+        <p style="font-size:10px;color:#5B4A8A;">دور ${room.round} • حرف این دور</p>
+        <p style="font-size:14px;font-weight:700;color:#DDD6FE;">${room.cats.length} دسته — بنویس!</p>
+      </div>
+      ${timerHTML}
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:14px 16px 110px;display:flex;flex-direction:column;gap:10px;">
+      ${catsHTML}
+    </div>
+    <div class="fab">
+      <button class="btn btn-danger" onclick="finishRound()">🏁 تموم شد! نتیجه رو ببین</button>
+    </div>`;
+}
+
+function updateTimerUI() {
+  const circle=document.getElementById('timer-circle');
+  const numEl=document.getElementById('timer-num');
+  if(!circle||!numEl) return;
+  const room=S.room;
+  if(!room||!room.settings.timerOn) return;
+  const pct=S.timerLeft/S.timerSec;
+  const c=2*Math.PI*26;
+  const col=pct>.4?'#A78BFA':pct>.2?'#F59E0B':'#EF4444';
+  circle.style.strokeDasharray=`${c*pct} ${c}`;
+  circle.style.stroke=col;
+  numEl.textContent=S.timerLeft;
+  numEl.style.color=col;
+}
+
+let syncTimer=null;
+function syncAnswers(){clearTimeout(syncTimer);syncTimer=setTimeout(()=>send({type:'submit_answers',answers:S.answers}),300);}
+function finishRound(){syncAnswers();send({type:'finish_round',answers:S.answers});}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Scoring
+// جواب‌های همه قابل مشاهده‌ست ولی امتیازدهی فقط به خودت
+// ══════════════════════════════════════════════════════════════════════════
+function renderScoring(sc) {
+  if(!S.room) return;
+  const room=S.room;
+  const finisher=room.players.find(p=>p.id===room.finishedBy);
+  const me=room.players.find(p=>p.id===S.id);
+
+  // جدول پاسخ‌های همه
+  const headerCells=room.players.map(p=>`
+    <th style="text-align:center;min-width:70px;">
+      ${p.name}${p.id===S.id?'<br><span style="font-size:9px;color:#A78BFA;">(تو)</span>':''}
+    </th>`).join('');
+
+  const tableRows=room.cats.map((cat,i)=>{
+    const cells=room.players.map(p=>{
+      const ans=(p.answers||{})[i]||'';
+      const isMe=p.id===S.id;
+      return `<td style="text-align:center;${isMe?'background:rgba(167,139,250,.06);':''}">${ans||`<span style="color:#4A3F6B">—</span>`}</td>`;
+    }).join('');
+    return `<tr>
+      <td style="min-width:100px;"><span style="font-size:13px;">${CAT_EMOJI[cat]||'📝'}</span> ${cat}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  // بخش امتیازدهی به خودم
+  const myScoringHTML=room.cats.map((cat,i)=>{
+    const myAns=(me?.answers||{})[i]||'';
+    const picked=S.myScoring[i];
+    const opt=SCORE_OPTS.find(o=>o.key===picked);
+    return `
+      <div class="ans-card" style="animation:fadeUp .3s ease ${i*.04}s both;${picked?`border-color:${opt?.border};background:${opt?.bg}`:''};${!myAns?'opacity:.6':''}">
+        <div class="cat-label">
+          <span class="cat-emoji">${CAT_EMOJI[cat]||'📝'}</span>
+          <span class="cat-name">${cat}</span>
+        </div>
+        <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:700;color:${myAns?(picked?opt?.color:'#EDE9FE'):'#4A3F6B'};margin-bottom:2px;">
+          ${myAns||'— بدون جواب —'}
+        </div>
+        ${myAns?`
+        <div class="score-btns">
+          ${SCORE_OPTS.map(o=>`
+            <button class="score-btn" onclick="pickScore(${i},'${o.key}')"
+              style="border-color:${picked===o.key?o.border:'rgba(167,139,250,.15)'};background:${picked===o.key?o.bg:'transparent'};color:${picked===o.key?o.color:'#5B4A8A'};">
+              <div class="sb-emoji">${o.emoji}</div>
+              <div class="sb-label">${o.label}</div>
+              <div class="sb-pts">+${o.pts}</div>
+            </button>`).join('')}
+        </div>`:`<div style="font-size:11px;color:#5B4A8A;margin-top:4px;">بدون جواب — امتیاز ۰</div>`}
+      </div>`;
+  }).join('');
+
+  // وضعیت ثبت امتیاز بقیه
+  const scoringStatusHTML=room.players.map(p=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;background:${p.scoringSubmitted?'rgba(22,163,74,.12)':'rgba(167,139,250,.08)'};border:1px solid ${p.scoringSubmitted?'rgba(22,163,74,.3)':'rgba(167,139,250,.18)'};border-radius:99px;padding:4px 10px;font-size:11px;color:${p.scoringSubmitted?'#4ADE80':'#7C6FAD'};">
+      ${p.scoringSubmitted?'✅':'⏳'} ${p.name}
+    </span>`).join('');
+
+  const myAnsCount=Object.values(me?.answers||{}).filter(a=>a).length;
+  const myScore=Object.entries(S.myScoring).reduce((s,[i,k])=>{
+    const ans=(me?.answers||{})[i];
+    if(!ans) return s;
+    const o=SCORE_OPTS.find(x=>x.key===k); return s+(o?o.pts:0);
+  },0);
+  const filledCount=Object.entries(S.myScoring).filter(([i])=>(me?.answers||{})[i]).length;
+  const allPicked=filledCount>=myAnsCount&&myAnsCount>0||myAnsCount===0;
+  const alreadySubmitted=me?.scoringSubmitted||false;
+
+  sc.innerHTML=`
+    <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
+      ${finisher?`
+        <div style="padding:14px 18px 0;">
+          <div class="finished-banner">
+            <p style="font-size:15px;font-weight:800;color:#FCA5A5;">
+              ${room.finishedBy===room.players.find(p=>p.id)?.id?'':''}
+              🏁 ${finisher.name} بازی رو تموم کرد!
+            </p>
+          </div>
+        </div>`:''}
+
+      <!-- جدول پاسخ‌های همه -->
+      <div style="padding:14px 18px 0;">
+        <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">📋 پاسخ‌های همه بازیکنان</p>
+        <div style="overflow-x:auto;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.12);border-radius:14px;">
+          <table class="results-table">
+            <thead><tr><th>دسته</th>${headerCells}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- وضعیت ثبت امتیاز -->
+      <div style="padding:10px 18px 0;">
+        <p style="font-size:11px;color:#5B4A8A;margin-bottom:6px;">وضعیت ثبت امتیاز:</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">${scoringStatusHTML}</div>
+      </div>
+
+      <!-- امتیازدهی -->
+      <div style="padding:14px 18px 0;">
+        <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">⭐ امتیاز به جواب‌های خودت</p>
+        <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:150px;">
+          ${myScoringHTML}
+        </div>
+      </div>
+    </div>
+
+    <div class="fab" style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.18);border-radius:14px;padding:11px 16px;">
+        <span style="font-size:13px;color:#7C6FAD;">جمع این دور</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:14px;">⭐</span>
+          <span style="font-size:22px;font-weight:900;color:#DDD6FE;">${myScore}</span>
+        </div>
+      </div>
+      ${alreadySubmitted?`
+        <div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;padding:8px;">✅ امتیازت ثبت شد — منتظر بقیه...</div>
+        ${S.isHost?`<button class="btn btn-success" onclick="showLeaderboard()">📊 نمایش جدول امتیازات</button>`:''}`
+      :S.isHost?`
+        <button class="btn btn-success" onclick="showLeaderboard()" ${!allPicked?'disabled':''}>
+          ${allPicked?'📊 ثبت و نمایش جدول':'⏳ '+(myAnsCount-filledCount)+' فیلد مانده'}
+        </button>`:`
+        <button class="btn btn-primary" onclick="submitScoring()" ${!allPicked?'disabled':''}>
+          ${allPicked?'✅ ثبت امتیازها':'⏳ '+(myAnsCount-filledCount)+' فیلد مانده'}
+        </button>`}
+    </div>`;
+}
+
+function pickScore(i,key){
+  S.myScoring[i]=key;
+  renderScoring(document.getElementById('screen'));
+}
+function submitScoring(){
+  send({type:'submit_scoring',scoring:S.myScoring});
+  showNotif('امتیازها ثبت شد ✅');
+}
+function showLeaderboard(){
+  send({type:'submit_scoring',scoring:S.myScoring});
+  send({type:'show_leaderboard'});
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Leaderboard
+// ══════════════════════════════════════════════════════════════════════════
+function renderLeaderboard(sc) {
+  if(!S.room) return;
+  const room=S.room;
+  const sorted=[...room.players].sort((a,b)=>b.totalScore-a.totalScore);
+  const medals=['🥇','🥈','🥉'];
+
+  // جدول امتیازدهی همه (قابل مشاهده ولی فقط برای نمایش)
+  const scoringDetailHTML=room.cats.map((cat,i)=>{
+    const cells=room.players.map(p=>{
+      const ans=(p.answers||{})[i]||'';
+      const score=(p.scoring||{})[i];
+      const opt=SCORE_OPTS.find(o=>o.key===score);
+      return `<td style="text-align:center;">
+        <div style="font-size:12px;color:#DDD6FE;">${ans||'—'}</div>
+        ${score?`<div style="font-size:10px;color:${opt?.color};">${opt?.emoji} ${opt?.pts}</div>`:''}
+      </td>`;
+    }).join('');
+    return `<tr>
+      <td style="min-width:100px;font-size:12px;">${CAT_EMOJI[cat]||'📝'} ${cat}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  const headerCells=sorted.map((p,idx)=>`
+    <th style="text-align:center;">
+      ${medals[idx]||'#'+(idx+1)} ${p.name}${p.id===S.id?' ⭐':''}
+    </th>`).join('');
+  const orderedHeaders=room.players.map(p=>`<th style="text-align:center;">${p.name}${p.id===S.id?' (تو)':''}</th>`).join('');
+
+  const rows=sorted.map((p,idx)=>`
+    <div class="lb-row" style="animation:fadeUp .3s ease ${idx*.07}s both;${idx===0?'background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);':''}">
+      <div class="lb-rank">${medals[idx]||idx+1}</div>
+      <div style="flex:1;">
+        <div class="lb-name">${p.name}${p.id===S.id?' <span style="font-size:11px;color:#A78BFA;">(تو)</span>':''}</div>
+        <div style="font-size:11px;color:#5B4A8A;">این دور: +${p.roundScore}</div>
+      </div>
+      <div class="lb-score">${p.totalScore}</div>
+    </div>`).join('');
+
+  sc.innerHTML=`
+    <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
+      <div style="padding:20px 18px 0;text-align:center;animation:fadeUp .35s ease;">
+        <div style="font-size:48px;margin-bottom:6px;">🏆</div>
+        <h2 style="font-size:22px;font-weight:900;color:#fff;">جدول امتیازات</h2>
+        <p style="font-size:12px;color:#5B4A8A;margin-top:4px;">دور ${room.round}</p>
+      </div>
+
+      <div style="padding:16px 18px 0;">${rows}</div>
+
+      <!-- جدول تفصیلی امتیازات -->
+      <div style="padding:14px 18px 0;">
+        <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">📋 جزئیات امتیازها</p>
+        <div style="overflow-x:auto;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.12);border-radius:14px;margin-bottom:110px;">
+          <table class="results-table">
+            <thead><tr><th>دسته</th>${orderedHeaders}</tr></thead>
+            <tbody>${scoringDetailHTML}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    ${S.isHost?`
+    <div class="fab" style="display:flex;gap:10px;">
+      <div style="flex:1;"><button class="btn btn-primary" onclick="nextRound()">🎮 دور بعدی</button></div>
+    </div>`:`
+    <div class="fab">
+      <div style="text-align:center;color:#5B4A8A;font-size:13px;padding:10px;">⏳ منتظر هاست برای شروع دور بعدی...</div>
+    </div>`}`;
+}
+
+function nextRound(){send({type:'next_round'});}
+
+// Boot
+renderConnect(document.getElementById('screen'));
+</script>
+</body>
+</html>
