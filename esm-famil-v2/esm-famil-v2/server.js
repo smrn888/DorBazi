@@ -184,7 +184,14 @@ wss.on('connection', (ws) => {
       }
       room.players[clientId].roundScore = sc;
       room.players[clientId].totalScore += sc;
-      broadcastAll(room, roomSnapshot(room)); return;
+      broadcastAll(room, roomSnapshot(room));
+      // اگه همه submit کردن، خودکار جدول رو نشون بده
+      const allSubmitted = Object.values(room.players).every(p => p.scoringSubmitted);
+      if (allSubmitted) {
+        room.phase = 'leaderboard';
+        broadcastAll(room, roomSnapshot(room));
+      }
+      return;
     }
 
     if (msg.type === 'show_leaderboard' && clientId === room.hostId) {
