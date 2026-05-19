@@ -25,6 +25,7 @@ function createRoom(hostId, hostName, password) {
     letter: '', cats: [], round: 0, finishedBy: null,
     settings: { timerOn: true, timerSec: 90 },
     _timerInterval: null, _timerLeft: 0,
+    roundHistory: [],
   };
   return code;
 }
@@ -45,12 +46,13 @@ function roomSnapshot(room) {
     hasPassword: !!room.password,
     letter: room.letter, cats: room.cats, round: room.round,
     finishedBy: room.finishedBy, settings: room.settings,
+    roundHistory: room.roundHistory,
     players: Object.values(room.players).map(p => ({
       id: p.id, name: p.name, ready: p.ready,
       totalScore: p.totalScore, roundScore: p.roundScore,
       scoringSubmitted: p.scoringSubmitted,
-      answers: (room.phase==='scoring'||room.phase==='leaderboard') ? p.answers : undefined,
-      scoring: room.phase==='leaderboard' ? p.scoring : undefined,
+      answers: (room.phase==='scoring'||room.phase==='leaderboard'||room.phase==='waiting_confirm') ? p.answers : undefined,
+      scoring: (room.phase==='leaderboard'||room.phase==='waiting_confirm') ? p.scoring : undefined,
     })),
   };
 }
@@ -84,7 +86,11 @@ const server = http.createServer((req, res) => {
 
 const wss = new WebSocketServer({ server });
 
+// heartbeat: ping هر ۲۵ثانیه تا اتصال WebSocket زنده بمونه
 wss.on('connection', (ws) => {
+  ws.isAlive = true;
+  ws.on('pong', () => { ws.isAlive = true; });
+
   const clientId = Math.random().toString(36).slice(2,10);
   let currentRoom = null;
 
@@ -178,25 +184,45 @@ wss.on('connection', (ws) => {
       if (room.phase !== 'scoring') return;
       room.players[clientId].scoring = msg.scoring || {};
       room.players[clientId].scoringSubmitted = true;
+
+      // محاسبه امتیاز: فقط برای فیلدهایی که جواب داشتن
       let sc = 0;
-      for (const key of Object.values(msg.scoring)) {
-        if (key==='correct') sc+=10; else if (key==='dup') sc+=5;
+      for (const [i, key] of Object.entries(msg.scoring)) {
+        const ans = (room.players[clientId].answers || {})[i];
+        if (!ans) continue; // بدون جواب = بدون امتیاز
+        if (key==='correct') sc+=10;
+        else if (key==='dup') sc+=5;
       }
       room.players[clientId].roundScore = sc;
       room.players[clientId].totalScore += sc;
+
       broadcastAll(room, roomSnapshot(room));
-      // اگه همه submit کردن، خودکار جدول رو نشون بده
+
+      // همه submit کردن → برو به waiting_confirm
       const allSubmitted = Object.values(room.players).every(p => p.scoringSubmitted);
       if (allSubmitted) {
-        room.phase = 'leaderboard';
+        room.phase = 'waiting_confirm';
         broadcastAll(room, roomSnapshot(room));
       }
       return;
     }
 
-    if (msg.type === 'show_leaderboard' && clientId === room.hostId) {
+    // هاست تایید می‌کنه که جدول نشون داده بشه
+    if (msg.type === 'confirm_leaderboard' && clientId === room.hostId) {
+      if (room.phase !== 'waiting_confirm') return;
+      // ذخیره تاریخچه دور
+      const roundEntry = {
+        round: room.round,
+        letter: room.letter,
+        cats: room.cats,
+        scores: Object.values(room.players).map(p => ({
+          id: p.id, name: p.name, roundScore: p.roundScore, totalScore: p.totalScore
+        }))
+      };
+      room.roundHistory.push(roundEntry);
       room.phase = 'leaderboard';
-      broadcastAll(room, roomSnapshot(room)); return;
+      broadcastAll(room, roomSnapshot(room));
+      return;
     }
 
     if (msg.type === 'next_round' && clientId === room.hostId) {
@@ -215,11 +241,32 @@ wss.on('connection', (ws) => {
       if (room._timerInterval) clearInterval(room._timerInterval);
       delete rooms[room.code]; return;
     }
-    if (room.hostId === clientId) room.hostId = Object.keys(room.players)[0];
+    if (room.hostId === clientId) {
+      room.hostId = Object.keys(room.players)[0];
+      broadcastAll(room, { type: 'notify', text: `${room.players[room.hostId].name} هاست جدیده 👑` });
+    }
     if (playerName) broadcastAll(room, { type: 'notify', text: `${playerName} از بازی خارج شد` });
+
+    // اگه توی scoring بود و همه الان submit کردن، چک کن
+    if (room.phase === 'scoring') {
+      const allSubmitted = Object.values(room.players).every(p => p.scoringSubmitted);
+      if (allSubmitted && Object.keys(room.players).length > 0) {
+        room.phase = 'waiting_confirm';
+      }
+    }
     broadcastAll(room, roomSnapshot(room));
   });
 });
+
+// heartbeat interval
+const heartbeat = setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (ws.isAlive === false) { ws.terminate(); return; }
+    ws.isAlive = false;
+    ws.ping();
+  });
+}, 25000);
+wss.on('close', () => clearInterval(heartbeat));
 
 function endPlaying(room, byId, isTimer) {
   if (room._timerInterval) { clearInterval(room._timerInterval); room._timerInterval = null; }

@@ -12,35 +12,30 @@ html,body{height:100%;background:#0D0921;overflow:hidden;}
 body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-content:center;}
 #app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden;}
 ::-webkit-scrollbar{width:0;}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes popIn{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.07)}100%{transform:scale(1);opacity:1}}
 @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(155,109,255,.45),0 8px 30px rgba(91,47,219,.5)}50%{box-shadow:0 0 38px rgba(155,109,255,.8),0 8px 40px rgba(91,47,219,.7)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
 .status-bar{display:flex;justify-content:space-between;padding:14px 22px 0;font-size:12px;font-weight:600;color:#3D3060;}
 .screen{flex:1;overflow-y:auto;padding:20px 18px 30px;display:flex;flex-direction:column;gap:18px;}
 .card{background:rgba(255,255,255,.04);border:1.5px solid rgba(167,139,250,.18);border-radius:20px;padding:18px;}
-.orb{width:80px;height:80px;border-radius:50%;background:linear-gradient(145deg,#A78BFA,#5B21B6);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;flex-shrink:0;animation:popIn .35s ease;}
-.orb.glow{animation:glow 2.2s ease-in-out infinite;}
 .btn{border:none;border-radius:14px;padding:14px 18px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:800;font-size:15px;width:100%;transition:transform .1s,box-shadow .1s;}
 .btn:active{transform:scale(.97);}
 .btn-primary{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;box-shadow:0 6px 22px rgba(124,58,237,.45);}
-.btn-primary:disabled{opacity:.4;box-shadow:none;}
+.btn-primary:disabled{opacity:.4;box-shadow:none;cursor:not-allowed;}
 .btn-danger{background:linear-gradient(135deg,#DC2626,#991B1B);color:#fff;box-shadow:0 6px 22px rgba(220,38,38,.4);}
+.btn-danger:disabled{opacity:.4;box-shadow:none;cursor:not-allowed;}
 .btn-success{background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;box-shadow:0 6px 22px rgba(22,163,74,.4);}
-.btn-success:disabled{opacity:.4;box-shadow:none;}
+.btn-success:disabled{opacity:.4;box-shadow:none;cursor:not-allowed;}
 .btn-ghost{background:transparent;border:1.5px solid rgba(167,139,250,.25);color:#7C6FAD;font-size:14px;}
 .inp{width:100%;border:none;outline:none;background:rgba(167,139,250,.08);border-radius:10px;padding:11px 14px;font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:600;color:#EDE9FE;direction:rtl;}
 .inp::placeholder{color:#4A3F6B;}
 .inp-label{font-size:13px;color:#7C6FAD;margin-bottom:6px;}
 .toggle-wrap{display:flex;justify-content:space-between;align-items:center;}
 .toggle{width:52px;height:28px;border-radius:99px;cursor:pointer;position:relative;transition:background .2s;}
-.toggle.on{background:linear-gradient(135deg,#A78BFA,#5B21B6);box-shadow:0 2px 10px rgba(167,139,250,.4);}
+.toggle.on{background:linear-gradient(135deg,#A78BFA,#5B21B6);}
 .toggle.off{background:#1E1540;}
 .toggle-thumb{position:absolute;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:all .2s;}
 .toggle.on .toggle-thumb{right:3px;}
@@ -53,7 +48,6 @@ body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-conte
 .badge-host{background:rgba(245,158,11,.15);color:#F59E0B;border:1px solid rgba(245,158,11,.3);}
 .badge-ready{background:rgba(22,163,74,.15);color:#4ADE80;border:1px solid rgba(22,163,74,.3);}
 .badge-waiting{background:rgba(167,139,250,.1);color:#7C6FAD;border:1px solid rgba(167,139,250,.2);}
-.badge-done{background:rgba(99,102,241,.15);color:#818CF8;border:1px solid rgba(99,102,241,.3);}
 .room-code{font-size:36px;font-weight:900;letter-spacing:10px;color:#A78BFA;text-align:center;background:rgba(167,139,250,.08);border:1.5px solid rgba(167,139,250,.2);border-radius:16px;padding:14px 12px;}
 .timer-wrap{position:relative;width:64px;height:64px;flex-shrink:0;}
 .timer-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
@@ -84,8 +78,9 @@ body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-conte
 .finished-banner{background:linear-gradient(135deg,rgba(220,38,38,.15),rgba(153,27,27,.2));border:1.5px solid rgba(220,38,38,.3);border-radius:14px;padding:14px 16px;text-align:center;animation:popIn .4s ease;}
 .pass-input-wrap{position:relative;}
 .pass-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#7C6FAD;}
-.other-ans-pill{display:inline-block;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:3px 9px;font-size:12px;color:#C4B5FD;margin:2px;}
-.scoring-status-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.wait-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(167,139,250,.18);border-radius:20px;padding:20px 18px;}
+.wait-player{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(167,139,250,.08);}
+.wait-player:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -135,17 +130,27 @@ setInterval(()=>{
     String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
 },1000);
 
-// ── WebSocket ──────────────────────────────────────────────────────────────
+// ── WebSocket + heartbeat ──────────────────────────────────────────────────
 function connect(cb) {
   const proto = location.protocol==='https:'?'wss':'ws';
   const ws = new WebSocket(`${proto}://${location.host}`);
   S.ws = ws;
-  ws.onopen = ()=>{ if(cb) cb(); };
+  ws.onopen = ()=>{ if(cb) cb(); startHeartbeat(); };
   ws.onerror = ()=>showNotif('اتصال برقرار نشد ❌');
-  ws.onclose = ()=>showNotif('اتصال قطع شد');
+  ws.onclose = ()=>{ showNotif('اتصال قطع شد'); stopHeartbeat(); };
   ws.onmessage = (e)=>handleMsg(JSON.parse(e.data));
 }
 function send(obj) { if(S.ws&&S.ws.readyState===1) S.ws.send(JSON.stringify(obj)); }
+
+let heartbeatInterval = null;
+function startHeartbeat() {
+  heartbeatInterval = setInterval(()=>{
+    if(S.ws && S.ws.readyState===1) S.ws.send(JSON.stringify({type:'ping'}));
+  }, 20000);
+}
+function stopHeartbeat() {
+  if(heartbeatInterval) { clearInterval(heartbeatInterval); heartbeatInterval=null; }
+}
 
 function handleMsg(msg) {
   if (msg.type==='error') { showError(msg.msg); return; }
@@ -165,8 +170,10 @@ function handleMsg(msg) {
         S.timerLeft=msg.settings.timerSec;
         S.timerSec=msg.settings.timerSec;
       }
+      if (msg.phase==='scoring') {
+        S.myScoring={};
+      }
     }
-    // finished notification
     if (msg.finishedByName && msg.phase==='scoring' && prevPhase==='playing') {
       showNotif(msg.isTimer ? '⏰ وقت تموم شد!' : `🏁 ${msg.finishedByName} بازی رو تموم کرد!`);
     }
@@ -178,7 +185,6 @@ function handleMsg(msg) {
   }
 }
 
-// ── Notifications ──────────────────────────────────────────────────────────
 function showNotif(text) {
   const old=document.querySelector('.notif'); if(old) old.remove();
   const el=document.createElement('div');
@@ -195,13 +201,13 @@ function showError(text) {
   setTimeout(()=>el.remove(),3000);
 }
 
-// ── Render router ──────────────────────────────────────────────────────────
 function render() {
   const sc=document.getElementById('screen');
   const ph=S.room?S.room.phase:S.phase;
   if (ph==='lobby') renderLobby(sc);
   else if (ph==='playing') renderPlaying(sc);
   else if (ph==='scoring') renderScoring(sc);
+  else if (ph==='waiting_confirm') renderWaitingConfirm(sc);
   else if (ph==='leaderboard') renderLeaderboard(sc);
   else renderConnect(sc);
 }
@@ -217,20 +223,13 @@ function renderConnect(sc) {
         <h1 style="font-size:30px;font-weight:900;color:#fff;margin-top:10px;">اسم فامیل</h1>
         <p style="font-size:13px;color:#5B4A8A;margin-top:4px;">چندنفره آنلاین</p>
       </div>
-
       <div class="card" style="width:100%;animation:fadeUp .4s ease .1s both;">
         <div class="inp-label">اسمت چیه؟</div>
         <input class="inp" id="inp-name" placeholder="مثلاً: علی، مریم..." maxlength="20" style="margin-bottom:14px;">
-
         <div style="display:flex;gap:8px;margin-bottom:16px;">
-          <button onclick="setTab('create')" id="tab-create" class="btn btn-ghost" style="font-size:13px;padding:10px;">
-            ➕ ساخت اتاق
-          </button>
-          <button onclick="setTab('join')" id="tab-join" class="btn btn-ghost" style="font-size:13px;padding:10px;">
-            🔗 پیوستن
-          </button>
+          <button onclick="setTab('create')" id="tab-create" class="btn btn-ghost" style="font-size:13px;padding:10px;">➕ ساخت اتاق</button>
+          <button onclick="setTab('join')" id="tab-join" class="btn btn-ghost" style="font-size:13px;padding:10px;">🔗 پیوستن</button>
         </div>
-
         <div id="tab-content-create" style="display:flex;flex-direction:column;gap:10px;">
           <div class="inp-label" style="margin-bottom:4px;">🔒 رمز اتاق (اختیاری)</div>
           <div class="pass-input-wrap" style="margin-bottom:4px;">
@@ -262,7 +261,6 @@ function togglePassView(id) {
   if(!inp) return;
   inp.type = inp.type==='password'?'text':'password';
 }
-
 function setTab(t) {
   document.getElementById('tab-content-create').style.display=t==='create'?'flex':'none';
   document.getElementById('tab-content-join').style.display=t==='join'?'flex':'none';
@@ -271,34 +269,25 @@ function setTab(t) {
   document.getElementById('tab-join').style.background=t==='join'?'rgba(124,58,237,.25)':'transparent';
   document.getElementById('tab-join').style.color=t==='join'?'#C4B5FD':'#7C6FAD';
 }
-
 function getNameOrAlert() {
   const name=(document.getElementById('inp-name')||{}).value?.trim();
   if(!name){showError('اسمت رو بنویس!');return null;}
   return name;
 }
 function showLoading(v){const el=document.getElementById('conn-loading');if(el) el.style.display=v?'flex':'none';}
-
 function doCreate() {
   const name=getNameOrAlert(); if(!name) return;
   const pass=(document.getElementById('inp-create-pass')||{}).value?.trim()||'';
   showLoading(true);
-  connect(()=>{
-    send({type:'create_room',name,password:pass});
-    showLoading(false); S.phase='lobby'; render();
-  });
+  connect(()=>{ send({type:'create_room',name,password:pass}); showLoading(false); S.phase='lobby'; render(); });
 }
-
 function doJoin() {
   const name=getNameOrAlert(); if(!name) return;
   const code=(document.getElementById('inp-code')||{}).value?.trim().toUpperCase();
   if(!code||code.length!==4){showError('کد اتاق 4 حرفه!');return;}
   const pass=(document.getElementById('inp-join-pass')||{}).value?.trim()||'';
   showLoading(true);
-  connect(()=>{
-    send({type:'join_room',name,code,password:pass});
-    showLoading(false); S.phase='lobby'; render();
-  });
+  connect(()=>{ send({type:'join_room',name,code,password:pass}); showLoading(false); S.phase='lobby'; render(); });
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -312,20 +301,19 @@ function renderLobby(sc) {
   const myReady=me.ready;
   const timerOn=room.settings.timerOn;
   const timerSec=room.settings.timerSec;
+  const readyCount=room.players.filter(p=>p.ready).length;
+  const total=room.players.length;
 
   const playersHTML=room.players.map(p=>`
-    <div class="player-row" style="animation:fadeUp .3s ease;">
+    <div class="player-row">
       <div class="avatar">${p.name.charAt(0)}</div>
       <span class="player-name">${p.name}${p.id===S.id?' <span style="font-size:11px;color:#A78BFA;">(تو)</span>':''}</span>
       ${p.id===room.hostId?'<span class="badge badge-host">هاست 👑</span>':''}
       <span class="badge ${p.ready?'badge-ready':'badge-waiting'}">${p.ready?'✅':'⏳'}</span>
     </div>`).join('');
 
-  const readyCount=room.players.filter(p=>p.ready).length;
-  const total=room.players.length;
-
   const settingsHTML=S.isHost?`
-    <div class="card" style="animation:fadeUp .35s ease .1s both;">
+    <div class="card">
       <p style="font-size:14px;font-weight:700;color:#DDD6FE;margin-bottom:14px;">⚙️ تنظیمات</p>
       <div class="toggle-wrap" style="margin-bottom:${timerOn?14:0}px;">
         <div>
@@ -346,37 +334,31 @@ function renderLobby(sc) {
               background:${timerSec===v?'linear-gradient(135deg,#A78BFA,#5B21B6)':'rgba(167,139,250,.1)'};
               color:${timerSec===v?'#fff':'#7C6FAD'};
             ">${v<60?v+'ث':v/60+'د'}</button>`).join('')}
-        </div>`:''}
-    </div>`:'';
+        </div>`:''}</div>`:''
 
   sc.innerHTML=`
     <div class="screen" style="padding-bottom:110px;">
-      <div style="text-align:center;animation:fadeUp .35s ease;">
+      <div style="text-align:center;">
         <p style="font-size:12px;color:#5B4A8A;margin-bottom:6px;">کد اتاق${room.hasPassword?' 🔒':''}</p>
         <div class="room-code">${S.code}</div>
         <p style="font-size:11px;color:#5B4A8A;margin-top:6px;">بقیه با این کد وصل میشن</p>
       </div>
-
-      <div class="card" style="animation:fadeUp .35s ease .05s both;">
+      <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <p style="font-size:13px;color:#7C6FAD;">👥 بازیکنان</p>
           <span style="font-size:12px;color:#A78BFA;font-weight:700;">${readyCount}/${total} آماده</span>
         </div>
         ${playersHTML}
       </div>
-
       ${settingsHTML}
     </div>
-
     <div class="fab" style="display:flex;flex-direction:column;gap:10px;">
-      ${!myReady&&!S.isHost?`
-        <button class="btn btn-primary" onclick="setReady(true)">✅ آماده‌ام!</button>`:
-      myReady&&!S.isHost?`
+      ${!myReady&&!S.isHost?`<button class="btn btn-primary" onclick="setReady(true)">✅ آماده‌ام!</button>`:''}
+      ${myReady&&!S.isHost?`
         <button class="btn btn-ghost" onclick="setReady(false)">↩️ هنوز آماده نیستم</button>
-        <div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;">✅ آماده‌ای — منتظر هاست...</div>`:
-      S.isHost?`
-        ${!myReady?`<button class="btn btn-ghost" onclick="setReady(true)" style="font-size:13px;">✅ من هم آماده‌ام</button>`:`
-        <button class="btn btn-ghost" onclick="setReady(false)" style="font-size:13px;">↩️ هنوز آماده نیستم</button>`}
+        <div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;">✅ آماده‌ای — منتظر هاست...</div>`:''}
+      ${S.isHost?`
+        ${!myReady?`<button class="btn btn-ghost" onclick="setReady(true)" style="font-size:13px;">✅ من هم آماده‌ام</button>`:`<button class="btn btn-ghost" onclick="setReady(false)" style="font-size:13px;">↩️ هنوز آماده نیستم</button>`}
         <button class="btn btn-primary" onclick="startGame()" ${!allReady&&total>1?'disabled':''}>
           ${allReady||total<=1?'🚀 شروع بازی!':'⏳ منتظر '+(total-readyCount)+' نفر...'}
         </button>`:''}
@@ -400,6 +382,9 @@ function renderPlaying(sc) {
   const col=pct>.4?'#A78BFA':pct>.2?'#F59E0B':'#EF4444';
   const c=2*Math.PI*26;
 
+  // چک کن همه فیلدها پر شدن یا نه
+  const filledAll = room.cats.every((_,i) => (S.answers[i]||'').trim().length > 0);
+
   const timerHTML=timerOn?`
     <div class="timer-wrap">
       <svg width="64" height="64" style="transform:rotate(-90deg)">
@@ -422,13 +407,13 @@ function renderPlaying(sc) {
       </div>
       <input class="inp" placeholder="با حرف «${room.letter}» ..."
         value="${S.answers[i]||''}"
-        oninput="S.answers[${i}]=this.value;syncAnswers()"
+        oninput="S.answers[${i}]=this.value;syncAnswers();checkFinishBtn()"
         style="font-size:15px;font-weight:700;">
     </div>`).join('');
 
   sc.innerHTML=`
     <div class="play-header">
-      <div class="orb glow" style="width:50px;height:50px;font-size:20px;">${room.letter}</div>
+      <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(145deg,#A78BFA,#5B21B6);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;animation:glow 2.2s ease-in-out infinite;">${room.letter}</div>
       <div style="flex:1;">
         <p style="font-size:10px;color:#5B4A8A;">دور ${room.round} • حرف این دور</p>
         <p style="font-size:14px;font-weight:700;color:#DDD6FE;">${room.cats.length} دسته — بنویس!</p>
@@ -439,8 +424,18 @@ function renderPlaying(sc) {
       ${catsHTML}
     </div>
     <div class="fab">
-      <button class="btn btn-danger" onclick="finishRound()">🏁 تموم شد! نتیجه رو ببین</button>
+      <button id="finish-btn" class="btn btn-danger" onclick="finishRound()" ${filledAll?'':' disabled'}>
+        ${filledAll?'🏁 تموم شد! نتیجه رو ببین':'⏳ همه فیلدها رو پر کن'}
+      </button>
     </div>`;
+}
+
+function checkFinishBtn() {
+  const btn = document.getElementById('finish-btn');
+  if(!btn || !S.room) return;
+  const filledAll = S.room.cats.every((_,i) => (S.answers[i]||'').trim().length > 0);
+  btn.disabled = !filledAll;
+  btn.textContent = filledAll ? '🏁 تموم شد! نتیجه رو ببین' : '⏳ همه فیلدها رو پر کن';
 }
 
 function updateTimerUI() {
@@ -460,11 +455,15 @@ function updateTimerUI() {
 
 let syncTimer=null;
 function syncAnswers(){clearTimeout(syncTimer);syncTimer=setTimeout(()=>send({type:'submit_answers',answers:S.answers}),300);}
-function finishRound(){syncAnswers();send({type:'finish_round',answers:S.answers});}
+function finishRound(){
+  const filledAll = S.room && S.room.cats.every((_,i) => (S.answers[i]||'').trim().length > 0);
+  if(!filledAll){showError('همه فیلدها رو پر کن!');return;}
+  syncAnswers();
+  send({type:'finish_round',answers:S.answers});
+}
 
 // ══════════════════════════════════════════════════════════════════════════
-// SCREEN: Scoring
-// جواب‌های همه قابل مشاهده‌ست ولی امتیازدهی فقط به خودت
+// SCREEN: Scoring — امتیازدهی به جواب‌های خودت
 // ══════════════════════════════════════════════════════════════════════════
 function renderScoring(sc) {
   if(!S.room) return;
@@ -477,75 +476,61 @@ function renderScoring(sc) {
     <th style="text-align:center;min-width:70px;">
       ${p.name}${p.id===S.id?'<br><span style="font-size:9px;color:#A78BFA;">(تو)</span>':''}
     </th>`).join('');
-
   const tableRows=room.cats.map((cat,i)=>{
     const cells=room.players.map(p=>{
       const ans=(p.answers||{})[i]||'';
       const isMe=p.id===S.id;
       return `<td style="text-align:center;${isMe?'background:rgba(167,139,250,.06);':''}">${ans||`<span style="color:#4A3F6B">—</span>`}</td>`;
     }).join('');
-    return `<tr>
-      <td style="min-width:100px;"><span style="font-size:13px;">${CAT_EMOJI[cat]||'📝'}</span> ${cat}</td>
-      ${cells}
-    </tr>`;
+    return `<tr><td style="min-width:100px;"><span style="font-size:13px;">${CAT_EMOJI[cat]||'📝'}</span> ${cat}</td>${cells}</tr>`;
   }).join('');
 
-  // بخش امتیازدهی به خودم
-  const myScoringHTML=room.cats.map((cat,i)=>{
-    const myAns=(me?.answers||{})[i]||'';
-    const picked=S.myScoring[i];
-    const opt=SCORE_OPTS.find(o=>o.key===picked);
-    return `
-      <div class="ans-card" style="animation:fadeUp .3s ease ${i*.04}s both;${picked?`border-color:${opt?.border};background:${opt?.bg}`:''};${!myAns?'opacity:.6':''}">
-        <div class="cat-label">
-          <span class="cat-emoji">${CAT_EMOJI[cat]||'📝'}</span>
-          <span class="cat-name">${cat}</span>
-        </div>
-        <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:700;color:${myAns?(picked?opt?.color:'#EDE9FE'):'#4A3F6B'};margin-bottom:2px;">
-          ${myAns||'— بدون جواب —'}
-        </div>
-        ${myAns?`
-        <div class="score-btns">
-          ${SCORE_OPTS.map(o=>`
-            <button class="score-btn" onclick="pickScore(${i},'${o.key}')"
-              style="border-color:${picked===o.key?o.border:'rgba(167,139,250,.15)'};background:${picked===o.key?o.bg:'transparent'};color:${picked===o.key?o.color:'#5B4A8A'};">
-              <div class="sb-emoji">${o.emoji}</div>
-              <div class="sb-label">${o.label}</div>
-              <div class="sb-pts">+${o.pts}</div>
-            </button>`).join('')}
-        </div>`:`<div style="font-size:11px;color:#5B4A8A;margin-top:4px;">بدون جواب — امتیاز ۰</div>`}
-      </div>`;
-  }).join('');
+  // فقط دسته‌هایی که جواب داشتن
+  const myAnswers = me?.answers || {};
+  const catsWithAnswer = room.cats.map((cat,i)=>({cat,i,ans:(myAnswers[i]||'').trim()})).filter(x=>x.ans);
 
-  // وضعیت ثبت امتیاز بقیه
-  const scoringStatusHTML=room.players.map(p=>`
-    <span style="display:inline-flex;align-items:center;gap:4px;background:${p.scoringSubmitted?'rgba(22,163,74,.12)':'rgba(167,139,250,.08)'};border:1px solid ${p.scoringSubmitted?'rgba(22,163,74,.3)':'rgba(167,139,250,.18)'};border-radius:99px;padding:4px 10px;font-size:11px;color:${p.scoringSubmitted?'#4ADE80':'#7C6FAD'};">
-      ${p.scoringSubmitted?'✅':'⏳'} ${p.name}
-    </span>`).join('');
+  const myScoringHTML = catsWithAnswer.length === 0
+    ? `<div style="text-align:center;color:#5B4A8A;padding:20px;font-size:13px;">هیچ جوابی وارد نکردی — امتیاز ۰</div>`
+    : catsWithAnswer.map(({cat,i,ans})=>{
+        const picked=S.myScoring[i];
+        const opt=SCORE_OPTS.find(o=>o.key===picked);
+        return `
+        <div class="ans-card" style="animation:fadeUp .3s ease ${i*.04}s both;${picked?`border-color:${opt?.border};background:${opt?.bg}`:''}">
+          <div class="cat-label">
+            <span class="cat-emoji">${CAT_EMOJI[cat]||'📝'}</span>
+            <span class="cat-name">${cat}</span>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:700;color:${picked?opt?.color:'#EDE9FE'};margin-bottom:2px;">
+            ${ans}
+          </div>
+          <div class="score-btns">
+            ${SCORE_OPTS.map(o=>`
+              <button class="score-btn" onclick="pickScore(${i},'${o.key}')"
+                style="border-color:${picked===o.key?o.border:'rgba(167,139,250,.15)'};background:${picked===o.key?o.bg:'transparent'};color:${picked===o.key?o.color:'#5B4A8A'};">
+                <div class="sb-emoji">${o.emoji}</div>
+                <div class="sb-label">${o.label}</div>
+                <div class="sb-pts">+${o.pts}</div>
+              </button>`).join('')}
+          </div>
+        </div>`;
+      }).join('');
 
-  const myAnsCount=Object.values(me?.answers||{}).filter(a=>a).length;
-  const myScore=Object.entries(S.myScoring).reduce((s,[i,k])=>{
-    const ans=(me?.answers||{})[i];
-    if(!ans) return s;
-    const o=SCORE_OPTS.find(x=>x.key===k); return s+(o?o.pts:0);
+  const totalPicked = catsWithAnswer.filter(({i})=>S.myScoring[i]!==undefined).length;
+  const allPicked = totalPicked >= catsWithAnswer.length;
+  const myScore = catsWithAnswer.reduce((s,{i})=>{
+    const o=SCORE_OPTS.find(x=>x.key===S.myScoring[i]); return s+(o?o.pts:0);
   },0);
-  const filledCount=Object.entries(S.myScoring).filter(([i])=>(me?.answers||{})[i]).length;
-  const allPicked=filledCount>=myAnsCount&&myAnsCount>0||myAnsCount===0;
-  const alreadySubmitted=me?.scoringSubmitted||false;
+  const alreadySubmitted = me?.scoringSubmitted||false;
+  const remaining = catsWithAnswer.length - totalPicked;
 
   sc.innerHTML=`
     <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
       ${finisher?`
         <div style="padding:14px 18px 0;">
           <div class="finished-banner">
-            <p style="font-size:15px;font-weight:800;color:#FCA5A5;">
-              ${room.finishedBy===room.players.find(p=>p.id)?.id?'':''}
-              🏁 ${finisher.name} بازی رو تموم کرد!
-            </p>
+            <p style="font-size:15px;font-weight:800;color:#FCA5A5;">🏁 ${finisher.name} بازی رو تموم کرد!</p>
           </div>
         </div>`:''}
-
-      <!-- جدول پاسخ‌های همه -->
       <div style="padding:14px 18px 0;">
         <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">📋 پاسخ‌های همه بازیکنان</p>
         <div style="overflow-x:auto;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.12);border-radius:14px;">
@@ -555,40 +540,23 @@ function renderScoring(sc) {
           </table>
         </div>
       </div>
-
-      <!-- وضعیت ثبت امتیاز -->
-      <div style="padding:10px 18px 0;">
-        <p style="font-size:11px;color:#5B4A8A;margin-bottom:6px;">وضعیت ثبت امتیاز:</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">${scoringStatusHTML}</div>
-      </div>
-
-      <!-- امتیازدهی -->
       <div style="padding:14px 18px 0;">
         <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">⭐ امتیاز به جواب‌های خودت</p>
-        <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:150px;">
+        <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:160px;">
           ${myScoringHTML}
         </div>
       </div>
     </div>
-
     <div class="fab" style="display:flex;flex-direction:column;gap:10px;">
       <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.18);border-radius:14px;padding:11px 16px;">
         <span style="font-size:13px;color:#7C6FAD;">جمع این دور</span>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-size:14px;">⭐</span>
-          <span style="font-size:22px;font-weight:900;color:#DDD6FE;">${myScore}</span>
-        </div>
+        <span style="font-size:22px;font-weight:900;color:#DDD6FE;">⭐ ${myScore}</span>
       </div>
-      ${alreadySubmitted?`
-        <div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;padding:8px;">✅ امتیازت ثبت شد — منتظر بقیه...</div>
-        ${S.isHost?`<button class="btn btn-success" onclick="showLeaderboard()">📊 نمایش جدول امتیازات</button>`:''}`
-      :S.isHost?`
-        <button class="btn btn-success" onclick="showLeaderboard()" ${!allPicked?'disabled':''}>
-          ${allPicked?'📊 ثبت و نمایش جدول':'⏳ '+(myAnsCount-filledCount)+' فیلد مانده'}
-        </button>`:`
-        <button class="btn btn-primary" onclick="submitScoring()" ${!allPicked?'disabled':''}>
-          ${allPicked?'✅ ثبت امتیازها':'⏳ '+(myAnsCount-filledCount)+' فیلد مانده'}
-        </button>`}
+      ${alreadySubmitted
+        ? `<div style="text-align:center;color:#4ADE80;font-size:13px;font-weight:700;padding:10px;background:rgba(22,163,74,.08);border-radius:14px;">✅ امتیازت ثبت شد — منتظر بقیه...</div>`
+        : `<button class="btn btn-success" onclick="submitScoring()" ${allPicked?'':' disabled'}>
+            ${allPicked?'✅ ثبت امتیازها':'⏳ '+remaining+' مورد مانده'}
+           </button>`}
     </div>`;
 }
 
@@ -597,12 +565,71 @@ function pickScore(i,key){
   renderScoring(document.getElementById('screen'));
 }
 function submitScoring(){
+  const room=S.room;
+  const me=room?.players.find(p=>p.id===S.id);
+  const myAnswers=me?.answers||{};
+  const catsWithAnswer=room.cats.map((_,i)=>i).filter(i=>(myAnswers[i]||'').trim());
+  const allPicked=catsWithAnswer.every(i=>S.myScoring[i]!==undefined);
+  if(!allPicked){showError('همه جواب‌هات رو امتیاز بده!');return;}
   send({type:'submit_scoring',scoring:S.myScoring});
   showNotif('امتیازها ثبت شد ✅');
 }
-function showLeaderboard(){
-  send({type:'submit_scoring',scoring:S.myScoring});
-  send({type:'show_leaderboard'});
+
+// ══════════════════════════════════════════════════════════════════════════
+// SCREEN: Waiting Confirm — منتظر تایید هاست
+// ══════════════════════════════════════════════════════════════════════════
+function renderWaitingConfirm(sc) {
+  if(!S.room) return;
+  const room=S.room;
+  const submitted=room.players.filter(p=>p.scoringSubmitted);
+  const notSubmitted=room.players.filter(p=>!p.scoringSubmitted);
+  const allDone=notSubmitted.length===0;
+
+  const playersList=room.players.map(p=>`
+    <div class="wait-player">
+      <div class="avatar" style="background:${p.scoringSubmitted?'linear-gradient(135deg,#16A34A,#15803D)':'linear-gradient(135deg,#7C3AED,#4C1D95)'}">
+        ${p.scoringSubmitted?'✅':p.name.charAt(0)}
+      </div>
+      <span style="flex:1;font-size:14px;font-weight:700;color:#DDD6FE;">${p.name}${p.id===S.id?' <span style="font-size:11px;color:#A78BFA;">(تو)</span>':''}</span>
+      <span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;
+        background:${p.scoringSubmitted?'rgba(22,163,74,.15)':'rgba(167,139,250,.1)'};
+        color:${p.scoringSubmitted?'#4ADE80':'#7C6FAD'};
+        border:1px solid ${p.scoringSubmitted?'rgba(22,163,74,.3)':'rgba(167,139,250,.2)'};">
+        ${p.scoringSubmitted?'ثبت شد ✅':'در حال امتیازدهی...'}
+      </span>
+    </div>`).join('');
+
+  sc.innerHTML=`
+    <div class="screen" style="padding-bottom:110px;">
+      <div style="text-align:center;">
+        <div style="font-size:48px;margin-bottom:10px;">${allDone?'🎉':'⏳'}</div>
+        <h2 style="font-size:20px;font-weight:900;color:#fff;">${allDone?'همه ثبت کردن!':'در انتظار ثبت امتیازها'}</h2>
+        <p style="font-size:12px;color:#5B4A8A;margin-top:6px;">${allDone?'هاست می‌تونه جدول رو نشون بده':'منتظر بقیه...'}</p>
+      </div>
+      <div class="wait-card">
+        <p style="font-size:13px;color:#7C6FAD;margin-bottom:12px;">📊 وضعیت ثبت امتیاز</p>
+        ${playersList}
+      </div>
+      <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);border-radius:14px;padding:14px 16px;">
+        <p style="font-size:12px;color:#7C6FAD;text-align:center;">
+          ${submitted.length} از ${room.players.length} نفر ثبت کردن
+        </p>
+        <div style="margin-top:8px;background:rgba(167,139,250,.1);border-radius:99px;height:6px;overflow:hidden;">
+          <div style="height:100%;width:${Math.round(submitted.length/room.players.length*100)}%;background:linear-gradient(90deg,#7C3AED,#A78BFA);border-radius:99px;transition:width .5s;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fab">
+      ${S.isHost
+        ? `<button class="btn btn-success" onclick="confirmLeaderboard()" ${allDone?'':' disabled'}>
+            ${allDone?'📊 نمایش جدول امتیازات':'⏳ منتظر '+(notSubmitted.length)+' نفر...'}
+           </button>`
+        : `<div style="text-align:center;color:#5B4A8A;font-size:13px;padding:12px;">⏳ منتظر تایید هاست...</div>`}
+    </div>`;
+}
+
+function confirmLeaderboard(){
+  send({type:'confirm_leaderboard'});
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -614,29 +641,6 @@ function renderLeaderboard(sc) {
   const sorted=[...room.players].sort((a,b)=>b.totalScore-a.totalScore);
   const medals=['🥇','🥈','🥉'];
 
-  // جدول امتیازدهی همه (قابل مشاهده ولی فقط برای نمایش)
-  const scoringDetailHTML=room.cats.map((cat,i)=>{
-    const cells=room.players.map(p=>{
-      const ans=(p.answers||{})[i]||'';
-      const score=(p.scoring||{})[i];
-      const opt=SCORE_OPTS.find(o=>o.key===score);
-      return `<td style="text-align:center;">
-        <div style="font-size:12px;color:#DDD6FE;">${ans||'—'}</div>
-        ${score?`<div style="font-size:10px;color:${opt?.color};">${opt?.emoji} ${opt?.pts}</div>`:''}
-      </td>`;
-    }).join('');
-    return `<tr>
-      <td style="min-width:100px;font-size:12px;">${CAT_EMOJI[cat]||'📝'} ${cat}</td>
-      ${cells}
-    </tr>`;
-  }).join('');
-
-  const headerCells=sorted.map((p,idx)=>`
-    <th style="text-align:center;">
-      ${medals[idx]||'#'+(idx+1)} ${p.name}${p.id===S.id?' ⭐':''}
-    </th>`).join('');
-  const orderedHeaders=room.players.map(p=>`<th style="text-align:center;">${p.name}${p.id===S.id?' (تو)':''}</th>`).join('');
-
   const rows=sorted.map((p,idx)=>`
     <div class="lb-row" style="animation:fadeUp .3s ease ${idx*.07}s both;${idx===0?'background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);':''}">
       <div class="lb-rank">${medals[idx]||idx+1}</div>
@@ -647,17 +651,51 @@ function renderLeaderboard(sc) {
       <div class="lb-score">${p.totalScore}</div>
     </div>`).join('');
 
+  // تاریخچه دورها
+  const historyHTML = (room.roundHistory||[]).length > 1
+    ? `<div style="padding:14px 18px 0;">
+        <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">📈 تاریخچه دورها</p>
+        <div style="overflow-x:auto;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.12);border-radius:14px;">
+          <table class="results-table">
+            <thead><tr><th>دور</th>${sorted.map(p=>`<th style="text-align:center;">${p.name}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${(room.roundHistory||[]).map(h=>`
+                <tr>
+                  <td>دور ${h.round} (${h.letter})</td>
+                  ${sorted.map(p=>{
+                    const hs=h.scores.find(s=>s.id===p.id);
+                    return `<td style="text-align:center;color:#A78BFA;font-weight:700;">+${hs?hs.roundScore:0}</td>`;
+                  }).join('')}
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>` : '';
+
+  // جزئیات امتیازها
+  const orderedHeaders=room.players.map(p=>`<th style="text-align:center;">${p.name}${p.id===S.id?' (تو)':''}</th>`).join('');
+  const scoringDetailHTML=room.cats.map((cat,i)=>{
+    const cells=room.players.map(p=>{
+      const ans=(p.answers||{})[i]||'';
+      const score=(p.scoring||{})[i];
+      const opt=SCORE_OPTS.find(o=>o.key===score);
+      return `<td style="text-align:center;">
+        <div style="font-size:12px;color:#DDD6FE;">${ans||'—'}</div>
+        ${ans&&score?`<div style="font-size:10px;color:${opt?.color};">${opt?.emoji} ${opt?.pts}</div>`:''}
+      </td>`;
+    }).join('');
+    return `<tr><td style="min-width:100px;font-size:12px;">${CAT_EMOJI[cat]||'📝'} ${cat}</td>${cells}</tr>`;
+  }).join('');
+
   sc.innerHTML=`
     <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
-      <div style="padding:20px 18px 0;text-align:center;animation:fadeUp .35s ease;">
+      <div style="padding:20px 18px 0;text-align:center;">
         <div style="font-size:48px;margin-bottom:6px;">🏆</div>
         <h2 style="font-size:22px;font-weight:900;color:#fff;">جدول امتیازات</h2>
         <p style="font-size:12px;color:#5B4A8A;margin-top:4px;">دور ${room.round}</p>
       </div>
-
       <div style="padding:16px 18px 0;">${rows}</div>
-
-      <!-- جدول تفصیلی امتیازات -->
+      ${historyHTML}
       <div style="padding:14px 18px 0;">
         <p style="font-size:13px;color:#7C6FAD;margin-bottom:10px;">📋 جزئیات امتیازها</p>
         <div style="overflow-x:auto;background:rgba(255,255,255,.03);border:1.5px solid rgba(167,139,250,.12);border-radius:14px;margin-bottom:110px;">
@@ -668,10 +706,9 @@ function renderLeaderboard(sc) {
         </div>
       </div>
     </div>
-
     ${S.isHost?`
-    <div class="fab" style="display:flex;gap:10px;">
-      <div style="flex:1;"><button class="btn btn-primary" onclick="nextRound()">🎮 دور بعدی</button></div>
+    <div class="fab">
+      <button class="btn btn-primary" onclick="nextRound()">🎮 دور بعدی</button>
     </div>`:`
     <div class="fab">
       <div style="text-align:center;color:#5B4A8A;font-size:13px;padding:10px;">⏳ منتظر هاست برای شروع دور بعدی...</div>
@@ -680,7 +717,6 @@ function renderLeaderboard(sc) {
 
 function nextRound(){send({type:'next_round'});}
 
-// Boot
 renderConnect(document.getElementById('screen'));
 </script>
 </body>
