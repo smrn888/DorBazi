@@ -118,7 +118,7 @@ body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-conte
 .cat-emoji{font-size:20px;}
 .cat-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);}
 .score-btns{display:flex;gap:8px;margin-top:10px;}
-.score-btn{flex:1;border-radius:12px;padding:10px 4px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:700;border:2px solid rgba(255,255,255,.15);transition:all .15s;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);}
+.score-btn{flex:1;border-radius:12px;padding:10px 4px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:700;border:2px solid rgba(255,255,255,.15);transition:all .15s;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:72px;-webkit-tap-highlight-color:rgba(255,255,255,.1);}
 .score-btn .sb-emoji{font-size:18px;margin-bottom:3px;}
 .score-btn .sb-label{font-size:11px;}
 .score-btn .sb-pts{font-size:10px;opacity:.7;margin-top:2px;}
@@ -174,7 +174,10 @@ body{font-family:'Vazirmatn',sans-serif;direction:rtl;display:flex;justify-conte
 <div id="app" style="position:relative;z-index:1;">
   <div class="status-bar">
     <span id="time-display">--:--</span>
-    <div style="display:flex;gap:6px">📶 🔋</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button id="btn-home" data-action="go-home" style="background:none;border:none;cursor:pointer;font-size:18px;padding:2px 4px;opacity:.6;line-height:1;" title="بازگشت به خانه">🏠</button>
+      <button id="btn-mute" data-action="toggle-mute" style="background:none;border:none;cursor:pointer;font-size:18px;padding:2px 4px;opacity:.6;line-height:1;" title="میوت">🔊</button>
+    </div>
   </div>
   <div id="screen" style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;position:relative;"></div>
 </div>
@@ -285,71 +288,15 @@ function sfxJoin() {
 function startBgMusic() {
   if(musicStarted) return;
   musicStarted=true;
-
-  bgGain=AC.createGain();
-  bgGain.gain.setValueAtTime(0.07, AC.currentTime);
-  bgGain.connect(AC.destination);
-
-  // ملودی ۶۰ ثانیه‌ای با چهار بخش متفاوت
-  const T=0.28; // مدت هر نت
-  // بخش A
-  const secA=[
-    [523,0],[587,1],[659,2],[784,3],[698,4],[659,5],[587,6],[523,7],
-    [494,8],[523,9],[587,10],[659,11],[784,12],[880,13],[784,14],[698,15],
-  ];
-  // بخش B (یه نیم‌پرده بالاتر، شادتر)
-  const secB=[
-    [587,0],[659,1],[740,2],[831,3],[740,4],[659,5],[587,6],[523,7],
-    [587,8],[659,9],[784,10],[880,11],[988,12],[880,13],[784,14],[659,15],
-  ];
-  // بخش C (پایین‌تر، آروم‌تر)
-  const secC=[
-    [392,0],[440,1],[494,2],[523,3],[494,4],[440,5],[392,6],[349,7],
-    [392,8],[440,9],[523,10],[587,11],[659,12],[587,13],[523,14],[440,15],
-  ];
-  // بخش D (سریع‌تر، هیجانی)
-  const secD=[
-    [659,0],[784,0.5],[880,1],[988,1.5],[880,2],[784,2.5],[659,3],[587,3.5],
-    [659,4],[740,4.5],[831,5],[988,5.5],[1047,6],[988,6.5],[880,7],[784,7.5],
-    [659,8],[784,9],[880,10],[988,11],[1047,12],[880,13],[784,14],[659,15],
-  ];
-  const bass=[
-    [131,0],[131,2],[165,4],[165,6],[196,8],[196,10],[175,12],[165,14],
-    [131,16],[147,18],[165,20],[175,22],[196,24],[196,26],[165,28],[131,30],
-  ];
-  // ترتیب: A A B B C D A B — حدود ۶۰ ثانیه
-  const sections=[secA,secA,secB,secB,secC,secD,secA,secB];
-  const secDur=16*T; // هر بخش = 16 نت × 0.28ث ≈ 4.5ث
-  const loopDur=sections.length*secDur; // ≈ 36ث — دو دور = 72ث
-
-  function playNote(freq, startT, dur, type, vol) {
-    const o=AC.createOscillator(), g2=AC.createGain();
-    o.type=type; o.connect(g2); g2.connect(bgGain);
-    o.frequency.setValueAtTime(freq, startT);
-    g2.gain.setValueAtTime(0, startT);
-    g2.gain.linearRampToValueAtTime(vol, startT+0.02);
-    g2.gain.setValueAtTime(vol, startT+dur*0.75);
-    g2.gain.linearRampToValueAtTime(0, startT+dur);
-    o.start(startT); o.stop(startT+dur+0.05);
-  }
-
-  function playLoop(startTime) {
-    sections.forEach((sec, si) => {
-      const offset = startTime + si*secDur;
-      sec.forEach(([f,t]) => playNote(f, offset+t*T, T*0.9, 'triangle', 0.75));
-    });
-    bass.forEach(([f,t]) => {
-      playNote(f, startTime+t*T, T*1.8, 'sine', 0.35);
-      playNote(f, startTime+(t+loopDur/T/2)*T, T*1.8, 'sine', 0.35);
-    });
-    setTimeout(()=>playLoop(AC.currentTime), (loopDur-0.2)*1000);
-  }
-
-  playLoop(AC.currentTime+0.1);
+  bgGain = new Audio('/bg-music.mp3');
+  bgGain.loop = true;
+  bgGain.volume = 0.35;
+  bgGain.play().catch(()=>{});
 }
 
 function setBgMusicVolume(v) {
-  if(bgGain) bgGain.gain.setTargetAtTime(v, AC.currentTime, 0.3);
+  // نسبت: قبلاً ۰.۰۷ بود، الان به ۰.۳۵ نرمال کردیم
+  if(bgGain) bgGain.volume = Math.min(1, v * 5);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1027,6 +974,28 @@ function renderLeaderboard(sc){
 
 function nextRound(){send({type:'next_round'});}
 
+// ── میوت و بازگشت به خانه ──
+let isMuted = false;
+
+function toggleMute() {
+  isMuted = !isMuted;
+  if(bgGain) bgGain.volume = isMuted ? 0 : 0.35;
+  const btn = document.getElementById('btn-mute');
+  if(btn) btn.textContent = isMuted ? '🔇' : '🔊';
+}
+
+function goHome() {
+  const inGame = S.room && S.phase !== 'connect';
+  if(inGame) {
+    if(!confirm('مطمئنی میخوای برگردی به خانه؟ بازی قطع میشه!')) return;
+  }
+  if(S.ws) { S.ws.close(); S.ws = null; }
+  S.room = null; S.phase = 'connect'; S.id = null; S.isHost = false; S.code = null;
+  S.answers = {}; S.myScoring = {}; S._renderedPhase = null;
+  stopHeartbeat();
+  render();
+}
+
 // ══════════════════════════════════════════════════════════════════════════
 // Event Delegation — جایگزین همه inline onclick/oninput ها
 // ══════════════════════════════════════════════════════════════════════════
@@ -1036,6 +1005,10 @@ document.addEventListener('click', function(e) {
   const action = el.dataset.action;
 
   switch(action) {
+    // ── Connect screen ──
+    case 'go-home':      goHome(); break;
+    case 'toggle-mute':  toggleMute(); break;
+
     // ── Connect screen ──
     case 'tab-create': setTab('create'); sfxClick(); break;
     case 'tab-join':   setTab('join');   sfxClick(); break;

@@ -76,6 +76,18 @@ function pickLetter() { return LETTERS[Math.floor(Math.random()*LETTERS.length)]
 function pickCats()   { return shuffle(ALL_CATS).slice(0, 8); }
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/bg-music.mp3') {
+    const musicPath = path.join(__dirname, 'bg-music.mp3');
+    fs.readFile(musicPath, (err, data) => {
+      if (err) { res.writeHead(404); res.end('not found'); return; }
+      res.writeHead(200, {
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=86400',
+      });
+      res.end(data);
+    });
+    return;
+  }
   const filePath = path.join(__dirname, 'client.html');
   fs.readFile(filePath, (err, data) => {
     if (err) { res.writeHead(404); res.end('not found'); return; }
