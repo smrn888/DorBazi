@@ -244,8 +244,6 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    if (msg.type === 'ping') { ws.isAlive = true; ws.send(JSON.stringify({type:'pong'})); return; }
-
     if (!currentRoom) return;
     const room = currentRoom;
     const playerName = room.players[clientId]?.name;
