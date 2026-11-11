@@ -3,15 +3,106 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>دوربازی</title>
+  <meta name="theme-color" content="#eaf6ff">
+  <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
+  <title>دوربازی | دنیای بازی‌های گروهی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>🎉 دوربازی</h1>
-    <p>یک بازی انتخاب کنید و دوستانتان را دعوت کنید</p>
-  </header>
-  <main id="games" class="grid"><p class="msg">در حال بارگذاری...</p></main>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="صفحه اصلی دوربازی">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M10 15.5c0-3.3 2.7-6 6-6h16c3.3 0 6 2.7 6 6v13c0 3.3-2.7 6-6 6H16c-3.3 0-6-2.7-6-6z"/><path d="M17 20v7M13.5 23.5h7M29 20h.1M34 25h.1"/><path d="M18 34l-3 5 9-4"/></svg>
+        </span>
+        <span class="brand-name">دوربازی</span>
+      </a>
+      <nav class="top-actions" aria-label="منوی اصلی">
+        <a href="#games" class="nav-link">بازی‌ها</a>
+        <a href="#about" class="nav-link">درباره دوربازی</a>
+        <a href="#games" class="nav-cta">شروع بازی <span aria-hidden="true">←</span></a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> دورهمی، خنده، رقابت!</div>
+        <h1 id="hero-title">دوربازی؛<br><span>بازی‌ها تازه شروع شدن!</span></h1>
+        <p class="hero-description">یه بازی انتخاب کن، دوستات رو خبر کن و ببین برنده‌ی این دور کیه!</p>
+        <a class="hero-button" href="#games">بزن بریم بازی کنیم <span aria-hidden="true">←</span></a>
+        <div class="hero-note"><span class="tiny-people" aria-hidden="true"><i></i><i></i><i></i></span> بازی گروهی، بدون دردسر</div>
+      </div>
+
+      <div class="hero-art" aria-label="ربات کوچولوی دوربازی با دسته بازی" role="img">
+        <div class="art-spark spark-a">✦</div><div class="art-spark spark-b">✧</div><div class="art-spark spark-c">✦</div>
+        <div class="art-cloud cloud-a"></div><div class="art-cloud cloud-b"></div>
+        <div class="plant plant-left"><i></i><i></i><i></i></div>
+        <div class="plant plant-right"><i></i><i></i><i></i></div>
+        <div class="robot-shadow"></div>
+        <svg class="mascot" viewBox="0 0 360 360" role="presentation" aria-hidden="true">
+          <defs>
+            <linearGradient id="botBody" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".62" stop-color="#f4f8ff"/><stop offset="1" stop-color="#dceaff"/></linearGradient>
+            <linearGradient id="botHead" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e8f2ff"/></linearGradient>
+            <linearGradient id="earBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#64d7ef"/><stop offset="1" stop-color="#2588d7"/></linearGradient>
+            <linearGradient id="pad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#536b9c"/><stop offset="1" stop-color="#263c6d"/></linearGradient>
+            <filter id="botShadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="8"/></filter>
+          </defs>
+          <ellipse cx="180" cy="326" rx="112" ry="17" fill="#4169a8" opacity=".2" filter="url(#botShadow)"/>
+          <!-- headphones -->
+          <path d="M91 150c-4-76 39-119 91-119s95 43 91 119" fill="none" stroke="#2d65b5" stroke-width="19" stroke-linecap="round"/>
+          <path d="M96 145c-1-67 37-104 86-104s87 37 86 104" fill="none" stroke="#8ce7f2" stroke-width="7" stroke-linecap="round"/>
+          <rect x="70" y="139" width="39" height="77" rx="18" fill="url(#earBlue)" stroke="#2866aa" stroke-width="5"/>
+          <rect x="251" y="139" width="39" height="77" rx="18" fill="url(#earBlue)" stroke="#2866aa" stroke-width="5"/>
+          <circle cx="90" cy="177" r="10" fill="#baf6ff"/><circle cx="270" cy="177" r="10" fill="#baf6ff"/>
+          <!-- body -->
+          <path d="M93 230c0-44 35-72 87-72s87 28 87 72v65c0 23-19 41-42 41h-90c-23 0-42-18-42-41z" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="5"/>
+          <path d="M130 255c-29-12-47 3-43 27 4 22 27 33 50 20" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="4"/>
+          <path d="M230 255c29-12 47 3 43 27-4 22-27 33-50 20" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="4"/>
+          <!-- head -->
+          <path d="M91 120c0-52 39-89 89-89s89 37 89 89v58c0 48-39 80-89 80s-89-32-89-80z" fill="url(#botHead)" stroke="#cbdfff" stroke-width="5"/>
+          <ellipse cx="144" cy="147" rx="12" ry="16" fill="#263b66"/><ellipse cx="216" cy="147" rx="12" ry="16" fill="#263b66"/>
+          <circle cx="148" cy="141" r="4" fill="#fff"/><circle cx="220" cy="141" r="4" fill="#fff"/>
+          <ellipse cx="119" cy="177" rx="13" ry="7" fill="#ff9eb2" opacity=".5"/><ellipse cx="241" cy="177" rx="13" ry="7" fill="#ff9eb2" opacity=".5"/>
+          <path d="M160 182q20 20 40 0" fill="none" stroke="#52719e" stroke-width="5" stroke-linecap="round"/>
+          <!-- silly antenna -->
+          <path d="M180 29v-12" stroke="#4a79b7" stroke-width="5" stroke-linecap="round"/><circle cx="180" cy="12" r="9" fill="#ffd45e" stroke="#f3a936" stroke-width="3"/>
+          <!-- controller -->
+          <path d="M126 267c-4-14 7-27 22-27h64c15 0 26 13 22 27l-8 28c-3 11-16 15-24 7l-17-15h-10l-17 15c-8 8-21 4-24-7z" fill="url(#pad)" stroke="#203d70" stroke-width="5"/>
+          <path d="M151 258v20M141 268h20" stroke="#bfeaff" stroke-width="6" stroke-linecap="round"/><circle cx="211" cy="261" r="5" fill="#ffcb55"/><circle cx="224" cy="274" r="5" fill="#ff7f8b"/>
+          <path d="M166 306q14 12 28 0" stroke="#d6e6ff" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="floating-die die-one"><span>5</span></div>
+        <div class="floating-die die-two"><span>3</span></div>
+        <div class="floating-star star-one">✦</div><div class="floating-star star-two">✧</div>
+        <div class="art-caption"><span class="caption-dot"></span> رفیق بازی‌هات آماده‌ست!</div>
+      </div>
+      <div class="hero-bottom-wave" aria-hidden="true"></div>
+    </section>
+
+    <section class="games-section" id="games" aria-labelledby="games-title">
+      <div class="section-heading">
+        <div><span class="section-kicker">وقتشه یه بازی انتخاب کنی</span><h2 id="games-title">کدوم بازی رو بریم؟</h2></div>
+        <p>هر بازی، یه بهونه برای کلی خنده!</p>
+      </div>
+      <div id="games-list" class="games-grid" aria-live="polite">
+        <div class="loading-card"><span class="loader"></span><p>داریم بازی‌ها رو می‌چینیم...</p></div>
+      </div>
+    </section>
+
+    <section class="invite-strip" id="about">
+      <div class="invite-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 27c0-10 8-18 18-18h4c10 0 18 8 18 18v4c0 10-8 18-18 18h-4c-10 0-18-8-18-18z"/><path d="M22 27h.1M42 27h.1M25 37q7 7 14 0"/><path d="M24 47l-4 9 14-7"/></svg></div>
+      <div><h2>دوستات رو خبر کن!</h2><p>دوربازی با جمع شما قشنگ‌تره؛ یه اتاق بساز و همه رو دعوت کن.</p></div>
+      <a href="#games" class="invite-link">انتخاب بازی <span aria-hidden="true">←</span></a>
+    </section>
+
+    <footer class="footer"><span>دوربازی</span><span>ساخته شده برای دورهمی‌های به‌یادموندنی</span></footer>
+  </main>
   <script src="lobby.js"></script>
 </body>
 </html>
