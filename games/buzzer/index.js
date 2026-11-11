@@ -12,6 +12,7 @@ const VALUES = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
 const WRONG_PENALTY = 0.5;          // برای حذف جریمه صفر بگذارید
 const HOST_GRACE_MS = 60 * 1000;    // مهلت بازگشت مجری قبل از بسته شدن اتاق
 
+const ANSWER_MS = 10000;           // مهلت جواب دادن بعد از زدن بازر
 const rooms = new Map();
 const CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -47,13 +48,13 @@ function init(arg) {
     code: r.code,
     phase: r.phase,            // idle | open | answering
     active: r.active,
-    hostOnline: r.hostOnline,
+    hostOnline: r.hostOnline, over: !!r.over, dl: r.deadline ? Math.max(0, r.deadline - Date.now()) : null,
     q: r.q ? { text: r.q.text, options: r.q.options } : null,
     reveal: r.reveal,
     queue: r.queue.map((t) => idOf(r, t)),
     tried: [...r.attempted].map((t) => idOf(r, t)),
     used: [...r.used],
-    players: [...r.players.values()].map((p) => ({ id: p.id, name: p.name, score: p.score, online: p.online, bz: p.bz })),
+    players: [...r.players.values()].map((p) => ({ id: p.id, name: p.name, score: p.score, online: p.online, bz: p.bz, rt: p.rt ?? null, ok: p.ok || 0, best: p.best ?? null })),
   });
 
   const push = (r) => {
@@ -65,12 +66,44 @@ function init(arg) {
   const closeQuestion = (r, by = null) => {
     if (r.q) r.reveal = { answer: r.q.answer, fact: r.q.fact, by: by ? idOf(r, by) : null };
     r.phase = 'idle'; r.active = null; r.queue = []; r.attempted.clear();
+    clearTimeout(r.ansTimer); r.deadline = null;
+    if (r.used.size === VALUES.length) r.over = true;
   };
 
   const closeRoom = (r) => {
     clearTimeout(r.closeTimer);
+    clearTimeout(r.ansTimer);
     nsp.to(r.code).emit('closed');
     rooms.delete(r.code);
+  };
+
+  const startTimer = (r) => {
+    clearTimeout(r.ansTimer); r.deadline = null;
+    if (r.phase === 'answering' && r.queue.length) {
+      r.deadline = Date.now() + ANSWER_MS;
+      r.ansTimer = setTimeout(() => { judge(r, false); push(r); }, ANSWER_MS);
+    }
+  };
+
+  const judge = (r, correct) => {
+    const t = r.queue[0];
+    const pl = r.players.get(t);
+    if (!pl) return;
+    const delta = correct ? r.active : -r.active * WRONG_PENALTY;
+    pl.score += delta;
+    nsp.to(r.code).emit('judged', { id: pl.id, correct, delta });
+    if (correct) {
+      pl.ok = (pl.ok || 0) + 1;
+      closeQuestion(r, t);
+    } else {
+      r.attempted.add(t);
+      r.queue.shift();
+      if (r.queue.length === 0) {
+        const everyone = [...r.players.keys()].every((k) => r.attempted.has(k));
+        if (everyone) closeQuestion(r); else r.phase = 'open';
+      }
+      startTimer(r);
+    }
   };
 
   nsp.on('connection', (socket) => {
@@ -85,7 +118,7 @@ function init(arg) {
       if (!p.token) return ack?.({ ok: false });
       const r = {
         code: newCode(), hostToken: p.token, hostSid: socket.id, hostOnline: true, closeTimer: null,
-        phase: 'idle', active: null, q: null, reveal: null,
+        phase: 'idle', active: null, q: null, reveal: null, over: false, deadline: null, ansTimer: null, openedAt: 0,
         queue: [], attempted: new Set(), used: new Set(),
         players: new Map(), nextId: 1, touched: Date.now(),
       };
@@ -148,6 +181,7 @@ function init(arg) {
         r.queue = r.queue.filter((x) => x !== t);
         r.attempted.delete(t);
         if (r.phase === 'answering' && r.queue.length === 0) r.phase = 'open';
+        startTimer(r);
         push(r);
       }
       socket.leave(r.code);
@@ -160,8 +194,12 @@ function init(arg) {
       if (!r || socket.data.role !== 'player') return;
       const t = socket.data.token;
       if (r.phase === 'idle' || r.attempted.has(t) || r.queue.includes(t)) return;
+      const bp = r.players.get(t);
+      bp.rt = Date.now() - r.openedAt;
+      if (bp.best == null || bp.rt < bp.best) bp.best = bp.rt;
       r.queue.push(t);
       r.phase = 'answering';
+      if (r.queue.length === 1) startTimer(r);
       push(r);
     });
 
@@ -176,6 +214,8 @@ function init(arg) {
       if (!q) return ack?.({ ok: false, error: 'برای این ارزش سوالی تعریف نشده' });
 
       r.used.add(value);
+      r.openedAt = Date.now();
+      r.players.forEach((p) => { p.rt = null; });
       r.active = value; r.queue = []; r.attempted.clear();
       r.q = q;
       r.reveal = null;
@@ -187,20 +227,17 @@ function init(arg) {
     socket.on('host:judge', ({ correct } = {}) => {
       const r = room();
       if (!isHost(r) || r.phase !== 'answering' || !r.queue.length) return;
-      const t = r.queue[0];
-      const pl = r.players.get(t);
-      if (correct) {
-        pl.score += r.active;
-        closeQuestion(r, t);
-      } else {
-        pl.score -= r.active * WRONG_PENALTY;
-        r.attempted.add(t);
-        r.queue.shift();
-        if (r.queue.length === 0) {
-          const everyone = [...r.players.keys()].every((k) => r.attempted.has(k));
-          if (everyone) closeQuestion(r); else r.phase = 'open';
-        }
-      }
+      judge(r, !!correct);
+      push(r);
+    });
+
+    socket.on('host:rematch', () => {
+      const r = room();
+      if (!isHost(r)) return;
+      clearTimeout(r.ansTimer); r.deadline = null;
+      r.used.clear(); r.q = null; r.reveal = null; r.over = false;
+      r.phase = 'idle'; r.active = null; r.queue = []; r.attempted.clear();
+      r.players.forEach((p) => { p.score = 0; p.ok = 0; p.best = null; p.rt = null; });
       push(r);
     });
 

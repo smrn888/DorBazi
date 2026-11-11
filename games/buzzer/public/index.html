@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <title>مسابقه با بازر</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
 *{box-sizing:border-box;margin:0}
 body{font-family:Vazirmatn,Tahoma,sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:16px;-webkit-user-select:none;user-select:none}
@@ -71,6 +72,30 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 .opt.dim{opacity:.45}
 .fact{margin-top:12px;padding:10px;border-radius:12px;background:#0f172a;border:1px dashed #38bdf8;line-height:1.9;font-size:.95rem}
 .res{text-align:center;margin-top:10px;font-weight:700}
+
+body{background:radial-gradient(120% 80% at 50% -10%,#1e3a5f,#0b1020 60%) fixed}
+h1{font-weight:900}
+.card{background:rgba(30,41,59,.62);backdrop-filter:blur(10px);border-color:rgba(148,163,184,.22)}
+.row{position:relative;transition:background 1s}
+.row.bump{background:rgba(250,204,21,.18)}
+.row b{font-size:1.2rem;font-variant-numeric:tabular-nums}
+.float{position:absolute;inset-inline-start:45%;top:-2px;font-weight:900;font-size:1.5rem;pointer-events:none;animation:fl 1.3s ease-out forwards}
+.float.up{color:#4ade80}.float.dn{color:#f87171}
+@keyframes fl{to{transform:translateY(-34px);opacity:0}}
+body.shake .wrap{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.timer{height:10px;border-radius:8px;background:#334155;overflow:hidden;margin:4px 0 8px}
+.timer i{display:block;height:100%;width:100%;background:#38bdf8}
+.timer i.low{background:#ef4444;animation:pulse .3s ease-in-out infinite alternate}
+.cf{position:fixed;top:-14px;width:9px;height:14px;z-index:40;pointer-events:none;animation:cf 1.9s ease-in forwards}
+@keyframes cf{to{transform:translate(var(--dx),108vh) rotate(720deg)}}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:18px 0}
+.pod{flex:1;text-align:center;padding:10px 4px;border-radius:14px 14px 0 0;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 26%,#1e293b);animation:rise .8s cubic-bezier(.2,1.3,.4,1) backwards}
+.pod .pm{font-size:2rem}.pod b{display:block;font-size:1.4rem}
+.p1{min-height:180px;animation-delay:.9s}.p2{min-height:135px;animation-delay:.45s}.p3{min-height:100px}
+@keyframes rise{from{transform:translateY(60px);opacity:0}}
+.award{padding:8px 0;border-bottom:1px solid #334155}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
 </style>
 </head>
 <body>
@@ -98,11 +123,11 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
   </div>
 
   <div id="host" class="hide">
-    <div class="card"><div>کد اتاق را به بازیکن‌ها بدهید:</div><div id="hCode" class="code"></div></div>
+    <div class="card"><div>کد اتاق را به بازیکن‌ها بدهید:</div><div id="hCode" class="code"></div><button id="copyBtn" class="sec">📋 کپی لینک ورود</button></div>
     <div class="card"><div id="board" class="board"></div></div>
     <div id="hQ" class="card hide"></div>
     <div class="card">
-      <div id="hStatus" class="status"></div>
+      <div class="timer hide"><i></i></div><div id="hStatus" class="status"></div>
       <div id="hQueue"></div>
       <div class="btns">
         <button id="okBtn" class="ok">✓ درست</button>
@@ -114,10 +139,16 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
     <button class="sec leaveBtn">🚪 بستن اتاق و خروج</button>
   </div>
 
+  <div id="over" class="hide">
+    <div class="card"><h2 style="text-align:center">🏆 پایان بازی</h2><div id="podium" class="podium"></div><div id="awards"></div></div>
+    <button id="rematchBtn" class="hide">🔁 دور دوباره</button>
+    <button class="sec leaveBtn">🚪 خروج</button>
+  </div>
+
   <div id="player" class="hide">
     <div id="offline" class="card warn hide">⚠️ ارتباط مجری قطع شده است. اگر برنگردد اتاق بسته می‌شود.</div>
     <div id="pQ" class="card hide"></div>
-    <div id="pStatus" class="status"></div>
+    <div id="pStatus" class="status"></div><div class="timer hide"><i></i></div>
     <div id="buzzWrap" class="bz-wrap">
       <button id="buzz"><span class="beam"></span><span class="lbl">بزن!</span></button>
     </div>
@@ -144,6 +175,7 @@ const sock = io('/buzzer');
 const $ = (id) => document.getElementById(id);
 const VALUES = [100,200,300,400,500,600,700,800,900,1000];
 const BUZZ_SECONDS = 4.5;
+const ANSWER_MS = 10000;
 const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
 /* ---------- بازرها: رنگ و شکل ---------- */
@@ -274,7 +306,7 @@ let hostInfo = null;
 let introRunning = false;
 
 const show = (n) => {
-  ['join','host','player','intro'].forEach((x) => $(x).classList.toggle('hide', x !== n));
+  ['join','host','player','intro','over'].forEach((x) => $(x).classList.toggle('hide', x !== n));
   $('bar').classList.toggle('hide', n === 'join');
   if (n !== 'player') document.body.classList.remove('alarm');
 };
@@ -401,7 +433,21 @@ const pl = (id) => st.players.find((p) => p.id === id) || {};
 
 function renderScores(box) {
   const sorted = [...st.players].sort((a, b) => b.score - a.score);
-  box.replaceChildren(...sorted.map((p) => row((p.online ? '' : '⚪ ') + p.name, p.score, '', p.bz)));
+  const before = new Map([...box.children].map((r) => [r.dataset.id, r.getBoundingClientRect().top]));
+  box.replaceChildren(...sorted.map((p) => {
+    const r = row((p.online ? '' : '⚪ ') + p.name, '', '', p.bz);
+    r.dataset.id = p.id;
+    const b = document.createElement('b'); r.lastChild.append(b);
+    const from = shown[p.id] ?? p.score; shown[p.id] = p.score;
+    countTo(b, from, p.score);
+    if (from !== p.score) { r.classList.add('bump'); setTimeout(() => r.classList.remove('bump'), 1200); }
+    return r;
+  }));
+  [...box.children].forEach((r) => {
+    const o = before.get(r.dataset.id); if (o == null) return;
+    const d = o - r.getBoundingClientRect().top;
+    if (d) r.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2,.9,.3,1)' });
+  });
 }
 
 function renderQ(box, isHost) {
@@ -443,6 +489,13 @@ function renderQ(box, isHost) {
 
 function render() {
   if (!st || !me) return;
+  if (st.over) {
+    if (!overShown) { overShown = true; setTimeout(() => { if (st && st.over && !introRunning) { show('over'); confetti(70); } }, 4500); }
+  } else {
+    overShown = false;
+    if (!$('over').classList.contains('hide')) show(me.role);
+  }
+  if (!$('over').classList.contains('hide')) renderOver();
   if (me.role === 'host') {
     $('hCode').textContent = st.code;
     document.querySelectorAll('#board button').forEach((b) => {
@@ -453,7 +506,7 @@ function render() {
       : st.phase === 'open' ? `سوال ${st.active} امتیازی باز است؛ منتظر بازر`
       : `سوال ${st.active} امتیازی؛ جواب‌دهنده: ${pl(st.queue[0]).name || '؟'}`;
     $('hQueue').replaceChildren(...st.queue.map((id, i) =>
-      row(`${i + 1}. ${pl(id).name || '؟'}`, '', i === 0 ? 'first' : '', pl(id).bz)));
+      row(`${i + 1}. ${pl(id).name || '؟'}`, pl(id).rt != null ? sec(pl(id).rt) : '', i === 0 ? 'first' : '', pl(id).bz)));
     $('okBtn').disabled = $('noBtn').disabled = st.phase !== 'answering';
     $('skipBtn').disabled = st.phase === 'idle';
     renderQ($('hQ'), true);
@@ -467,7 +520,7 @@ function render() {
     const tried = st.tried.includes(me.id);
     let txt;
     if (st.phase === 'idle') txt = 'منتظر سوال بعدی...';
-    else if (idx === 0) txt = 'نوبت توست! جواب بده 🎤';
+    else if (idx === 0) txt = 'نوبت توست! جواب بده 🎤' + (pl(me.id).rt != null ? ' — ' + sec(pl(me.id).rt) : '');
     else if (idx > 0) txt = `تو نفر ${idx + 1} صف هستی`;
     else if (tried) txt = 'جواب تو غلط بود';
     else if (st.queue.length) txt = `${pl(st.queue[0]).name || '؟'} در حال جواب دادن است`;
@@ -487,8 +540,85 @@ function render() {
   }
 }
 
+/* ---------- جلوه‌ها ---------- */
+let overShown = false;
+const shown = {};
+const sec = (ms) => (ms / 1000).toFixed(2) + ' ثانیه';
+function countTo(el, from, to) {
+  if (from === to) { el.textContent = to; return; }
+  const t0 = performance.now();
+  const f = (t) => { const k = Math.min(1, (t - t0) / 600); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(f); };
+  requestAnimationFrame(f);
+}
+function confetti(n = 36) {
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('i'); c.className = 'cf';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = BZ[Math.floor(Math.random() * 10)].color;
+    c.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
+    c.style.animationDelay = Math.random() * .4 + 's';
+    document.body.append(c); setTimeout(() => c.remove(), 2500);
+  }
+}
+function sfx(ok) {
+  if (ok) [523, 659, 784, 1047, 1319].forEach((f, k) => tone(f, k * .08, .5, 'triangle', .2));
+  else { tone(220, 0, .55, 'sawtooth', .14, 90); tone(165, .12, .5, 'square', .08, 70); }
+}
+function runTimer() {
+  document.querySelectorAll('.timer').forEach((t) => {
+    clearTimeout(t._lt);
+    const i = t.firstChild, on = st && st.dl != null && st.phase === 'answering';
+    t.classList.toggle('hide', !on); if (!on) return;
+    i.classList.remove('low'); i.style.transition = 'none';
+    i.style.width = (st.dl / ANSWER_MS * 100) + '%'; void i.offsetWidth;
+    i.style.transition = `width ${st.dl}ms linear`; i.style.width = '0%';
+    t._lt = setTimeout(() => i.classList.add('low'), Math.max(0, st.dl - 3000));
+  });
+}
+sock.on('judged', ({ id, correct, delta }) => {
+  if (!me) return;
+  const r = document.querySelector(`.row[data-id="${id}"]`);
+  if (r) {
+    const f = document.createElement('span');
+    f.className = 'float ' + (correct ? 'up' : 'dn');
+    f.textContent = (delta > 0 ? '+' : '') + delta;
+    r.append(f); setTimeout(() => f.remove(), 1300);
+  }
+  sfx(correct);
+  if (correct) { confetti(); setTimeout(() => navigator.vibrate && navigator.vibrate([80, 40, 80]), 80); }
+  else { document.body.classList.add('shake'); setTimeout(() => document.body.classList.remove('shake'), 500); }
+});
+function renderOver() {
+  const s = [...st.players].sort((a, b) => b.score - a.score);
+  $('podium').replaceChildren(...[1, 0, 2].filter((i) => s[i]).map((i) => {
+    const d = document.createElement('div'); d.className = 'pod p' + (i + 1); colorize(d, s[i].bz);
+    const m = document.createElement('div'); m.className = 'pm'; m.textContent = ['🥇', '🥈', '🥉'][i];
+    const n = document.createElement('div'); n.append(badge(s[i].bz), s[i].name);
+    const sc = document.createElement('b'); sc.textContent = s[i].score;
+    d.append(m, n, sc); return d;
+  }));
+  const fast = s.filter((p) => p.best != null).sort((a, b) => a.best - b.best)[0];
+  const most = [...s].sort((a, b) => b.ok - a.ok)[0];
+  const lines = [];
+  if (fast) lines.push(`⚡ سریع‌ترین انگشت: ${fast.name} (${sec(fast.best)})`);
+  if (most && most.ok) lines.push(`🎯 بیشترین جواب درست: ${most.name} (${most.ok})`);
+  $('awards').replaceChildren(...lines.map((t) => { const d = document.createElement('div'); d.className = 'award'; d.textContent = t; return d; }));
+  $('rematchBtn').classList.toggle('hide', me.role !== 'host');
+}
+$('rematchBtn').onclick = () => sock.emit('host:rematch');
+$('copyBtn').onclick = () => {
+  const link = location.origin + location.pathname + '?code=' + st.code;
+  (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(
+    () => { $('copyBtn').textContent = '✅ کپی شد'; setTimeout(() => { $('copyBtn').textContent = '📋 کپی لینک ورود'; }, 1500); },
+    () => prompt('لینک ورود:', link));
+};
+const qp = new URLSearchParams(location.search);
+if (qp.get('code')) $('inCode').value = qp.get('code').toUpperCase().slice(0, 4);
+$('inName').value = localStorage.getItem('bz_name') || '';
+$('joinBtn').addEventListener('click', () => localStorage.setItem('bz_name', $('inName').value));
+
 sock.on('hostinfo', (h) => { hostInfo = h; render(); });
-sock.on('state', (s) => { st = s; render(); });
+sock.on('state', (s) => { st = s; render(); runTimer(); });
 </script>
 </body>
 </html>
