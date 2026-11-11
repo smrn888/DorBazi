@@ -1,0 +1,187 @@
+const BANK = require('./questions');
+
+const meta = {
+  id: 'buzzer',
+  title: 'مسابقه با بازر',
+  description: 'سریع‌ترین انگشت جواب می‌دهد',
+  icon: '🔔',
+  minPlayers: 2,
+};
+
+const VALUES = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+const WRONG_PENALTY = 0.5; // برای حذف جریمه صفر بگذارید
+
+const rooms = new Map();
+const CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+function newCode() {
+  let s;
+  do { s = Array.from({ length: 4 }, () => CH[Math.floor(Math.random() * CH.length)]).join(''); }
+  while (rooms.has(s));
+  return s;
+}
+const clean = (s) => String(s || '').trim().slice(0, 20);
+const shuffle = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+
+function pickQuestion(value) {
+  const list = BANK[value] || [];
+  if (!list.length) return null;
+  const src = list[Math.floor(Math.random() * list.length)];
+  const options = shuffle(src.o);
+  return { text: src.q, options, answer: options.indexOf(src.o[0]), fact: src.f };
+}
+
+function init(arg) {
+  const nsp = arg.nsp || arg;
+
+  setInterval(() => {
+    const now = Date.now();
+    for (const [k, r] of rooms) if (now - r.touched > 2 * 3600e3) rooms.delete(k);
+  }, 10 * 60e3).unref();
+
+  const idOf = (r, t) => r.players.get(t)?.id;
+
+  // نمای عمومی: هرگز شامل answer یا fact قبل از افشا نیست
+  const view = (r) => ({
+    code: r.code,
+    phase: r.phase,            // idle | open | answering
+    active: r.active,
+    q: r.q ? { text: r.q.text, options: r.q.options } : null,
+    reveal: r.reveal,          // null تا پایان سوال، بعد { answer, fact, by }
+    queue: r.queue.map((t) => idOf(r, t)),
+    tried: [...r.attempted].map((t) => idOf(r, t)),
+    used: [...r.used],
+    players: [...r.players.values()].map((p) => ({ id: p.id, name: p.name, score: p.score, online: p.online, bz: p.bz })),
+  });
+
+  const push = (r) => {
+    nsp.to(r.code).emit('state', view(r));
+    // پاسخ و توضیح فقط برای مجری
+    nsp.to(r.code + ':host').emit('hostinfo',
+      r.q && !r.reveal ? { answer: r.q.answer, fact: r.q.fact } : null);
+  };
+
+  const closeQuestion = (r, by = null) => {
+    if (r.q) r.reveal = { answer: r.q.answer, fact: r.q.fact, by: by ? idOf(r, by) : null };
+    r.phase = 'idle'; r.active = null; r.queue = []; r.attempted.clear();
+  };
+
+  nsp.on('connection', (socket) => {
+    const room = () => {
+      const r = rooms.get(socket.data?.code);
+      if (r) r.touched = Date.now();
+      return r;
+    };
+    const isHost = (r) => r && socket.data.role === 'host' && socket.data.token === r.hostToken;
+
+    socket.on('host:create', (p = {}, ack) => {
+      if (!p.token) return ack?.({ ok: false });
+      const r = {
+        code: newCode(), hostToken: p.token, phase: 'idle', active: null,
+        q: null, reveal: null,
+        queue: [], attempted: new Set(), used: new Set(),
+        players: new Map(), nextId: 1, touched: Date.now(),
+      };
+      rooms.set(r.code, r);
+      socket.data = { code: r.code, token: p.token, role: 'host' };
+      socket.join(r.code);
+      socket.join(r.code + ':host');
+      ack?.({ ok: true, code: r.code });
+      push(r);
+    });
+
+    socket.on('player:join', (p = {}, ack) => {
+      const r = rooms.get(String(p.code || '').toUpperCase());
+      if (!r) return ack?.({ ok: false, error: 'اتاق پیدا نشد' });
+      const name = clean(p.name);
+      if (!name || !p.token) return ack?.({ ok: false, error: 'نام را وارد کنید' });
+      let pl = r.players.get(p.token);
+      if (!pl) {
+        const usedBz = new Set([...r.players.values()].map((x) => x.bz));
+        let bz = 0;
+        while (usedBz.has(bz) && bz < 10) bz++;
+        if (bz >= 10) bz = r.players.size % 10;
+        pl = { token: p.token, id: 'p' + r.nextId++, name, score: 0, bz };
+        r.players.set(p.token, pl);
+      }
+      pl.name = name; pl.online = true; pl.sid = socket.id;
+      socket.data = { code: r.code, token: p.token, role: 'player' };
+      socket.join(r.code);
+      ack?.({ ok: true, code: r.code, id: pl.id, bz: pl.bz });
+      push(r);
+    });
+
+    socket.on('resume', (p = {}, ack) => {
+      const r = rooms.get(String(p.code || '').toUpperCase());
+      if (!r) return ack?.({ ok: false });
+      if (p.token === r.hostToken) {
+        socket.data = { code: r.code, token: p.token, role: 'host' };
+        socket.join(r.code + ':host');
+      } else if (r.players.has(p.token)) {
+        const pl = r.players.get(p.token);
+        pl.online = true; pl.sid = socket.id;
+        socket.data = { code: r.code, token: p.token, role: 'player' };
+      } else return ack?.({ ok: false });
+      socket.join(r.code);
+      ack?.({ ok: true, id: idOf(r, p.token), bz: r.players.get(p.token)?.bz });
+      push(r);
+    });
+
+    socket.on('player:buzz', () => {
+      const r = room();
+      if (!r || socket.data.role !== 'player') return;
+      const t = socket.data.token;
+      if (r.phase === 'idle' || r.attempted.has(t) || r.queue.includes(t)) return;
+      r.queue.push(t);
+      r.phase = 'answering';
+      push(r);
+    });
+
+    socket.on('host:activate', ({ value } = {}) => {
+      const r = room();
+      if (!isHost(r) || r.phase !== 'idle') return;
+      if (!VALUES.includes(value) || r.used.has(value)) return;
+      r.used.add(value);
+      r.active = value; r.queue = []; r.attempted.clear();
+      r.q = pickQuestion(value);
+      r.reveal = null;
+      r.phase = 'open';
+      push(r);
+    });
+
+    socket.on('host:judge', ({ correct } = {}) => {
+      const r = room();
+      if (!isHost(r) || r.phase !== 'answering' || !r.queue.length) return;
+      const t = r.queue[0];
+      const pl = r.players.get(t);
+      if (correct) {
+        pl.score += r.active;
+        closeQuestion(r, t);
+      } else {
+        pl.score -= r.active * WRONG_PENALTY;
+        r.attempted.add(t);
+        r.queue.shift();
+        if (r.queue.length === 0) {
+          const everyone = [...r.players.keys()].every((k) => r.attempted.has(k));
+          if (everyone) closeQuestion(r); else r.phase = 'open';
+        }
+      }
+      push(r);
+    });
+
+    socket.on('host:skip', () => {
+      const r = room();
+      if (!isHost(r) || r.phase === 'idle') return;
+      closeQuestion(r);
+      push(r);
+    });
+
+    socket.on('disconnect', () => {
+      const r = rooms.get(socket.data?.code);
+      const pl = r?.players.get(socket.data.token);
+      if (pl && pl.sid === socket.id) { pl.online = false; push(r); }
+    });
+  });
+}
+
+module.exports = { meta, init };

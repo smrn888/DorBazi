@@ -1,0 +1,24 @@
+* { box-sizing: border-box; margin: 0; }
+body {
+  font-family: Vazirmatn, Tahoma, sans-serif;
+  background: #0f172a; color: #f1f5f9;
+  min-height: 100vh; padding: 24px 16px;
+}
+header { text-align: center; margin-bottom: 28px; }
+header h1 { font-size: 2rem; }
+header p { color: #94a3b8; margin-top: 6px; }
+.grid {
+  display: grid; gap: 16px; max-width: 900px; margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.card {
+  display: block; text-decoration: none; color: inherit;
+  background: #1e293b; border-radius: 16px; padding: 22px;
+  border: 1px solid #334155; transition: transform .15s, border-color .15s;
+}
+.card:hover, .card:focus-visible { transform: translateY(-3px); border-color: #38bdf8; }
+.icon { font-size: 2.4rem; margin-bottom: 8px; }
+.card h2 { font-size: 1.25rem; margin-bottom: 6px; }
+.card p { color: #94a3b8; font-size: .9rem; line-height: 1.7; }
+.card span { display: inline-block; margin-top: 12px; font-size: .8rem; color: #38bdf8; }
+.msg { text-align: center; color: #94a3b8; grid-column: 1 / -1; }

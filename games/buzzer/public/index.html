@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>مسابقه با بازر</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:#0f172a;color:#f1f5f9;min-height:100vh;padding:16px;-webkit-user-select:none;user-select:none}
+.wrap{max-width:720px;margin:0 auto}
+h1{text-align:center;margin-bottom:16px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:16px;margin-bottom:12px}
+input,button{font:inherit;border-radius:12px;border:1px solid #334155;padding:12px;width:100%;margin-top:8px}
+input{background:#0f172a;color:#f1f5f9;text-align:center;-webkit-user-select:text;user-select:text}
+button{background:#38bdf8;color:#0f172a;font-weight:700;border:0;cursor:pointer}
+button.sec{background:#334155;color:#f1f5f9}
+button.ok{background:#22c55e}
+button.no{background:#ef4444;color:#fff}
+button:disabled{opacity:.35;cursor:not-allowed}
+.hide{display:none!important}
+.code{font-size:2.4rem;letter-spacing:.3em;text-align:center;direction:ltr;color:#38bdf8}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.board button{margin:0;padding:18px 0;font-size:1.1rem}
+.row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #334155}
+.row.first{color:#4ade80;font-weight:700}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.btns button{margin:0}
+.status{text-align:center;font-size:1.2rem;min-height:2em}
+.err{color:#f87171;text-align:center;margin-top:8px}
+
+/* نوار بالا و دکمه صدا */
+#bar{position:fixed;top:10px;left:10px;z-index:30}
+#mute{width:46px;height:46px;border-radius:50%;padding:0;margin:0;font-size:1.3rem;background:#1e293b;border:1px solid #475569;color:#fff}
+
+/* نشان رنگی بازر کنار اسم‌ها */
+.badge{display:inline-block;width:18px;height:18px;vertical-align:middle;margin-inline-end:8px;background:var(--c)}
+
+/* بازر بازیکن */
+.bz-wrap{width:min(78vw,320px);height:min(78vw,320px);margin:16px auto;filter:drop-shadow(0 0 18px var(--c,#38bdf8))}
+#buzz{position:relative;overflow:hidden;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;font-size:2rem;color:#fff;
+  background:linear-gradient(160deg,rgba(255,255,255,.4),transparent 55%),var(--c,#ef4444);touch-action:manipulation}
+#buzz .lbl{position:relative;z-index:1;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+#buzz .beam{position:absolute;inset:-60%;opacity:0;
+  background:conic-gradient(from 0deg,transparent 0 72%,rgba(255,255,255,.95) 88%,transparent 100%)}
+#buzz.lit .beam{opacity:1;animation:spin .7s linear infinite}
+#buzz.lit{animation:pulse .45s ease-in-out infinite alternate}
+#buzz.off{filter:grayscale(.9) brightness(.55)}
+#buzz:disabled{opacity:1}
+#buzz:active:not(:disabled){transform:scale(.96)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{from{filter:brightness(1)}to{filter:brightness(1.5)}}
+
+/* چشمک آژیر تمام‌صفحه */
+#flash{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:5;
+  background:radial-gradient(circle at center,transparent 35%,var(--c,#f00) 150%)}
+body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
+@keyframes siren{from{opacity:.1}to{opacity:.75}}
+
+/* اینترو */
+#intro{position:fixed;inset:0;z-index:20;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--c,#38bdf8) 40%,#0f172a),#020617 70%)}
+#intro::before{content:"";position:absolute;inset:-50%;
+  background:repeating-conic-gradient(rgba(255,255,255,.07) 0 8deg,transparent 8deg 16deg);animation:spin 20s linear infinite}
+#intro .stage{position:relative;padding:20px;width:100%;max-width:420px}
+#introTitle{font-size:1.3rem;min-height:1.6em}
+#introWrap{width:min(60vw,240px);height:min(60vw,240px)}
+#introWrap.pop{animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+#introShape{width:100%;height:100%;background:linear-gradient(160deg,rgba(255,255,255,.4),transparent 55%),var(--c)}
+#introName{font-size:1.8rem;font-weight:800;min-height:2.4em;color:var(--c)}
+@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.qtext{font-size:1.25rem;font-weight:700;line-height:1.9;margin-bottom:10px;text-align:center}
+.opt{padding:12px;border:2px solid #334155;border-radius:12px;margin-top:8px;background:#0f172a}
+.opt.right{border-color:#22c55e;background:#14532d}
+.opt.dim{opacity:.45}
+.fact{margin-top:12px;padding:10px;border-radius:12px;background:#0f172a;border:1px dashed #38bdf8;line-height:1.9;font-size:.95rem}
+.res{text-align:center;margin-top:10px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="flash"></div>
+<div id="bar" class="hide"><button id="mute" title="صدا">🔊</button></div>
+
+<div class="wrap">
+  <h1>🔔 مسابقه با بازر</h1>
+
+  <div id="join" class="hide">
+    <div class="card">
+      <h3>بازیکن هستم</h3>
+      <input id="inName" placeholder="نام شما" maxlength="20">
+      <input id="inCode" placeholder="کد اتاق" maxlength="4" style="text-transform:uppercase;direction:ltr">
+      <button id="joinBtn">ورود</button>
+      <div id="err" class="err"></div>
+    </div>
+    <div class="card">
+      <h3>مجری هستم</h3>
+      <button id="createBtn" class="sec">ساخت اتاق جدید</button>
+    </div>
+  </div>
+
+  <div id="host" class="hide">
+    <div class="card"><div>کد اتاق را به بازیکن‌ها بدهید:</div><div id="hCode" class="code"></div></div>
+    <div class="card"><div id="board" class="board"></div></div>
+    <div id="hQ" class="card hide"></div>
+    <div class="card">
+      <div id="hStatus" class="status"></div>
+      <div id="hQueue"></div>
+      <div class="btns">
+        <button id="okBtn" class="ok">✓ درست</button>
+        <button id="noBtn" class="no">✗ غلط</button>
+        <button id="skipBtn" class="sec">رد کردن</button>
+      </div>
+    </div>
+    <div class="card"><h3>امتیازها</h3><div id="hScores"></div></div>
+  </div>
+
+  <div id="player" class="hide">
+    <div id="pQ" class="card hide"></div>
+    <div id="pStatus" class="status"></div>
+    <div id="buzzWrap" class="bz-wrap">
+      <button id="buzz"><span class="beam"></span><span class="lbl">بزن!</span></button>
+    </div>
+    <div class="card"><h3>امتیازها</h3><div id="pScores"></div></div>
+  </div>
+</div>
+
+<div id="intro" class="hide">
+  <div class="stage">
+    <div id="introTitle"></div>
+    <div id="introWrap" class="bz-wrap"><div id="introShape"></div></div>
+    <div id="introName"></div>
+    <div id="introBtns" class="hide">
+      <button id="testBtn" class="sec">🔊 صدای بازر را امتحان کن</button>
+      <button id="goBtn">بزن بریم!</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const sock = io('/buzzer');
+const $ = (id) => document.getElementById(id);
+const VALUES = [100,200,300,400,500,600,700,800,900,1000];
+const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+/* ---------- بازرها: رنگ و شکل ---------- */
+const BZ = [
+  { name:'آژیر قرمز',      color:'#ef4444', clip:'circle(50%)' },
+  { name:'زنگ نارنجی',     color:'#f97316', clip:'polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)' },
+  { name:'ستاره طلایی',    color:'#facc15', clip:'polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)' },
+  { name:'الماس سبز',      color:'#22c55e', clip:'polygon(50% 0,100% 50%,50% 100%,0 50%)' },
+  { name:'لیزر فیروزه‌ای', color:'#06b6d4', clip:'polygon(50% 4%,100% 94%,0 94%)' },
+  { name:'ربات آبی',       color:'#3b82f6', clip:'polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)' },
+  { name:'جادوگر بنفش',    color:'#a855f7', clip:'polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)' },
+  { name:'بوق صورتی',      color:'#ec4899', clip:'polygon(0 0,100% 0,100% 60%,50% 100%,0 60%)' },
+  { name:'سیگنال سفید',    color:'#e2e8f0', clip:'polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%)' },
+  { name:'بوم لیمویی',     color:'#a3e635', clip:'inset(0 round 28%)' },
+];
+const colorize = (el, i) => el.style.setProperty('--c', BZ[i % 10].color);
+const shape    = (el, i) => { el.style.clipPath = BZ[i % 10].clip; };
+function badge(i) {
+  const s = document.createElement('span');
+  s.className = 'badge'; colorize(s, i); shape(s, i); return s;
+}
+
+/* ---------- صدا (WebAudio) ---------- */
+let AC = null;
+function ctx() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+let muted = localStorage.getItem('bz_mute') === '1';
+const paintMute = () => { $('mute').textContent = muted ? '🔇' : '🔊'; };
+$('mute').onclick = () => {
+  muted = !muted;
+  localStorage.setItem('bz_mute', muted ? '1' : '0');
+  paintMute();
+  if (!muted) ctx();
+};
+paintMute();
+document.addEventListener('pointerdown', () => { try { ctx(); } catch {} }, { once: true });
+
+function tone(f, t, d, type = 'sine', v, f2) {
+  if (muted) return;
+  const c = ctx(), t0 = c.currentTime + t;
+  const o = c.createOscillator(), g = c.createGain();
+  const vol = v ?? ((type === 'square' || type === 'sawtooth') ? 0.12 : 0.25);
+  o.type = type;
+  o.frequency.setValueAtTime(f, t0);
+  if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + d);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+  o.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0 + d + 0.02);
+}
+
+// [فرکانس، شروع، مدت، نوع موج، فرکانس پایانی]
+const SND = [
+  [[880,0,.18,'square'],[660,.18,.18,'square'],[880,.36,.18,'square'],[660,.54,.18,'square']], // آژیر
+  [[1318,0,.7,'sine'],[1976,0,.5,'sine'],[1318,.25,.7,'sine'],[1976,.25,.5,'sine']],           // زنگ
+  [[523,0,.1,'triangle'],[659,.08,.1,'triangle'],[784,.16,.1,'triangle'],[1047,.24,.35,'triangle']], // ستاره
+  [[1568,0,.12,'sine'],[2093,.1,.4,'sine']],                                                  // پینگ
+  [[1800,0,.45,'sawtooth',200]],                                                              // لیزر
+  [[220,0,.1,'square'],[330,.12,.1,'square'],[220,.24,.1,'square'],[440,.36,.2,'square']],    // ربات
+  [[1200,0,.6,'triangle',400],[1500,.05,.6,'triangle',500]],                                  // جادو
+  [[196,0,.25,'sawtooth'],[247,0,.25,'sawtooth'],[196,.32,.25,'sawtooth'],[247,.32,.25,'sawtooth']], // بوق
+  [[1000,0,.08,'sine'],[1000,.14,.08,'sine'],[1000,.28,.08,'sine']],                          // بیپ
+  [[160,0,.35,'sine',40],[80,0,.35,'sine',30]],                                               // بوم
+];
+const playBuzzer = (i) => SND[i % 10].forEach(([f, t, d, ty, f2]) => tone(f, t, d, ty, undefined, f2));
+
+// موسیقی اینترو
+let musicTimer = null;
+const ARP = [0, 4, 7, 12, 7, 4, 0, 4];
+const ROOTS = [220, 174.6, 196, 164.8];
+function startMusic() {
+  stopMusic();
+  let s = 0;
+  musicTimer = setInterval(() => {
+    const root = ROOTS[(s >> 3) % 4];
+    tone(root * 2 * Math.pow(2, ARP[s % 8] / 12), 0, .14, 'triangle', .07);
+    if (s % 4 === 0) tone(root / 2, 0, .3, 'sine', .12);
+    s++;
+  }, 170);
+}
+function stopMusic() { clearInterval(musicTimer); musicTimer = null; }
+
+/* ---------- وضعیت و اتصال ---------- */
+let token = sessionStorage.getItem('bz_token');
+if (!token) { token = rnd(); sessionStorage.setItem('bz_token', token); }
+let me = JSON.parse(sessionStorage.getItem('bz_me') || 'null');
+let st = null;
+let introRunning = false;
+
+const show = (n) => {
+  ['join','host','player','intro'].forEach((x) => $(x).classList.toggle('hide', x !== n));
+  $('bar').classList.toggle('hide', n !== 'player' && n !== 'intro');
+  if (n !== 'player') document.body.classList.remove('alarm');
+};
+const save = (m) => { me = m; sessionStorage.setItem('bz_me', JSON.stringify(m)); };
+
+sock.on('connect', () => {
+  if (introRunning) return;
+  if (!me) return show('join');
+  sock.emit('resume', { token, code: me.code }, (r) => {
+    if (r && r.ok) { me.id = r.id; show(me.role); render(); }
+    else { sessionStorage.removeItem('bz_me'); me = null; show('join'); }
+  });
+});
+
+$('createBtn').onclick = () => sock.emit('host:create', { token }, (r) => {
+  if (r && r.ok) { save({ role: 'host', code: r.code }); show('host'); }
+});
+$('joinBtn').onclick = () => {
+  try { ctx(); } catch {}  // باز کردن قفل صدا با کلیک کاربر (لازم برای iOS)
+  sock.emit('player:join', { token, code: $('inCode').value, name: $('inName').value }, (r) => {
+    if (!r || !r.ok) { $('err').textContent = (r && r.error) || 'خطا'; return; }
+    save({ role: 'player', code: r.code, id: r.id, bz: r.bz || 0 });
+    runIntro(me.bz);
+  });
+};
+
+/* ---------- اینترو ---------- */
+function runIntro(target) {
+  introRunning = true;
+  show('intro');
+  $('introTitle').textContent = 'در حال انتخاب بازر تو...';
+  $('introName').textContent = '';
+  $('introBtns').classList.add('hide');
+  $('introWrap').classList.remove('pop');
+  startMusic();
+  const n = 20 + target;  // n % 10 === target
+  const step = (k) => {
+    const i = k % 10;
+    colorize($('intro'), i); shape($('introShape'), i);
+    tone(300 + k * 28, 0, .05, 'square', .08);
+    if (k >= n) return reveal(target);
+    setTimeout(() => step(k + 1), 55 + k * k * .22);
+  };
+  step(0);
+}
+function reveal(i) {
+  $('introTitle').textContent = 'بازر تو این است:';
+  $('introName').textContent = BZ[i % 10].name;
+  void $('introWrap').offsetWidth;
+  $('introWrap').classList.add('pop');
+  [523, 659, 784, 1047].forEach((f, k) => tone(f, k * .07, .9, 'triangle', .18));
+  setTimeout(() => playBuzzer(i), 450);
+  $('introBtns').classList.remove('hide');
+}
+$('testBtn').onclick = () => playBuzzer(me.bz || 0);
+$('goBtn').onclick = () => { stopMusic(); introRunning = false; show('player'); render(); };
+
+/* ---------- مجری ---------- */
+VALUES.forEach((v) => {
+  const b = document.createElement('button');
+  b.textContent = v; b.dataset.v = v;
+  b.onclick = () => sock.emit('host:activate', { value: v });
+  $('board').appendChild(b);
+});
+$('okBtn').onclick   = () => sock.emit('host:judge', { correct: true });
+$('noBtn').onclick   = () => sock.emit('host:judge', { correct: false });
+$('skipBtn').onclick = () => sock.emit('host:skip');
+
+/* ---------- بازیکن: زدن بازر ---------- */
+$('buzz').addEventListener('pointerdown', (e) => {
+  if (e.currentTarget.disabled) return;
+  playBuzzer(me.bz || 0);              // فقط روی گوشی خود بازیکن
+  if (navigator.vibrate) navigator.vibrate(30);
+  sock.emit('player:buzz');
+});
+
+/* ---------- نمایش ---------- */
+const row = (a, b, cls, bz) => {
+  const d = document.createElement('div'); d.className = 'row' + (cls ? ' ' + cls : '');
+  const x = document.createElement('span');
+  if (bz != null) x.append(badge(bz));
+  x.append(a);
+  const y = document.createElement('span'); y.textContent = b;
+  d.append(x, y); return d;
+};
+const pl = (id) => st.players.find((p) => p.id === id) || {};
+
+function renderScores(box) {
+  const sorted = [...st.players].sort((a, b) => b.score - a.score);
+  box.replaceChildren(...sorted.map((p) => row((p.online ? '' : '⚪ ') + p.name, p.score, '', p.bz)));
+}
+
+[{
+	"resource": "/C:/Users/Moein/Desktop/Dor Bazi/Codes/DorBazi/games/buzzer/public/index.html",
+	"owner": "_generated_diagnostic_collection_name_#0",
+	"severity": 8,
+	"message": "Cannot redeclare block-scoped variable 'hostInfo'.",
+	"source": "javascript",
+	"startLineNumber": 330,
+	"startColumn": 5,
+	"endLineNumber": 330,
+	"endColumn": 13,
+	"origin": "extHost1"
+}]
+</script>
+</body>
+</html>
