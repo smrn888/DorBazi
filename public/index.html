@@ -2,228 +2,108 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>دوربازی | دنیای بازی‌های گروهی آنلاین</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#59bff5">
+  <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
+  <title>دوربازی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- صحنه سه‌بعدی پس‌زمینه و دکوراسیون -->
-  <div class="scene-decorations">
-    <!-- برگ‌های گوشه بالا و پایین -->
-    <div class="foliage top-left"></div>
-    <div class="foliage bottom-left"></div>
-    <div class="foliage top-right"></div>
-    <div class="foliage bottom-right"></div>
-
-    <!-- تاقچه چوبی و جعبه جادویی سوال -->
-    <div class="shelf-wrapper">
-      <div class="shelf">
-        <div class="shelf-plant plant-1"></div>
-        <div class="shelf-cube">
-          <div class="cube-inner">
-            <span class="cube-question">?</span>
-          </div>
-        </div>
-        <div class="shelf-plant plant-2"></div>
-      </div>
-    </div>
-
-    <!-- تاس‌های سه‌بعدی معلق -->
-    <div class="dice-group">
-      <div class="die die-white-1">
-        <div class="pip p-mid"></div>
-      </div>
-      <div class="die die-white-2">
-        <div class="pip p-tl"></div><div class="pip p-tr"></div>
-        <div class="pip p-mid"></div>
-        <div class="pip p-bl"></div><div class="pip p-br"></div>
-      </div>
-      <div class="die die-red">
-        <div class="pip p-tl"></div><div class="pip p-br"></div>
-      </div>
-    </div>
-
-    <!-- کاراکتر ربات سفید (بای‌مکس گیمر) روی بین‌بگ زرد -->
-    <div class="mascot-container">
-      <div class="floating-heart">
-        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      </div>
-      <div class="beanbag"></div>
-      <div class="bot-body">
-        <div class="bot-head">
-          <div class="headphone-band"></div>
-          <div class="earcup left"></div>
-          <div class="earcup right"></div>
-          <div class="bot-face">
-            <div class="bot-eye left"></div>
-            <div class="eye-bar"></div>
-            <div class="bot-eye right"></div>
-          </div>
-        </div>
-        <div class="bot-hands">
-          <div class="gamepad">
-            <div class="d-pad"></div>
-            <div class="glow-buttons">
-              <i></i><i></i><i></i><i></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="scene-bg">
+    <img class="leaf leaf-left" src="assets/leaf-left.svg" alt="" aria-hidden="true">
+    <img class="leaf leaf-right" src="assets/leaf-right.svg" alt="" aria-hidden="true">
+    <div class="cloud cloud-a" aria-hidden="true"></div>
+    <div class="cloud cloud-b" aria-hidden="true"></div>
+    <div class="cloud cloud-c" aria-hidden="true"></div>
+    <div class="cloud cloud-d" aria-hidden="true"></div>
   </div>
 
-  <!-- بخش اصلی هدر و تایتل ژله‌ای سه‌بعدی -->
-  <main class="main-wrapper">
-    <header class="hero-section">
-      <div class="logo-3d-wrapper">
-        <div class="floating-controller">
-          <div class="sunburst-rays"></div>
-          <svg class="controller-icon" viewBox="0 0 48 48">
-            <rect x="6" y="14" width="36" height="24" rx="12" fill="#243048"/>
-            <path d="M6 24 Q 2 34 10 40 Q 16 42 20 32 L 28 32 Q 32 42 38 40 Q 46 34 42 24 Z" fill="#2f3e5c"/>
-            <circle cx="16" cy="24" r="5" fill="#172033"/>
-            <path d="M16 21v6M13 24h6" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="32" cy="21" r="2.2" fill="#ef4444"/>
-            <circle cx="36" cy="24" r="2.2" fill="#facc15"/>
-            <circle cx="32" cy="27" r="2.2" fill="#38bdf8"/>
-            <circle cx="28" cy="24" r="2.2" fill="#a855f7"/>
-          </svg>
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="brand-mini">
+        <div class="brand-mini-icon">
+          <img src="assets/logo-controller.svg" alt="" aria-hidden="true">
         </div>
-
-        <h1 class="logo-text">دوربازی</h1>
+        <span>دوربازی</span>
       </div>
 
-      <div class="tagline-pill">
-        <div class="pill-icon">
-          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        </div>
-        <span>دنیای بازی‌های گروهی آنلاین</span>
-      </div>
+      <nav class="topnav" aria-label="منوی اصلی">
+        <a href="#games">بازی‌ها</a>
+        <a href="#about">درباره دوربازی</a>
+        <a class="start-btn" href="#games">
+          <span class="start-arrow">←</span>
+          شروع بازی
+        </a>
+      </nav>
     </header>
 
-    <!-- کروسل کارت‌های سه‌بعدی بازی‌ها -->
-    <section class="cards-carousel">
-      <button class="nav-arrow prev" id="prevBtn" aria-label="قبلی">
-        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      </button>
-
-      <div class="cards-track-container">
-        <div class="cards-track" id="cardsTrack">
-
-          <!-- ۱. بمب سوالی -->
-          <a href="/bomb/" class="game-card card-purple" data-index="0">
-            <div class="card-art-box">
-              <div class="fuse-spark"></div>
-              <div class="clay-bomb">
-                <div class="bomb-cap"></div>
-                <div class="bomb-skull">
-                  <div class="skull-eye l"></div><div class="skull-eye r"></div>
-                  <div class="skull-teeth"></div>
-                </div>
-              </div>
-            </div>
-            <h2 class="card-title">بمب سوالی</h2>
-            <p class="card-desc">پاسخ سریع یا انفجار!</p>
-            <div class="card-badge">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span>حداقل ۴ نفر</span>
-            </div>
-          </a>
-
-          <!-- ۲. حدس کلمه (اسم‌فامیل) -->
-          <a href="/word-sprint/" class="game-card card-green" data-index="1">
-            <div class="card-art-box">
-              <div class="chat-bubble green-bubble">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-              </div>
-              <div class="chat-bubble red-bubble">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-              </div>
-            </div>
-            <h2 class="card-title">حدس کلمه</h2>
-            <p class="card-desc">کلمه را سریع‌تر حدس بزن!</p>
-            <div class="card-badge">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span>حداقل ۲ نفر</span>
-            </div>
-          </a>
-
-          <!-- ۳. مسابقه با بازر (کارت ویژه شاخص) -->
-          <a href="/buzzer/" class="game-card card-blue featured-card active" data-index="2">
-            <div class="featured-ribbon">
-              <svg viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>
-              <span>محبوب‌ترین</span>
-            </div>
-            <div class="card-art-box">
-              <div class="buzzer-burst"></div>
-              <div class="buzzer-pedestal">
-                <div class="buzzer-button">
-                  <span class="buzzer-text">بازر</span>
-                </div>
-              </div>
-            </div>
-            <h2 class="card-title">مسابقه با بازر</h2>
-            <p class="card-desc">رقابت هیجان‌انگیز زنگ و اطلاعات</p>
-            <div class="card-badge">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span>حداقل ۲ نفر</span>
-            </div>
-          </a>
-
-          <!-- ۴. پانتومیم -->
-          <a href="/pantomime/" class="game-card card-orange" data-index="3">
-            <div class="card-art-box">
-              <div class="theater-mask mask-yellow">
-                <div class="mask-eye l"></div><div class="mask-eye r"></div>
-                <div class="mask-smile"></div>
-              </div>
-              <div class="theater-mask mask-blue">
-                <div class="mask-eye l"></div><div class="mask-eye r"></div>
-                <div class="mask-sad"></div>
-              </div>
-            </div>
-            <h2 class="card-title">پانتومیم</h2>
-            <p class="card-desc">با بازیگری کلمه را اجرا کن</p>
-            <div class="card-badge">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span>حداقل ۳ نفر</span>
-            </div>
-          </a>
-
-          <!-- ۵. گردونه شانس -->
-          <a href="/wheel/" class="game-card card-pink" data-index="4">
-            <div class="card-art-box">
-              <div class="wheel-pointer"></div>
-              <div class="lucky-wheel">
-                <div class="wheel-center"></div>
-              </div>
-            </div>
-            <h2 class="card-title">گردونه شانس</h2>
-            <p class="card-desc">بچرخون و جوایز شگفت‌انگیز بگیر</p>
-            <div class="card-badge">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span>حداقل ۲ نفر</span>
-            </div>
-          </a>
-
-        </div>
+    <section class="hero-card" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <div class="hero-badge"><span class="badge-dot"></span> دورهمی، خنده، رقابت!</div>
+        <h1 id="hero-title">دوربازی؛<br><span>بازی‌ها تازه شروع شدن!</span></h1>
+        <p class="hero-desc">یه بازی انتخاب کن، دوستات رو خبر کن و ببین برنده‌ی این دور کیه!</p>
+        <a class="cta-button" href="#games">بزن بریم بازی کنیم <span>←</span></a>
+        <div class="hero-caption">بازی گروهی، بدون دردسر <span class="caption-dots"><i></i><i></i><i></i></span></div>
       </div>
 
-      <button class="nav-arrow next" id="nextBtn" aria-label="بعدی">
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-      </button>
+      <div class="hero-stage" role="img" aria-label="ربات دوربازی با دسته بازی">
+        <img class="decor plant-small" src="assets/plant.svg" alt="" aria-hidden="true">
+        <img class="decor question-block" src="assets/question-block.svg" alt="" aria-hidden="true">
+        <img class="decor dice-stack" src="assets/dice-stack.svg" alt="" aria-hidden="true">
+        <img class="decor sparkle sparkle-a" src="assets/spark-yellow.svg" alt="" aria-hidden="true">
+        <img class="decor sparkle sparkle-b" src="assets/spark-pink.svg" alt="" aria-hidden="true">
+        <div class="bean-bag"></div>
+        <img class="mascot" src="assets/mascot-robot.svg" alt="" aria-hidden="true">
+      </div>
+
+      <div class="hero-logo-wrap">
+        <div class="logo-controller"><img src="assets/logo-controller.svg" alt="" aria-hidden="true"></div>
+        <div class="logo-title" aria-label="دوربازی">
+          <span class="logo-main white">دور</span><span class="logo-main yellow">بازی</span>
+        </div>
+        <div class="logo-pill"><span class="group-glyph"></span> دنیای بازی‌های گروهی آنلاین</div>
+      </div>
     </section>
 
-    <!-- نشانگرهای صفحه‌بندی پایینی -->
-    <div class="pagination-dots" id="dotsContainer">
-      <span class="dot" data-index="0"></span>
-      <span class="dot" data-index="1"></span>
-      <span class="dot active" data-index="2"></span>
-      <span class="dot" data-index="3"></span>
-      <span class="dot" data-index="4"></span>
-    </div>
+    <section class="games-section" id="games" aria-labelledby="games-title">
+      <div class="carousel-shell">
+        <button class="nav-arrow prev" type="button" id="prevBtn" aria-label="کارت قبلی">
+          <img src="assets/arrow-circle.svg" alt="" aria-hidden="true">
+        </button>
+
+        <div class="carousel-track-wrap">
+          <div class="games-header">
+            <div class="games-subtitle">وقتشه یه بازی انتخاب کنی</div>
+            <h2 id="games-title">کدوم بازی رو بریم؟</h2>
+          </div>
+
+          <div id="games-list" class="carousel-track" aria-live="polite">
+            <div class="loading-card">
+              <span class="loader"></span>
+              <p>داریم کارت‌های بازی رو می‌چینیم...</p>
+            </div>
+          </div>
+
+          <div class="carousel-dots" id="carouselDots" aria-label="نشانگر اسلایدها"></div>
+        </div>
+
+        <button class="nav-arrow next" type="button" id="nextBtn" aria-label="کارت بعدی">
+          <img src="assets/arrow-circle.svg" alt="" aria-hidden="true">
+        </button>
+      </div>
+    </section>
+
+    <section class="about-strip" id="about">
+      <div class="about-icon"><img src="assets/logo-controller.svg" alt="" aria-hidden="true"></div>
+      <div class="about-copy">
+        <h3>فعلاً دو بازی آماده‌ست</h3>
+        <p>الان می‌تونی بین «مسابقه با بازر» و «اسم‌فامیل» انتخاب کنی؛ ساختار صفحه هم طوری چیده شده که بعداً بازی‌های جدید به‌راحتی اضافه بشن.</p>
+      </div>
+      <a href="#games" class="about-link">انتخاب بازی <span>←</span></a>
+    </section>
   </main>
 
   <script src="lobby.js"></script>

@@ -1,744 +1,212 @@
-:root {
-  --sky-top: #52a9ff;
-  --sky-mid: #7ec5ff;
-  --sky-floor: #d4e8fc;
-  --text-dark: #1e293b;
-  --yellow-clay: #febb1b;
-  --yellow-stroke: #b86200;
+:root{
+  --bg-top:#58bff7;
+  --bg-bottom:#dfeeff;
+  --panel:#eef7ff;
+  --panel-2:#dff3ff;
+  --ink:#234774;
+  --muted:#4f6d8f;
+  --shadow:0 26px 45px rgba(64,122,188,.18);
+  --radius-xl:42px;
+  --radius-lg:30px;
+  --radius-md:24px;
+  --yellow:#ffcb3c;
+  --yellow-dark:#e6a225;
+  --red:#ff5a5f;
+  --red-dark:#cc3f47;
+  --blue:#2394ff;
+  --blue-dark:#1970cf;
+  --green:#53d658;
+  --green-dark:#2ea545;
+  --purple:#9958ef;
+  --pink:#ff5cad;
+  --orange:#ff9b25;
 }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Vazirmatn,Tahoma,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg-top) 0%, #82d6ff 22%, #cfe8ff 52%, var(--bg-bottom) 100%);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+.page-shell{position:relative;max-width:1380px;margin:0 auto;padding:20px 24px 42px;z-index:2}
+.scene-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.leaf{position:absolute;width:140px;filter:drop-shadow(0 16px 22px rgba(20,86,54,.18))}
+.leaf-left{left:-14px;top:-8px}
+.leaf-right{right:-12px;top:-10px}
+.cloud{position:absolute;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(2px)}
+.cloud::before,.cloud::after{content:"";position:absolute;border-radius:999px;background:inherit}
+.cloud-a{width:200px;height:66px;left:14%;top:49%}
+.cloud-a::before{width:88px;height:88px;right:28px;top:-34px}
+.cloud-a::after{width:80px;height:80px;left:18px;top:-26px}
+.cloud-b{width:180px;height:56px;right:18%;top:17%}
+.cloud-b::before{width:76px;height:76px;right:18px;top:-24px}
+.cloud-b::after{width:68px;height:68px;left:12px;top:-22px}
+.cloud-c{width:170px;height:52px;left:3%;bottom:7%}
+.cloud-c::before{width:72px;height:72px;left:12px;top:-22px}
+.cloud-c::after{width:65px;height:65px;right:16px;top:-18px}
+.cloud-d{width:220px;height:66px;right:4%;bottom:6%}
+.cloud-d::before{width:92px;height:92px;left:24px;top:-34px}
+.cloud-d::after{width:82px;height:82px;right:12px;top:-26px}
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;padding:0 6px}
+.brand-mini{display:flex;align-items:center;gap:12px;font-size:2rem;font-weight:900;color:#1d5189;text-shadow:0 2px 0 rgba(255,255,255,.5)}
+.brand-mini-icon{width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#7cd4ff,#2da5f8);box-shadow:0 12px 20px rgba(52,143,214,.35);display:grid;place-items:center}
+.brand-mini-icon img{width:34px;height:34px}
+.topnav{display:flex;align-items:center;gap:34px;font-weight:800;color:#46678d}
+.topnav a:hover{color:#255f9f}
+.start-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border-radius:999px;background:linear-gradient(180deg,#fff 0%,#eef5ff 100%);box-shadow:0 8px 16px rgba(66,118,177,.12);border:1px solid #d8eaff;color:#2b79cb}
+.start-arrow{font-size:1.1rem}
 
-body {
-  font-family: Vazirmatn, system-ui, sans-serif;
-  min-height: 100vh;
-  background: radial-gradient(circle at 50% 25%, var(--sky-mid) 0%, var(--sky-top) 50%, #3583dc 100%);
-  color: #fff;
-  overflow-x: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
+.hero-card{position:relative;display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:20px;background:linear-gradient(135deg,#b6ecff 0%, #eff7ff 44%, #d4f0ff 100%);border-radius:46px;padding:34px 40px 34px 36px;min-height:430px;box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(255,255,255,.7)}
+.hero-card::before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.7) 0%, rgba(255,255,255,0) 70%)}
+.hero-card::after{content:"";position:absolute;width:360px;height:170px;left:-60px;bottom:-70px;border-radius:120px;background:#b7ead1;opacity:.45}
+.hero-content{position:relative;z-index:3;max-width:540px;justify-self:end;padding-right:22px;text-align:right}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;background:#fff;padding:9px 16px;border-radius:999px;color:#3a7ca2;font-weight:800;font-size:.95rem;box-shadow:0 6px 15px rgba(61,121,178,.1)}
+.badge-dot{width:10px;height:10px;border-radius:50%;background:#4dd28b;box-shadow:0 0 0 4px rgba(77,210,139,.18)}
+.hero-content h1{font-size:4rem;line-height:1.16;margin:18px 0 10px;font-weight:900;letter-spacing:-2px;color:#1f4d85;text-shadow:0 4px 0 rgba(255,255,255,.45)}
+.hero-content h1 span{color:#2f8ce5}
+.hero-desc{font-size:1.22rem;line-height:2;color:#577597;margin:0 0 24px;font-weight:600}
+.cta-button{display:inline-flex;align-items:center;gap:16px;background:linear-gradient(180deg,#ffd348 0%,#ffc533 100%);color:#533d12;padding:18px 30px;border-radius:22px;font-weight:900;font-size:1.16rem;box-shadow:0 8px 0 #e7a628,0 18px 26px rgba(240,179,49,.32);transition:transform .18s ease, box-shadow .18s ease}
+.cta-button:hover{transform:translateY(-2px);box-shadow:0 10px 0 #e7a628,0 20px 28px rgba(240,179,49,.36)}
+.cta-button span{font-size:1.3rem}
+.hero-caption{display:flex;align-items:center;gap:12px;color:#6785a0;margin-top:22px;font-weight:800}
+.caption-dots{display:flex;align-items:center;gap:6px}
+.caption-dots i{display:block;width:11px;height:11px;border-radius:50%}
+.caption-dots i:nth-child(1){background:#59d1ff}
+.caption-dots i:nth-child(2){background:#5bd76f}
+.caption-dots i:nth-child(3){background:#ff73a7}
 
-/* کف اتاق با گرادینت سه‌بعدی */
-body::after {
-  content: "";
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 38vh;
-  background: linear-gradient(180deg, rgba(230, 242, 255, 0.4) 0%, rgba(200, 225, 255, 0.95) 100%);
-  border-radius: 40% 40% 0 0 / 25px 25px 0 0;
-  box-shadow: inset 0 10px 40px rgba(255, 255, 255, 0.8);
-  pointer-events: none;
-  z-index: 1;
-}
+.hero-stage{position:relative;min-height:360px;z-index:2}
+.bean-bag{position:absolute;left:42px;top:92px;width:230px;height:170px;background:linear-gradient(145deg,#f7d965 0%,#efbb29 100%);border-radius:48% 52% 48% 52% / 56% 44% 56% 44%;box-shadow:inset -8px -10px 20px rgba(200,126,11,.18), 0 20px 26px rgba(191,137,22,.22)}
+.bean-bag::after{content:"";position:absolute;inset:auto 24px 18px 24px;height:20px;border-radius:999px;background:rgba(255,255,255,.18)}
+.mascot{position:absolute;left:62px;top:18px;width:320px;height:auto;filter:drop-shadow(0 18px 24px rgba(66,108,167,.26))}
+.decor{position:absolute}
+.plant-small{right:100px;top:118px;width:96px}
+.question-block{right:42px;top:34px;width:138px}
+.dice-stack{right:18px;top:192px;width:172px}
+.sparkle{width:46px}
+.sparkle-a{left:32px;top:72px}
+.sparkle-b{left:340px;top:52px}
 
-/* ================== دکوراسیون و محیط ================== */
-.scene-decorations {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-}
+.hero-logo-wrap{position:absolute;top:38px;right:calc(50% - 135px);transform:translateX(50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:4;pointer-events:none}
+.logo-controller{width:84px;filter:drop-shadow(0 10px 10px rgba(31,68,124,.18));margin-bottom:-18px;z-index:2}
+.logo-controller img{width:100%}
+.logo-title{display:flex;align-items:center;font-weight:900;font-size:5rem;line-height:1;text-shadow:0 8px 0 rgba(29,54,104,.36), 0 18px 28px rgba(31,68,124,.24)}
+.logo-main{padding:0 .06em;border-radius:.35em}
+.logo-main.white{color:#edf7ff;-webkit-text-stroke:10px #29579a;paint-order:stroke fill;text-stroke:10px #29579a}
+.logo-main.yellow{color:#ffca2b;-webkit-text-stroke:10px #29579a;paint-order:stroke fill;text-stroke:10px #29579a;margin-right:.05em}
+.logo-pill{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#2f88e0 0%,#266bbd 100%);color:#fff;border-radius:999px;padding:11px 24px;font-weight:900;font-size:1.32rem;box-shadow:0 10px 18px rgba(36,89,158,.24)}
+.group-glyph{position:relative;display:inline-block;width:28px;height:18px}
+.group-glyph::before,.group-glyph::after,.group-glyph span{content:"";position:absolute;border-radius:50%;background:#fff;opacity:.95}
+.group-glyph::before{width:11px;height:11px;right:0;top:0;box-shadow:-10px 7px 0 2px #fff, -18px 0 0 #fff}
+.group-glyph::after{width:18px;height:8px;right:-3px;bottom:0;box-shadow:-11px 0 0 0 #fff, -22px 0 0 -1px #fff}
 
-/* شاخ و برگ‌های گوشه‌ها */
-.foliage {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, #48bb78 30%, #2f855a 80%);
-  border-radius: 50% 10% 50% 10%;
-  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.15));
-  animation: leafSway 6s ease-in-out infinite alternate;
-}
-.foliage.top-left { top: -40px; left: -30px; transform: rotate(20deg); }
-.foliage.bottom-left { bottom: 20px; left: -50px; transform: rotate(65deg); animation-delay: -2s; }
-.foliage.top-right { top: -40px; right: -30px; transform: rotate(-35deg); }
-.foliage.bottom-right { bottom: 10px; right: -40px; transform: rotate(-60deg); animation-delay: -3s; }
+.games-section{padding:34px 4px 0}
+.carousel-shell{display:grid;grid-template-columns:74px 1fr 74px;align-items:center;gap:12px}
+.carousel-track-wrap{display:flex;flex-direction:column;align-items:center}
+.games-header{text-align:center;margin-bottom:22px}
+.games-subtitle{color:#49aa79;font-size:.95rem;font-weight:900;margin-bottom:6px}
+.games-header h2{font-size:3rem;margin:0;color:#1f4d85;text-shadow:0 3px 0 rgba(255,255,255,.4)}
+.nav-arrow{appearance:none;border:0;background:transparent;padding:0;cursor:pointer;display:grid;place-items:center;transition:transform .18s ease, opacity .18s ease}
+.nav-arrow img{width:58px;height:58px;filter:drop-shadow(0 10px 14px rgba(48,106,177,.18))}
+.nav-arrow.prev:hover{transform:translateX(2px)}
+.nav-arrow.next:hover{transform:translateX(-2px)}
+.nav-arrow.next img{transform:scaleX(-1)}
+.nav-arrow:disabled{opacity:.45;cursor:default;transform:none}
+.carousel-track{width:100%;display:grid;grid-template-columns:repeat(2,minmax(290px,370px));justify-content:center;gap:28px;align-items:stretch;min-height:430px}
+.loading-card,.empty-card,.error-card{width:min(420px,100%);min-height:180px;border-radius:30px;background:rgba(255,255,255,.72);box-shadow:0 14px 28px rgba(57,112,169,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#6381a0;padding:24px;text-align:center}
+.loader{width:34px;height:34px;border-radius:50%;border:4px solid rgba(72,139,209,.18);border-top-color:#3092ee;animation:spin .9s linear infinite}
+.error-card button{border:0;background:#2e90eb;color:#fff;padding:10px 18px;border-radius:12px;cursor:pointer;font-weight:800}
 
-@keyframes leafSway {
-  from { transform: rotate(15deg) scale(0.98); }
-  to { transform: rotate(25deg) scale(1.02); }
-}
+.game-card{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 22px 24px;border-radius:34px;min-height:420px;color:#fff;box-shadow:0 26px 38px rgba(61,112,170,.16);border:3px solid rgba(255,255,255,.24);overflow:hidden;transition:transform .2s ease, box-shadow .2s ease}
+.game-card:hover,.game-card:focus-visible{transform:translateY(-6px);box-shadow:0 34px 46px rgba(48,101,163,.2)}
+.game-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0) 40%, rgba(0,0,0,.1) 100%);pointer-events:none}
+.game-card::after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;top:-86px;left:-58px;background:rgba(255,255,255,.12);filter:blur(1px)}
+.game-card.purple{background:linear-gradient(180deg,#ac67ff 0%, #8b44f1 54%, #6f2fd9 100%)}
+.game-card.green{background:linear-gradient(180deg,#6edf3c 0%, #3ccf48 54%, #2bb253 100%)}
+.game-card.blue{background:linear-gradient(180deg,#26a7ff 0%, #1778ef 53%, #115dd7 100%)}
+.game-card .card-top{width:100%;display:flex;justify-content:center;align-items:center;min-height:148px;margin-bottom:10px;position:relative;z-index:1}
+.game-card .card-top img{max-width:138px;max-height:126px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.2))}
+.game-card h3{font-size:2.25rem;line-height:1.08;margin:4px 0 10px;font-weight:900;text-shadow:0 4px 0 rgba(19,49,96,.14)}
+.game-card p{font-size:1.22rem;line-height:1.85;margin:0 0 auto;font-weight:700;min-height:86px;color:rgba(255,255,255,.95)}
+.players-badge{margin-top:24px;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:200px;padding:13px 18px;border-radius:999px;background:rgba(255,255,255,.75);color:#4d5a77;font-weight:900;font-size:1.16rem;box-shadow:inset 0 2px 0 rgba(255,255,255,.75)}
+.players-badge img{width:20px;height:20px}
+.featured-badge{position:absolute;top:14px;right:50%;transform:translateX(50%);background:linear-gradient(180deg,#ffd335 0%, #f5a612 100%);color:#543b00;padding:10px 22px;border-radius:999px;font-weight:900;font-size:1.05rem;box-shadow:0 8px 0 rgba(185,126,8,.55), 0 14px 22px rgba(246,179,45,.26);display:inline-flex;align-items:center;gap:8px;z-index:3}
+.featured-badge .crown-icon{width:18px;height:18px}
+.featured-frame{position:absolute;inset:-7px;border-radius:40px;border:4px solid #ffd846;pointer-events:none;box-shadow:0 0 0 6px rgba(255,216,70,.18)}
+.carousel-dots{display:flex;justify-content:center;gap:11px;margin-top:24px;min-height:16px}
+.carousel-dots button{appearance:none;width:16px;height:16px;border-radius:50%;border:0;background:#bfd8f6;cursor:pointer;transition:.18s ease box-shadow, .18s ease transform, .18s ease background}
+.carousel-dots button.active{background:#ffcc2f;box-shadow:0 0 0 5px rgba(255,204,47,.22);transform:scale(1.08)}
 
-/* تاقچه چوبی سمت راست */
-.shelf-wrapper {
-  position: absolute;
-  top: 14%;
-  right: 6%;
-}
-.shelf {
-  position: relative;
-  width: 180px;
-  height: 16px;
-  background: #c88a4c;
-  border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), inset 0 2px 4px #f6c085;
-}
-.shelf-cube {
-  position: absolute;
-  bottom: 16px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #ffd000, #ff9500);
-  border-radius: 14px;
-  box-shadow: 0 12px 20px rgba(255, 170, 0, 0.35), inset 0 4px 6px #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: cubeGlow 3s ease-in-out infinite alternate;
-}
-.cube-question {
-  font-size: 38px;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
-}
-@keyframes cubeGlow {
-  0% { transform: translateY(0); filter: brightness(1); }
-  100% { transform: translateY(-8px); filter: brightness(1.15) drop-shadow(0 0 15px rgba(255,215,0,0.6)); }
-}
+.about-strip{margin-top:28px;background:linear-gradient(135deg,#ebf8ff 0%,#ffffff 100%);border-radius:30px;padding:22px 24px;display:flex;align-items:center;gap:18px;box-shadow:0 14px 24px rgba(60,115,173,.1)}
+.about-icon{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#7dd5ff,#2ea4f8);box-shadow:0 12px 20px rgba(46,164,248,.24)}
+.about-icon img{width:42px}
+.about-copy h3{margin:0 0 6px;font-size:1.2rem}
+.about-copy p{margin:0;color:#62809f;line-height:1.9;font-weight:600}
+.about-link{margin-right:auto;background:linear-gradient(180deg,#ffd348 0%,#ffc533 100%);padding:14px 18px;border-radius:16px;font-weight:900;color:#584010;box-shadow:0 6px 0 #e1a72b}
+.about-link span{margin-right:8px}
 
-/* تاس‌های سه‌بعدی سمت راست */
-.dice-group {
-  position: absolute;
-  top: 26%;
-  right: 7%;
-  display: flex;
-  gap: 12px;
-}
-.die {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  position: relative;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15), inset 0 3px 6px rgba(255,255,255,0.8);
-  animation: diceFloat 4s ease-in-out infinite alternate;
-}
-.die-white-1 { background: #f8fafc; transform: rotate(-10deg); }
-.die-white-2 { background: #f8fafc; transform: rotate(14deg); animation-delay: -1.5s; }
-.die-red { background: linear-gradient(145deg, #f43f5e, #be123c); transform: rotate(5deg); animation-delay: -2.5s; }
-.pip { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; }
-.die-red .pip { background: #fff; }
-.p-mid { top: 22px; left: 22px; }
-.p-tl { top: 10px; left: 10px; }
-.p-tr { top: 10px; right: 10px; }
-.p-bl { bottom: 10px; left: 10px; }
-.p-br { bottom: 10px; right: 10px; }
-@keyframes diceFloat {
-  from { transform: translateY(0) rotate(5deg); }
-  to { transform: translateY(-10px) rotate(-5deg); }
-}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ================== ربات سفید روی مبل (Baymax) ================== */
-.mascot-container {
-  position: absolute;
-  top: 7%;
-  left: 6%;
-  width: 200px;
-  height: 220px;
+@media (max-width:1200px){
+  .hero-card{grid-template-columns:1fr;gap:8px;padding-top:154px}
+  .hero-content{justify-self:stretch;max-width:none;padding-right:0;text-align:center}
+  .hero-logo-wrap{top:24px;right:50%}
+  .hero-stage{order:3;justify-self:center;width:100%;max-width:560px}
+  .hero-caption,.hero-badge{justify-content:center}
+  .logo-title{font-size:4.2rem}
+  .hero-content h1{font-size:3.5rem}
 }
-.floating-heart {
-  position: absolute;
-  top: 0;
-  right: 15px;
-  width: 24px;
-  height: 24px;
-  fill: #ff4785;
-  filter: drop-shadow(0 0 10px rgba(255, 71, 133, 0.8));
-  animation: heartFloat 2.5s ease-in-out infinite;
+@media (max-width:980px){
+  .topbar{flex-direction:column;gap:14px}
+  .topnav{gap:18px;flex-wrap:wrap;justify-content:center}
+  .carousel-shell{grid-template-columns:52px 1fr 52px}
+  .carousel-track{grid-template-columns:minmax(280px, 420px);justify-content:center}
+  .game-card{min-height:405px}
 }
-@keyframes heartFloat {
-  0%, 100% { transform: translateY(0) scale(0.9); opacity: 0.7; }
-  50% { transform: translateY(-12px) scale(1.15); opacity: 1; }
+@media (max-width:760px){
+  .page-shell{padding-inline:14px}
+  .brand-mini{font-size:1.6rem}
+  .brand-mini-icon{width:48px;height:48px}
+  .hero-card{padding:124px 18px 24px;border-radius:30px;min-height:auto}
+  .logo-title{font-size:3.25rem}
+  .logo-pill{font-size:1rem;padding:10px 18px}
+  .hero-content h1{font-size:2.7rem}
+  .hero-desc{font-size:1rem;line-height:1.9}
+  .cta-button{padding:15px 22px;font-size:1rem}
+  .hero-stage{min-height:295px}
+  .bean-bag{left:10px;top:90px;width:170px;height:132px}
+  .mascot{left:20px;top:28px;width:235px}
+  .plant-small{right:70px;top:120px;width:72px}
+  .question-block{right:10px;top:38px;width:102px}
+  .dice-stack{right:0;top:184px;width:128px}
+  .games-header h2{font-size:2.2rem}
+  .nav-arrow img{width:46px;height:46px}
+  .game-card h3{font-size:1.9rem}
+  .game-card p{font-size:1.02rem;min-height:70px}
+  .players-badge{min-width:180px;font-size:1rem}
+  .about-strip{flex-direction:column;align-items:flex-start}
+  .about-link{margin-right:0}
 }
-
-/* مبل بادی زرد */
-.beanbag {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 190px;
-  height: 140px;
-  background: radial-gradient(circle at 40% 30%, #ffd000, #e69d00);
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), inset 0 6px 12px rgba(255, 255, 255, 0.5);
+@media (max-width:520px){
+  .topnav a:not(.start-btn){display:none}
+  .hero-logo-wrap{width:100%;padding-inline:8px}
+  .logo-title{font-size:2.6rem}
+  .logo-pill{font-size:.88rem;padding:9px 14px;gap:10px}
+  .hero-content h1{font-size:2.15rem}
+  .hero-stage{min-height:240px}
+  .mascot{width:200px;left:8px;top:26px}
+  .bean-bag{width:148px;height:110px;left:6px;top:92px}
+  .plant-small{right:58px;top:116px;width:62px}
+  .question-block{right:8px;top:42px;width:82px}
+  .dice-stack{right:2px;top:176px;width:108px}
+  .sparkle{width:36px}
+  .carousel-shell{grid-template-columns:1fr;gap:14px}
+  .nav-arrow{display:none}
+  .game-card{min-height:380px;padding:20px 16px}
+  .game-card .card-top{min-height:132px}
+  .game-card .card-top img{max-width:124px;max-height:116px}
+  .game-card h3{font-size:1.75rem}
+  .game-card p{font-size:.95rem}
 }
-
-.bot-body {
-  position: absolute;
-  bottom: 25px;
-  left: 30px;
-  width: 130px;
-  height: 150px;
-  animation: botBreathing 4s ease-in-out infinite alternate;
-}
-.bot-head {
-  position: absolute;
-  top: 0;
-  left: 15px;
-  width: 100px;
-  height: 80px;
-  background: #ffffff;
-  border-radius: 50% 50% 45% 45%;
-  box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.08), 0 10px 15px rgba(0,0,0,0.1);
-}
-.headphone-band {
-  position: absolute;
-  top: -8px;
-  left: 10px;
-  width: 80px;
-  height: 40px;
-  border: 7px solid #1e293b;
-  border-bottom: 0;
-  border-radius: 50px 50px 0 0;
-}
-.earcup {
-  position: absolute;
-  top: 20px;
-  width: 16px;
-  height: 34px;
-  background: #0ea5e9;
-  border-radius: 8px;
-  box-shadow: 0 0 12px #38bdf8;
-}
-.earcup.left { left: -10px; }
-.earcup.right { right: -10px; }
-
-.bot-face {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.bot-eye {
-  width: 8px;
-  height: 8px;
-  background: #0f172a;
-  border-radius: 50%;
-  animation: botBlink 4s infinite;
-}
-.eye-bar {
-  width: 18px;
-  height: 2px;
-  background: #0f172a;
-  margin-top: 1px;
-}
-@keyframes botBlink {
-  0%, 48%, 52%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.1); }
-}
-
-.bot-hands {
-  position: absolute;
-  bottom: 20px;
-  left: 10px;
-  width: 110px;
-  height: 50px;
-}
-.gamepad {
-  position: absolute;
-  left: 20px;
-  bottom: 0;
-  width: 70px;
-  height: 38px;
-  background: #1e293b;
-  border-radius: 12px;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 8px;
-}
-.glow-buttons { display: flex; gap: 3px; }
-.glow-buttons i { width: 5px; height: 5px; border-radius: 50%; background: #00f2fe; box-shadow: 0 0 6px #00f2fe; }
-
-@keyframes botBreathing {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-5px); }
-}
-
-/* ================== لوگوی ۳ بعدی «دوربازی» ================== */
-.main-wrapper {
-  position: relative;
-  z-index: 5;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hero-section {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.logo-3d-wrapper {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 12px;
-}
-
-.floating-controller {
-  position: absolute;
-  top: -46px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 75px;
-  height: 75px;
-  z-index: 3;
-  animation: controllerBob 3s ease-in-out infinite alternate;
-}
-.sunburst-rays {
-  position: absolute;
-  inset: -15px;
-  background: radial-gradient(circle, rgba(254, 240, 138, 0.8) 0%, transparent 65%);
-  border-radius: 50%;
-  animation: rotateSun 10s linear infinite;
-}
-.controller-icon {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.35));
-}
-@keyframes controllerBob {
-  0% { transform: translateX(-50%) translateY(0) rotate(-4deg); }
-  100% { transform: translateX(-50%) translateY(-10px) rotate(4deg); }
-}
-@keyframes rotateSun { to { transform: rotate(360deg); } }
-
-/* متن پفکی و ژله‌ای زرد دوربازی */
-.logo-text {
-  font-size: 5rem;
-  font-weight: 900;
-  line-height: 1.1;
-  color: #ffbb00;
-  letter-spacing: -2px;
-  text-shadow:
-    0 2px 0 #fff,
-    0 4px 0 #ff9900,
-    0 6px 0 #e67e00,
-    0 8px 0 #cc6600,
-    0 10px 0 #b35500,
-    0 12px 0 #994400,
-    0 18px 25px rgba(0, 0, 0, 0.3);
-  position: relative;
-  filter: drop-shadow(0 4px 0 #ffffff);
-}
-
-.tagline-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(30, 58, 138, 0.75);
-  backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(147, 197, 253, 0.45);
-  border-radius: 50px;
-  padding: 8px 22px;
-  color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 700;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.4);
-}
-.pill-icon svg { width: 22px; height: 22px; fill: #67e8f9; }
-
-/* ================== کروسل کارت‌های سه‌بعدی ================== */
-.cards-carousel {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-.cards-track-container {
-  overflow: visible;
-  width: 100%;
-  padding: 30px 10px;
-}
-
-.cards-track {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
-}
-
-/* ساختار عمومی کارت ژله‌ای */
-.game-card {
-  text-decoration: none;
-  flex: 0 0 200px;
-  height: 310px;
-  border-radius: 28px;
-  padding: 20px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: #ffffff;
-  position: relative;
-  box-shadow: 
-    0 18px 30px rgba(0, 0, 0, 0.22),
-    inset 0 3px 6px rgba(255, 255, 255, 0.5),
-    inset 0 -5px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-  user-select: none;
-}
-
-.game-card:hover {
-  transform: translateY(-12px) scale(1.03);
-  box-shadow: 0 26px 40px rgba(0, 0, 0, 0.28), inset 0 4px 8px rgba(255, 255, 255, 0.7);
-}
-
-/* رنگ کارت‌ها */
-.card-purple { background: linear-gradient(180deg, #8b5cf6, #6d28d9); }
-.card-green  { background: linear-gradient(180deg, #22c55e, #15803d); }
-.card-blue   { background: linear-gradient(180deg, #3b82f6, #1d4ed8); }
-.card-orange { background: linear-gradient(180deg, #f97316, #c2410c); }
-.card-pink   { background: linear-gradient(180deg, #ec4899, #be185d); }
-
-/* کارت وسط فعال (Featured) */
-.featured-card {
-  transform: scale(1.08);
-  border: 3.5px solid #ffea79;
-  box-shadow: 
-    0 0 35px rgba(255, 215, 0, 0.55),
-    0 22px 35px rgba(0, 0, 0, 0.3),
-    inset 0 4px 8px rgba(255, 255, 255, 0.7);
-  z-index: 10;
-}
-.featured-card:hover {
-  transform: translateY(-12px) scale(1.12);
-}
-
-.featured-ribbon {
-  position: absolute;
-  top: -16px;
-  background: linear-gradient(180deg, #ffd700, #f59e0b);
-  color: #5c3a00;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), inset 0 2px 2px #fff;
-}
-.featured-ribbon svg { width: 14px; height: 14px; fill: currentColor; }
-
-/* محفظه آیکون‌های سه‌بعدی کارت */
-.card-art-box {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 14px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ۱. آیکون بمب سوالی */
-.clay-bomb {
-  width: 68px;
-  height: 68px;
-  background: radial-gradient(circle at 35% 30%, #475569, #0f172a 75%);
-  border-radius: 50%;
-  position: relative;
-  box-shadow: inset 0 -6px 10px rgba(0,0,0,0.6), 0 10px 18px rgba(0,0,0,0.4);
-}
-.bomb-cap {
-  position: absolute;
-  top: -6px;
-  left: 28px;
-  width: 12px;
-  height: 8px;
-  background: #94a3b8;
-  border-radius: 3px;
-}
-.fuse-spark {
-  position: absolute;
-  top: -18px;
-  left: 38px;
-  width: 14px;
-  height: 14px;
-  background: #facc15;
-  border-radius: 50%;
-  box-shadow: 0 0 12px #f59e0b, 0 0 20px #ef4444;
-  animation: sparkFlicker 0.4s infinite alternate;
-}
-@keyframes sparkFlicker {
-  from { transform: scale(0.8); opacity: 0.8; }
-  to { transform: scale(1.2); opacity: 1; }
-}
-.bomb-skull {
-  position: absolute;
-  top: 22px;
-  left: 20px;
-  width: 28px;
-  height: 24px;
-  background: #e2e8f0;
-  border-radius: 50% 50% 35% 35%;
-}
-.skull-eye { position: absolute; width: 6px; height: 6px; background: #0f172a; border-radius: 50%; top: 6px; }
-.skull-eye.l { left: 4px; }
-.skull-eye.r { right: 4px; }
-.skull-teeth { position: absolute; bottom: 0; left: 8px; width: 12px; height: 5px; background: #0f172a; border-radius: 2px 2px 0 0; }
-
-/* ۲. آیکون حباب‌های گفتگو */
-.chat-bubble {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.25), inset 0 3px 5px rgba(255,255,255,0.7);
-}
-.green-bubble {
-  background: #f8fafc;
-  top: 10px;
-  left: 12px;
-  z-index: 2;
-}
-.green-bubble svg { width: 28px; height: 28px; fill: #22c55e; }
-.red-bubble {
-  background: #ef4444;
-  bottom: 12px;
-  right: 12px;
-  z-index: 1;
-}
-.red-bubble svg { width: 24px; height: 24px; fill: #ffffff; }
-
-/* ۳. آیکون بازر مسابقه */
-.buzzer-burst {
-  position: absolute;
-  top: 4px;
-  width: 50px;
-  height: 16px;
-  background: radial-gradient(ellipse at center, #ffd700 0%, transparent 70%);
-  animation: burstRays 1.2s ease-in-out infinite alternate;
-}
-@keyframes burstRays {
-  from { transform: scale(0.9); opacity: 0.6; }
-  to { transform: scale(1.3); opacity: 1; }
-}
-.buzzer-pedestal {
-  width: 80px;
-  height: 38px;
-  background: #1e293b;
-  border-radius: 50% 50% 40% 40% / 30% 30% 70% 70%;
-  position: absolute;
-  bottom: 10px;
-  box-shadow: 0 12px 18px rgba(0,0,0,0.4);
-}
-.buzzer-button {
-  position: absolute;
-  top: -18px;
-  left: 10px;
-  width: 60px;
-  height: 40px;
-  background: radial-gradient(circle at 40% 30%, #ff5252, #c62828);
-  border-radius: 50%;
-  box-shadow: inset 0 3px 5px rgba(255,255,255,0.8), 0 5px 10px rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.buzzer-text {
-  font-size: 0.85rem;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-}
-
-/* ۴. ماسک‌های پانتومیم */
-.theater-mask {
-  position: absolute;
-  width: 44px;
-  height: 54px;
-  border-radius: 20px 20px 24px 24px;
-  box-shadow: 0 10px 16px rgba(0,0,0,0.25), inset 0 3px 4px rgba(255,255,255,0.6);
-}
-.mask-yellow {
-  background: #fbbf24;
-  top: 10px;
-  left: 12px;
-  transform: rotate(-12deg);
-  z-index: 2;
-}
-.mask-blue {
-  background: #38bdf8;
-  bottom: 12px;
-  right: 12px;
-  transform: rotate(14deg);
-}
-.mask-eye { position: absolute; width: 6px; height: 6px; background: #0f172a; border-radius: 50%; top: 16px; }
-.mask-eye.l { left: 8px; }
-.mask-eye.r { right: 8px; }
-.mask-smile {
-  position: absolute;
-  bottom: 10px;
-  left: 12px;
-  width: 20px;
-  height: 10px;
-  border-bottom: 3.5px solid #0f172a;
-  border-radius: 0 0 12px 12px;
-}
-.mask-sad {
-  position: absolute;
-  bottom: 8px;
-  left: 12px;
-  width: 20px;
-  height: 10px;
-  border-top: 3.5px solid #0f172a;
-  border-radius: 12px 12px 0 0;
-}
-
-/* ۵. گردونه شانس */
-.lucky-wheel {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #ef4444 0 60deg,
-    #f59e0b 60deg 120deg,
-    #10b981 120deg 180deg,
-    #06b6d4 180deg 240deg,
-    #3b82f6 240deg 300deg,
-    #a855f7 300deg 360deg
-  );
-  border: 4px solid #ffffff;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: wheelSlowSpin 14s linear infinite;
-}
-.wheel-center {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffd700;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-.wheel-pointer {
-  position: absolute;
-  top: 4px;
-  z-index: 5;
-  width: 0;
-  height: 0;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-top: 14px solid #ffd700;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-}
-@keyframes wheelSlowSpin { to { transform: rotate(360deg); } }
-
-/* اطلاعات متنی کارت */
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 900;
-  margin-bottom: 6px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-.card-desc {
-  font-size: 0.85rem;
-  font-weight: 500;
-  opacity: 0.95;
-  line-height: 1.5;
-  margin-bottom: auto;
-}
-
-/* کپسول تعداد نفرات */
-.card-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.24);
-  backdrop-filter: blur(6px);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  margin-top: 12px;
-}
-.card-badge svg { width: 14px; height: 14px; fill: currentColor; }
-
-/* دکمه‌های ناوبری قبلی/بعدی کروسل */
-.nav-arrow {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), inset 0 2px 4px #fff;
-  transition: transform 0.2s, background 0.2s;
-  z-index: 20;
-}
-.nav-arrow svg { width: 28px; height: 28px; fill: #1e3a8a; }
-.nav-arrow:hover { transform: scale(1.12); background: #ffffff; }
-.nav-arrow:active { transform: scale(0.94); }
-
-/* نقاط صفحه‌بندی پایین */
-.pagination-dots {
-  display: flex;
-  gap: 8px;
-  margin-top: 24px;
-  z-index: 10;
-}
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.45);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.dot.active {
-  width: 24px;
-  border-radius: 10px;
-  background: #febb1b;
-  box-shadow: 0 0 12px #febb1b;
-}
-
-/* ریسپانسیو برای صفحات موبایل و تبلت */
-@media (max-width: 992px) {
-  .scene-decorations .shelf-wrapper,
-  .scene-decorations .dice-group { display: none; }
-  .logo-text { font-size: 3.8rem; }
-  .cards-track { gap: 14px; }
-  .game-card { flex: 0 0 170px; height: 280px; }
-  .mascot-container { transform: scale(0.75); top: 2%; left: -20px; }
-}
-@media (max-width: 640px) {
-  .mascot-container { display: none; }
-  .logo-text { font-size: 3.2rem; }
-  .cards-track { overflow-x: auto; justify-content: flex-start; padding: 10px 20px; }
-  .nav-arrow { display: none; }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
