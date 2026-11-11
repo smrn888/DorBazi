@@ -28,14 +28,11 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .status{text-align:center;font-size:1.2rem;min-height:2em}
 .err{color:#f87171;text-align:center;margin-top:8px}
 
-/* نوار بالا و دکمه صدا */
 #bar{position:fixed;top:10px;left:10px;z-index:30}
 #mute{width:46px;height:46px;border-radius:50%;padding:0;margin:0;font-size:1.3rem;background:#1e293b;border:1px solid #475569;color:#fff}
 
-/* نشان رنگی بازر کنار اسم‌ها */
 .badge{display:inline-block;width:18px;height:18px;vertical-align:middle;margin-inline-end:8px;background:var(--c)}
 
-/* بازر بازیکن */
 .bz-wrap{width:min(78vw,320px);height:min(78vw,320px);margin:16px auto;filter:drop-shadow(0 0 18px var(--c,#38bdf8))}
 #buzz{position:relative;overflow:hidden;width:100%;height:100%;margin:0;padding:0;border:0;border-radius:0;font-size:2rem;color:#fff;
   background:linear-gradient(160deg,rgba(255,255,255,.4),transparent 55%),var(--c,#ef4444);touch-action:manipulation}
@@ -50,13 +47,11 @@ button:disabled{opacity:.35;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{from{filter:brightness(1)}to{filter:brightness(1.5)}}
 
-/* چشمک آژیر تمام‌صفحه */
 #flash{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:5;
   background:radial-gradient(circle at center,transparent 35%,var(--c,#f00) 150%)}
 body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 @keyframes siren{from{opacity:.1}to{opacity:.75}}
 
-/* اینترو */
 #intro{position:fixed;inset:0;z-index:20;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;
   background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--c,#38bdf8) 40%,#0f172a),#020617 70%)}
 #intro::before{content:"";position:absolute;inset:-50%;
@@ -68,6 +63,7 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 #introShape{width:100%;height:100%;background:linear-gradient(160deg,rgba(255,255,255,.4),transparent 55%),var(--c)}
 #introName{font-size:1.8rem;font-weight:800;min-height:2.4em;color:var(--c)}
 @keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
 .qtext{font-size:1.25rem;font-weight:700;line-height:1.9;margin-bottom:10px;text-align:center}
 .opt{padding:12px;border:2px solid #334155;border-radius:12px;margin-top:8px;background:#0f172a}
 .opt.right{border-color:#22c55e;background:#14532d}
@@ -195,22 +191,20 @@ function tone(f, t, d, type = 'sine', v, f2) {
   o.start(t0); o.stop(t0 + d + 0.02);
 }
 
-// [فرکانس، شروع، مدت، نوع موج، فرکانس پایانی]
 const SND = [
-  [[880,0,.18,'square'],[660,.18,.18,'square'],[880,.36,.18,'square'],[660,.54,.18,'square']], // آژیر
-  [[1318,0,.7,'sine'],[1976,0,.5,'sine'],[1318,.25,.7,'sine'],[1976,.25,.5,'sine']],           // زنگ
-  [[523,0,.1,'triangle'],[659,.08,.1,'triangle'],[784,.16,.1,'triangle'],[1047,.24,.35,'triangle']], // ستاره
-  [[1568,0,.12,'sine'],[2093,.1,.4,'sine']],                                                  // پینگ
-  [[1800,0,.45,'sawtooth',200]],                                                              // لیزر
-  [[220,0,.1,'square'],[330,.12,.1,'square'],[220,.24,.1,'square'],[440,.36,.2,'square']],    // ربات
-  [[1200,0,.6,'triangle',400],[1500,.05,.6,'triangle',500]],                                  // جادو
-  [[196,0,.25,'sawtooth'],[247,0,.25,'sawtooth'],[196,.32,.25,'sawtooth'],[247,.32,.25,'sawtooth']], // بوق
-  [[1000,0,.08,'sine'],[1000,.14,.08,'sine'],[1000,.28,.08,'sine']],                          // بیپ
-  [[160,0,.35,'sine',40],[80,0,.35,'sine',30]],                                               // بوم
+  [[880,0,.18,'square'],[660,.18,.18,'square'],[880,.36,.18,'square'],[660,.54,.18,'square']],
+  [[1318,0,.7,'sine'],[1976,0,.5,'sine'],[1318,.25,.7,'sine'],[1976,.25,.5,'sine']],
+  [[523,0,.1,'triangle'],[659,.08,.1,'triangle'],[784,.16,.1,'triangle'],[1047,.24,.35,'triangle']],
+  [[1568,0,.12,'sine'],[2093,.1,.4,'sine']],
+  [[1800,0,.45,'sawtooth',200]],
+  [[220,0,.1,'square'],[330,.12,.1,'square'],[220,.24,.1,'square'],[440,.36,.2,'square']],
+  [[1200,0,.6,'triangle',400],[1500,.05,.6,'triangle',500]],
+  [[196,0,.25,'sawtooth'],[247,0,.25,'sawtooth'],[196,.32,.25,'sawtooth'],[247,.32,.25,'sawtooth']],
+  [[1000,0,.08,'sine'],[1000,.14,.08,'sine'],[1000,.28,.08,'sine']],
+  [[160,0,.35,'sine',40],[80,0,.35,'sine',30]],
 ];
 const playBuzzer = (i) => SND[i % 10].forEach(([f, t, d, ty, f2]) => tone(f, t, d, ty, undefined, f2));
 
-// موسیقی اینترو
 let musicTimer = null;
 const ARP = [0, 4, 7, 12, 7, 4, 0, 4];
 const ROOTS = [220, 174.6, 196, 164.8];
@@ -231,6 +225,7 @@ let token = sessionStorage.getItem('bz_token');
 if (!token) { token = rnd(); sessionStorage.setItem('bz_token', token); }
 let me = JSON.parse(sessionStorage.getItem('bz_me') || 'null');
 let st = null;
+let hostInfo = null;
 let introRunning = false;
 
 const show = (n) => {
@@ -260,12 +255,12 @@ sock.on('connect', () => {
 $('createBtn').onclick = () => sock.emit('host:create', { token }, (r) => {
   if (r && r.ok) {
     save({ role: 'host', code: r.code });
-    $('hCode').textContent = r.code;   // نمایش مستقیم، بدون وابستگی به render
+    $('hCode').textContent = r.code;
     show('host');
   }
 });
 $('joinBtn').onclick = () => {
-  try { ctx(); } catch {}  // باز کردن قفل صدا با کلیک کاربر (لازم برای iOS)
+  try { ctx(); } catch {}
   sock.emit('player:join', { token, code: $('inCode').value, name: $('inName').value }, (r) => {
     if (!r || !r.ok) { $('err').textContent = (r && r.error) || 'خطا'; return; }
     save({ role: 'player', code: r.code, id: r.id, bz: r.bz || 0 });
@@ -282,7 +277,7 @@ function runIntro(target) {
   $('introBtns').classList.add('hide');
   $('introWrap').classList.remove('pop');
   startMusic();
-  const n = 20 + target;  // n % 10 === target
+  const n = 20 + target;
   const step = (k) => {
     const i = k % 10;
     colorize($('intro'), i); shape($('introShape'), i);
@@ -318,7 +313,7 @@ $('skipBtn').onclick = () => sock.emit('host:skip');
 /* ---------- بازیکن: زدن بازر ---------- */
 $('buzz').addEventListener('pointerdown', (e) => {
   if (e.currentTarget.disabled) return;
-  playBuzzer(me.bz || 0);              // فقط روی گوشی خود بازیکن
+  playBuzzer(me.bz || 0);
   if (navigator.vibrate) navigator.vibrate(30);
   sock.emit('player:buzz');
 });
@@ -339,18 +334,87 @@ function renderScores(box) {
   box.replaceChildren(...sorted.map((p) => row((p.online ? '' : '⚪ ') + p.name, p.score, '', p.bz)));
 }
 
-[{
-	"resource": "/C:/Users/Moein/Desktop/Dor Bazi/Codes/DorBazi/games/buzzer/public/index.html",
-	"owner": "_generated_diagnostic_collection_name_#0",
-	"severity": 8,
-	"message": "Cannot redeclare block-scoped variable 'hostInfo'.",
-	"source": "javascript",
-	"startLineNumber": 330,
-	"startColumn": 5,
-	"endLineNumber": 330,
-	"endColumn": 13,
-	"origin": "extHost1"
-}]
+function renderQ(box, isHost) {
+  if (!st.q) { box.classList.add('hide'); return; }
+  box.classList.remove('hide');
+
+  const live = isHost && hostInfo;
+  const ans  = st.reveal ? st.reveal.answer : (live ? hostInfo.answer : -1);
+  const fact = st.reveal ? st.reveal.fact   : (live ? hostInfo.fact   : '');
+
+  const parts = [];
+  const h = document.createElement('div');
+  h.className = 'qtext'; h.textContent = st.q.text;
+  parts.push(h);
+
+  st.q.options.forEach((t, i) => {
+    const d = document.createElement('div');
+    d.className = 'opt' + (i === ans ? ' right' : (st.reveal ? ' dim' : ''));
+    d.textContent = ['۱', '۲', '۳', '۴'][i] + ') ' + t;
+    parts.push(d);
+  });
+
+  if (st.reveal) {
+    const r = document.createElement('div');
+    r.className = 'res';
+    r.textContent = st.reveal.by
+      ? `✅ ${pl(st.reveal.by).name || '؟'} درست جواب داد`
+      : '❌ کسی درست جواب نداد';
+    parts.push(r);
+  }
+  if (fact) {
+    const f = document.createElement('div');
+    f.className = 'fact';
+    f.textContent = (isHost && !st.reveal ? '💡 توضیح (فقط مجری می‌بیند): ' : '💡 بدانید: ') + fact;
+    parts.push(f);
+  }
+  box.replaceChildren(...parts);
+}
+
+function render() {
+  if (!st || !me) return;
+  if (me.role === 'host') {
+    $('hCode').textContent = st.code;
+    document.querySelectorAll('#board button').forEach((b) => {
+      b.disabled = st.used.includes(+b.dataset.v) || st.phase !== 'idle';
+    });
+    $('hStatus').textContent =
+      st.phase === 'idle' ? 'یک سوال را انتخاب کنید'
+      : st.phase === 'open' ? `سوال ${st.active} امتیازی باز است؛ منتظر بازر`
+      : `سوال ${st.active} امتیازی؛ جواب‌دهنده: ${pl(st.queue[0]).name || '؟'}`;
+    $('hQueue').replaceChildren(...st.queue.map((id, i) =>
+      row(`${i + 1}. ${pl(id).name || '؟'}`, '', i === 0 ? 'first' : '', pl(id).bz)));
+    $('okBtn').disabled = $('noBtn').disabled = st.phase !== 'answering';
+    $('skipBtn').disabled = st.phase === 'idle';
+    renderQ($('hQ'), true);
+    renderScores($('hScores'));
+  } else {
+    const b = me.bz || 0;
+    colorize($('buzzWrap'), b); shape($('buzz'), b); colorize($('flash'), b);
+
+    const idx = st.queue.indexOf(me.id);
+    const tried = st.tried.includes(me.id);
+    let txt;
+    if (st.phase === 'idle') txt = 'منتظر سوال بعدی...';
+    else if (idx === 0) txt = 'نوبت توست! جواب بده 🎤';
+    else if (idx > 0) txt = `تو نفر ${idx + 1} صف هستی`;
+    else if (tried) txt = 'جواب تو غلط بود';
+    else if (st.queue.length) txt = `${pl(st.queue[0]).name || '؟'} در حال جواب دادن است`;
+    else txt = `سوال ${st.active} امتیازی باز است. بزن!`;
+    $('pStatus').textContent = txt;
+
+    const disabled = st.phase === 'idle' || idx >= 0 || tried;
+    $('buzz').disabled = disabled;
+    $('buzz').classList.toggle('lit', idx >= 0);
+    $('buzz').classList.toggle('off', disabled && idx < 0);
+    document.body.classList.toggle('alarm', idx === 0 && !introRunning);
+    renderQ($('pQ'), false);
+    renderScores($('pScores'));
+  }
+}
+
+sock.on('hostinfo', (h) => { hostInfo = h; render(); });
+sock.on('state', (s) => { st = s; render(); });
 </script>
 </body>
 </html>
