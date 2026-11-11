@@ -3,30 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#eaf6ff">
+  <meta name="theme-color" content="#55b9ed">
   <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
   <title>دوربازی | دنیای بازی‌های گروهی</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css?v=4">
 </head>
 <body>
-  <div class="ambient ambient-one" aria-hidden="true"></div>
-  <div class="ambient ambient-two" aria-hidden="true"></div>
-
+  <div class="sky-decor decor-left" aria-hidden="true"></div>
+  <div class="sky-decor decor-right" aria-hidden="true"></div>
   <main class="page-shell">
     <header class="topbar">
       <a class="brand" href="/" aria-label="صفحه اصلی دوربازی">
         <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 48 48"><path d="M10 15.5c0-3.3 2.7-6 6-6h16c3.3 0 6 2.7 6 6v13c0 3.3-2.7 6-6 6H16c-3.3 0-6-2.7-6-6z"/><path d="M17 20v7M13.5 23.5h7M29 20h.1M34 25h.1"/><path d="M18 34l-3 5 9-4"/></svg>
+          <svg viewBox="0 0 64 64"><path d="M15 22c0-6 5-11 11-11h22c6 0 11 5 11 11v17c0 6-5 11-11 11H26c-6 0-11-5-11-11z"/><path d="M25 27v12m-6-6h12m15-6h.1m7 9h.1M25 50l-5 8 15-8"/></svg>
         </span>
-        <span class="brand-name">دوربازی</span>
+        <span>دوربازی</span>
       </a>
       <nav class="top-actions" aria-label="منوی اصلی">
         <a href="#games" class="nav-link">بازی‌ها</a>
         <a href="#about" class="nav-link">درباره دوربازی</a>
-        <a href="#games" class="nav-cta">شروع بازی <span aria-hidden="true">←</span></a>
+        <a href="#games" class="nav-cta">شروع بازی <span class="arrow">←</span></a>
       </nav>
     </header>
 
@@ -35,54 +34,40 @@
         <div class="eyebrow"><span class="eyebrow-dot"></span> دورهمی، خنده، رقابت!</div>
         <h1 id="hero-title">دوربازی؛<br><span>بازی‌ها تازه شروع شدن!</span></h1>
         <p class="hero-description">یه بازی انتخاب کن، دوستات رو خبر کن و ببین برنده‌ی این دور کیه!</p>
-        <a class="hero-button" href="#games">بزن بریم بازی کنیم <span aria-hidden="true">←</span></a>
+        <a class="hero-button" href="#games">بزن بریم بازی کنیم <span>←</span></a>
         <div class="hero-note"><span class="tiny-people" aria-hidden="true"><i></i><i></i><i></i></span> بازی گروهی، بدون دردسر</div>
       </div>
-
       <div class="hero-art" aria-label="ربات کوچولوی دوربازی با دسته بازی" role="img">
-        <div class="art-spark spark-a">✦</div><div class="art-spark spark-b">✧</div><div class="art-spark spark-c">✦</div>
-        <div class="art-cloud cloud-a"></div><div class="art-cloud cloud-b"></div>
-        <div class="plant plant-left"><i></i><i></i><i></i></div>
-        <div class="plant plant-right"><i></i><i></i><i></i></div>
+        <div class="spark spark-one">✦</div><div class="spark spark-two">✧</div><div class="spark spark-three">✦</div>
+        <div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+        <div class="die die-one">۳</div><div class="die die-two">۵</div>
         <div class="robot-shadow"></div>
-        <svg class="mascot" viewBox="0 0 360 360" role="presentation" aria-hidden="true">
+        <svg class="mascot" viewBox="0 0 420 440" aria-hidden="true">
           <defs>
-            <linearGradient id="botBody" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".62" stop-color="#f4f8ff"/><stop offset="1" stop-color="#dceaff"/></linearGradient>
-            <linearGradient id="botHead" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e8f2ff"/></linearGradient>
-            <linearGradient id="earBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#64d7ef"/><stop offset="1" stop-color="#2588d7"/></linearGradient>
-            <linearGradient id="pad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#536b9c"/><stop offset="1" stop-color="#263c6d"/></linearGradient>
-            <filter id="botShadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur stdDeviation="8"/></filter>
+            <linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".7" stop-color="#f1f7ff"/><stop offset="1" stop-color="#dcecff"/></linearGradient>
+            <linearGradient id="head" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e8f2ff"/></linearGradient>
+            <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#66d9f0"/><stop offset="1" stop-color="#247bc9"/></linearGradient>
+            <linearGradient id="controller" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#506c9d"/><stop offset="1" stop-color="#263d70"/></linearGradient>
+            <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feGaussianBlur stdDeviation="9"/></filter>
           </defs>
-          <ellipse cx="180" cy="326" rx="112" ry="17" fill="#4169a8" opacity=".2" filter="url(#botShadow)"/>
-          <!-- headphones -->
-          <path d="M91 150c-4-76 39-119 91-119s95 43 91 119" fill="none" stroke="#2d65b5" stroke-width="19" stroke-linecap="round"/>
-          <path d="M96 145c-1-67 37-104 86-104s87 37 86 104" fill="none" stroke="#8ce7f2" stroke-width="7" stroke-linecap="round"/>
-          <rect x="70" y="139" width="39" height="77" rx="18" fill="url(#earBlue)" stroke="#2866aa" stroke-width="5"/>
-          <rect x="251" y="139" width="39" height="77" rx="18" fill="url(#earBlue)" stroke="#2866aa" stroke-width="5"/>
-          <circle cx="90" cy="177" r="10" fill="#baf6ff"/><circle cx="270" cy="177" r="10" fill="#baf6ff"/>
-          <!-- body -->
-          <path d="M93 230c0-44 35-72 87-72s87 28 87 72v65c0 23-19 41-42 41h-90c-23 0-42-18-42-41z" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="5"/>
-          <path d="M130 255c-29-12-47 3-43 27 4 22 27 33 50 20" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="4"/>
-          <path d="M230 255c29-12 47 3 43 27-4 22-27 33-50 20" fill="url(#botBody)" stroke="#d1e3ff" stroke-width="4"/>
-          <!-- head -->
-          <path d="M91 120c0-52 39-89 89-89s89 37 89 89v58c0 48-39 80-89 80s-89-32-89-80z" fill="url(#botHead)" stroke="#cbdfff" stroke-width="5"/>
-          <ellipse cx="144" cy="147" rx="12" ry="16" fill="#263b66"/><ellipse cx="216" cy="147" rx="12" ry="16" fill="#263b66"/>
-          <circle cx="148" cy="141" r="4" fill="#fff"/><circle cx="220" cy="141" r="4" fill="#fff"/>
-          <ellipse cx="119" cy="177" rx="13" ry="7" fill="#ff9eb2" opacity=".5"/><ellipse cx="241" cy="177" rx="13" ry="7" fill="#ff9eb2" opacity=".5"/>
-          <path d="M160 182q20 20 40 0" fill="none" stroke="#52719e" stroke-width="5" stroke-linecap="round"/>
-          <!-- silly antenna -->
-          <path d="M180 29v-12" stroke="#4a79b7" stroke-width="5" stroke-linecap="round"/><circle cx="180" cy="12" r="9" fill="#ffd45e" stroke="#f3a936" stroke-width="3"/>
-          <!-- controller -->
-          <path d="M126 267c-4-14 7-27 22-27h64c15 0 26 13 22 27l-8 28c-3 11-16 15-24 7l-17-15h-10l-17 15c-8 8-21 4-24-7z" fill="url(#pad)" stroke="#203d70" stroke-width="5"/>
-          <path d="M151 258v20M141 268h20" stroke="#bfeaff" stroke-width="6" stroke-linecap="round"/><circle cx="211" cy="261" r="5" fill="#ffcb55"/><circle cx="224" cy="274" r="5" fill="#ff7f8b"/>
-          <path d="M166 306q14 12 28 0" stroke="#d6e6ff" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="210" cy="411" rx="130" ry="18" fill="#3d78a9" opacity=".2" filter="url(#shadow)"/>
+          <path d="M105 173c-8-93 40-147 105-147s113 54 105 147" fill="none" stroke="#2866b6" stroke-width="22" stroke-linecap="round"/>
+          <path d="M108 165c-5-79 39-125 102-125s107 46 102 125" fill="none" stroke="#91e7f4" stroke-width="8" stroke-linecap="round"/>
+          <rect x="76" y="158" width="47" height="91" rx="22" fill="url(#blue)" stroke="#2868ad" stroke-width="5"/><rect x="297" y="158" width="47" height="91" rx="22" fill="url(#blue)" stroke="#2868ad" stroke-width="5"/>
+          <circle cx="99" cy="202" r="12" fill="#c5f8ff"/><circle cx="321" cy="202" r="12" fill="#c5f8ff"/>
+          <path d="M103 270c0-54 43-88 107-88s107 34 107 88v91c0 31-24 55-55 55H158c-31 0-55-24-55-55z" fill="url(#body)" stroke="#d0e3ff" stroke-width="6"/>
+          <path d="M147 313c-36-16-57 5-51 34 5 27 35 39 62 24M273 313c36-16 57 5 51 34-5 27-35 39-62 24" fill="url(#body)" stroke="#d0e3ff" stroke-width="5"/>
+          <path d="M103 129c0-65 45-111 107-111s107 46 107 111v72c0 60-46 99-107 99s-107-39-107-99z" fill="url(#head)" stroke="#cbdfff" stroke-width="6"/>
+          <ellipse cx="166" cy="163" rx="14" ry="19" fill="#243b68"/><ellipse cx="254" cy="163" rx="14" ry="19" fill="#243b68"/><circle cx="170" cy="156" r="5" fill="#fff"/><circle cx="258" cy="156" r="5" fill="#fff"/>
+          <ellipse cx="137" cy="205" rx="16" ry="9" fill="#ff9fb5" opacity=".55"/><ellipse cx="283" cy="205" rx="16" ry="9" fill="#ff9fb5" opacity=".55"/>
+          <path d="M184 218q26 25 52 0" fill="none" stroke="#55749f" stroke-width="6" stroke-linecap="round"/>
+          <path d="M210 18V7" stroke="#4779b8" stroke-width="6" stroke-linecap="round"/><circle cx="210" cy="8" r="11" fill="#ffd45d" stroke="#f0ad36" stroke-width="4"/>
+          <path d="M147 330c-7-18 7-34 25-34h76c18 0 32 16 25 34l-11 39c-4 14-21 19-32 9l-21-19h-9l-21 19c-11 10-28 5-32-9z" fill="url(#controller)" stroke="#203d70" stroke-width="6"/>
+          <path d="M177 316v26m-13-13h26" stroke="#c5edff" stroke-width="7" stroke-linecap="round"/><circle cx="253" cy="316" r="7" fill="#ffcb55"/><circle cx="269" cy="333" r="7" fill="#ff7f8b"/>
         </svg>
-        <div class="floating-die die-one"><span>5</span></div>
-        <div class="floating-die die-two"><span>3</span></div>
-        <div class="floating-star star-one">✦</div><div class="floating-star star-two">✧</div>
-        <div class="art-caption"><span class="caption-dot"></span> رفیق بازی‌هات آماده‌ست!</div>
+        <div class="art-caption"><span></span> رفیق بازی‌هات آماده‌ست!</div>
       </div>
-      <div class="hero-bottom-wave" aria-hidden="true"></div>
+      <div class="hero-glow"></div>
     </section>
 
     <section class="games-section" id="games" aria-labelledby="games-title">
@@ -96,13 +81,12 @@
     </section>
 
     <section class="invite-strip" id="about">
-      <div class="invite-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 27c0-10 8-18 18-18h4c10 0 18 8 18 18v4c0 10-8 18-18 18h-4c-10 0-18-8-18-18z"/><path d="M22 27h.1M42 27h.1M25 37q7 7 14 0"/><path d="M24 47l-4 9 14-7"/></svg></div>
+      <div class="invite-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 27c0-10 8-18 18-18h4c10 0 18 8 18 18v4c0 10-8 18-18 18h-4c-10 0-18-8-18-18z"/><path d="M22 27h.1M42 27h.1M25 37q7 7 14 0M24 47l-4 9 14-7"/></svg></div>
       <div><h2>دوستات رو خبر کن!</h2><p>دوربازی با جمع شما قشنگ‌تره؛ یه اتاق بساز و همه رو دعوت کن.</p></div>
-      <a href="#games" class="invite-link">انتخاب بازی <span aria-hidden="true">←</span></a>
+      <a href="#games" class="invite-link">انتخاب بازی <span>←</span></a>
     </section>
-
     <footer class="footer"><span>دوربازی</span><span>ساخته شده برای دورهمی‌های به‌یادموندنی</span></footer>
   </main>
-  <script src="lobby.js"></script>
+  <script src="/lobby.js?v=4"></script>
 </body>
 </html>
