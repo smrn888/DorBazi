@@ -3,109 +3,64 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#59bff5">
+  <meta name="theme-color" content="#5aa9f0">
   <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
-  <title>دوربازی</title>
+  <title>دوربازی | دنیای بازی‌های گروهی</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="scene-bg">
-    <img class="leaf leaf-left" src="assets/leaf-left.svg" alt="" aria-hidden="true">
-    <img class="leaf leaf-right" src="assets/leaf-right.svg" alt="" aria-hidden="true">
-    <div class="cloud cloud-a" aria-hidden="true"></div>
-    <div class="cloud cloud-b" aria-hidden="true"></div>
-    <div class="cloud cloud-c" aria-hidden="true"></div>
-    <div class="cloud cloud-d" aria-hidden="true"></div>
-  </div>
+  <main class="scene" id="scene">
+    <div class="sun" aria-hidden="true"></div>
 
-  <main class="page-shell">
-    <header class="topbar">
-      <div class="brand-mini">
-        <div class="brand-mini-icon">
-          <img src="assets/logo-controller.svg" alt="" aria-hidden="true">
-        </div>
-        <span>دوربازی</span>
-      </div>
+    <!-- دکور پس‌زمینه -->
+    <img class="deco foliage-l" data-depth="10" src="img/17_bottom_left_foliage.png" alt="">
+    <img class="deco foliage-r" data-depth="10" src="img/18_bottom_right_foliage.png" alt="">
+    <img class="deco cloud" data-depth="6" src="img/16_bottom_cloud.png" alt="">
 
-      <nav class="topnav" aria-label="منوی اصلی">
-        <a href="#games">بازی‌ها</a>
-        <a href="#about">درباره دوربازی</a>
-        <a class="start-btn" href="#games">
-          <span class="start-arrow">←</span>
-          شروع بازی
-        </a>
-      </nav>
+    <!-- ربات -->
+    <button class="robot" id="robot" type="button" aria-label="با ربات سلام کن" data-depth="-14">
+      <img class="bean" src="img/19_yellow_beanbag_decor.png" alt="">
+      <img class="bot" src="img/01_robot_gamer.png" alt="ربات بازی‌باز دوربازی">
+      <span class="bubble" id="bubble" role="status">سلام! بزن بریم بازی 🎮</span>
+    </button>
+
+    <!-- لوگو -->
+    <header class="brand">
+      <h1 class="visually-hidden">دوربازی</h1>
+      <img class="logo" src="img/02_game_logo.png" alt="دوربازی" data-depth="-6">
+      <img class="subtitle" src="img/03_subtitle_banner.png" alt="دنیای بازی‌های گروهی آنلاین">
     </header>
 
-    <section class="hero-card" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <div class="hero-badge"><span class="badge-dot"></span> دورهمی، خنده، رقابت!</div>
-        <h1 id="hero-title">دوربازی؛<br><span>بازی‌ها تازه شروع شدن!</span></h1>
-        <p class="hero-desc">یه بازی انتخاب کن، دوستات رو خبر کن و ببین برنده‌ی این دور کیه!</p>
-        <a class="cta-button" href="#games">بزن بریم بازی کنیم <span>←</span></a>
-        <div class="hero-caption">بازی گروهی، بدون دردسر <span class="caption-dots"><i></i><i></i><i></i></span></div>
-      </div>
+    <!-- قفسه و تاس -->
+    <div class="shelf-wrap" data-depth="12">
+      <button class="shelf" id="block" type="button" aria-label="جعبه سؤال؛ یه نکته بگیر">
+        <img src="img/04_shelf_question_block.png" alt="">
+        <span class="coin" id="coin" aria-hidden="true">؟</span>
+      </button>
+    </div>
+    <button class="dice" id="dice" type="button" aria-label="تاس بنداز" data-depth="16">
+      <img src="img/06_dice.png" alt="">
+      <span class="roll" id="roll" aria-live="polite"></span>
+    </button>
 
-      <div class="hero-stage" role="img" aria-label="ربات دوربازی با دسته بازی">
-        <img class="decor plant-small" src="assets/plant.svg" alt="" aria-hidden="true">
-        <img class="decor question-block" src="assets/question-block.svg" alt="" aria-hidden="true">
-        <img class="decor dice-stack" src="assets/dice-stack.svg" alt="" aria-hidden="true">
-        <img class="decor sparkle sparkle-a" src="assets/spark-yellow.svg" alt="" aria-hidden="true">
-        <img class="decor sparkle sparkle-b" src="assets/spark-pink.svg" alt="" aria-hidden="true">
-        <div class="bean-bag"></div>
-        <img class="mascot" src="assets/mascot-robot.svg" alt="" aria-hidden="true">
-      </div>
+    <!-- لابی بازی‌ها -->
+    <section class="lobby" aria-labelledby="lobby-title">
+      <h2 id="lobby-title" class="visually-hidden">کدوم بازی رو بریم؟</h2>
+      <button class="nav nav-left" id="goLeft" type="button" aria-label="بازی بعدی"><img src="img/12_left_navigation_arrow.png" alt=""></button>
+      <button class="nav nav-right" id="goRight" type="button" aria-label="بازی قبلی"><img src="img/13_right_navigation_arrow.png" alt=""></button>
 
-      <div class="hero-logo-wrap">
-        <div class="logo-controller"><img src="assets/logo-controller.svg" alt="" aria-hidden="true"></div>
-        <div class="logo-title" aria-label="دوربازی">
-          <span class="logo-main white">دور</span><span class="logo-main yellow">بازی</span>
-        </div>
-        <div class="logo-pill"><span class="group-glyph"></span> دنیای بازی‌های گروهی آنلاین</div>
+      <div id="games-list" class="track" tabindex="0" aria-live="polite">
+        <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
       </div>
+      <img class="hand" id="hand" src="img/15_hand_cursor.png" alt="" aria-hidden="true">
+      <div class="dots" id="dots" role="tablist" aria-label="انتخاب بازی"></div>
     </section>
 
-    <section class="games-section" id="games" aria-labelledby="games-title">
-      <div class="carousel-shell">
-        <button class="nav-arrow prev" type="button" id="prevBtn" aria-label="کارت قبلی">
-          <img src="assets/arrow-circle.svg" alt="" aria-hidden="true">
-        </button>
-
-        <div class="carousel-track-wrap">
-          <div class="games-header">
-            <div class="games-subtitle">وقتشه یه بازی انتخاب کنی</div>
-            <h2 id="games-title">کدوم بازی رو بریم؟</h2>
-          </div>
-
-          <div id="games-list" class="carousel-track" aria-live="polite">
-            <div class="loading-card">
-              <span class="loader"></span>
-              <p>داریم کارت‌های بازی رو می‌چینیم...</p>
-            </div>
-          </div>
-
-          <div class="carousel-dots" id="carouselDots" aria-label="نشانگر اسلایدها"></div>
-        </div>
-
-        <button class="nav-arrow next" type="button" id="nextBtn" aria-label="کارت بعدی">
-          <img src="assets/arrow-circle.svg" alt="" aria-hidden="true">
-        </button>
-      </div>
-    </section>
-
-    <section class="about-strip" id="about">
-      <div class="about-icon"><img src="assets/logo-controller.svg" alt="" aria-hidden="true"></div>
-      <div class="about-copy">
-        <h3>فعلاً دو بازی آماده‌ست</h3>
-        <p>الان می‌تونی بین «مسابقه با بازر» و «اسم‌فامیل» انتخاب کنی؛ ساختار صفحه هم طوری چیده شده که بعداً بازی‌های جدید به‌راحتی اضافه بشن.</p>
-      </div>
-      <a href="#games" class="about-link">انتخاب بازی <span>←</span></a>
-    </section>
+    <footer class="foot">دوربازی · ساخته شده برای دورهمی‌های به‌یادموندنی</footer>
   </main>
-
   <script src="lobby.js"></script>
 </body>
 </html>

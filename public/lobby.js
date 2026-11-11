@@ -1,193 +1,163 @@
 (() => {
-  const list = document.getElementById('games-list');
-  const dotsWrap = document.getElementById('carouselDots');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  if (!list) return;
+  /* ---------- نقشه‌ی بازی‌ها به تصویر و رنگ ---------- */
+  const THEMES = [
+    { key: 'bomb',    match: /بمب/,       img: '07_card_bomb_quiz',          top: '#6c32ce', bot: '#4a1ea5' },
+    { key: 'word',    match: /حدس|کلمه/,  img: '08_card_word_quiz',          top: '#13a533', bot: '#067a25' },
+    { key: 'buzzer',  match: /بازز|مسابقه/, img: '09_card_button_competition', top: '#1f66cc', bot: '#0a45a8', featured: true },
+    { key: 'charade', match: /بانتر|میم/, img: '10_card_charades',           top: '#f5911a', bot: '#dc6204' },
+    { key: 'wheel',   match: /گردونه|شانس/, img: '11_card_wheel_of_fortune',  top: '#f0609b', bot: '#cf2f6c' },
+  ];
+  // اگر API در دسترس نبود، همین نمونه‌ها نمایش داده می‌شن
+  const FALLBACK = [
+    { title: 'بمب سؤالی', description: 'پاسخ بده، قبل از انفجار!', minPlayers: 2, path: '#' },
+    { title: 'حدس کلمه', description: 'کلمه رو از روی سرنخ‌ها حدس بزن!', minPlayers: 2, path: '#' },
+    { title: 'مسابقه با بازز', description: 'رقابت هیجانی رو شروع کن!', minPlayers: 2, path: '#' },
+    { title: 'بانتر میم', description: 'با تقلید، کلمه رو به بقیه بفهمون!', minPlayers: 2, path: '#' },
+    { title: 'گردونه شانس', description: 'بچرخون و ببین شانست چیه!', minPlayers: 2, path: '#' },
+  ];
+  const fa = n => Number(n).toLocaleString('fa-IR');
+  const PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>';
 
-  const cardStyles = {
-    'buzzer': {
-      className: 'blue',
-      icon: 'assets/icon-buzzer.svg',
-      featured: true,
-      subtitle: 'رقابت هیجان‌دار با اطلاعات عمومی',
-      label: 'محبوب‌ترین',
-    },
-    'esm-famil': {
-      className: 'green',
-      icon: 'assets/icon-words.svg',
-      featured: false,
-      subtitle: 'کلمه بساز، امتیاز بگیر و سریع جواب بده',
-      label: '',
-    },
-    'default': {
-      className: 'purple',
-      icon: 'assets/icon-words.svg',
-      featured: false,
-      subtitle: 'یه بازی جذاب برای دورهمی‌های آنلاین',
-      label: '',
-    }
+  const track = document.getElementById('games-list');
+  const dotsEl = document.getElementById('dots');
+  const hand = document.getElementById('hand');
+  let cards = [], active = -1, lock = 0;
+
+  /* ---------- ساخت کارت‌ها ---------- */
+  async function load() {
+    let games;
+    try {
+      const res = await fetch('/api/games');
+      if (!res.ok) throw 0;
+      games = await res.json();
+    } catch { games = FALLBACK; }
+    render(games);
+  }
+
+  function render(games) {
+    track.innerHTML = '';
+    cards = games.map((g, i) => {
+      const t = THEMES.find(t => t.match.test(g.title)) || THEMES[i % THEMES.length];
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = g.path;
+      a.style.cssText = `--i:${i};--top:${t.top};--bot:${t.bot}`;
+      a.innerHTML = `
+        
+        <img class="art" src="img/${t.img}.png" alt="">
+        <div class="body"><h3></h3><p></p><span class="pill">${PERSON}<span class="min"></span></span></div>
+        <span class="play">بزن بریم! ←</span>`;
+      a.querySelector('h3').textContent = g.title;
+      a.querySelector('p').textContent = g.description;
+      a.querySelector('.min').textContent = `حداقل ${fa(g.minPlayers)} نفر`;
+      a._featured = !!t.featured;
+      // کلیک روی کارت غیرفعال → میاد وسط؛ روی کارت وسط → وارد بازی می‌شی
+      a.addEventListener('click', e => {
+        if (cards.indexOf(a) !== active) { e.preventDefault(); goTo(cards.indexOf(a)); }
+      });
+      track.appendChild(a);
+      return a;
+    });
+    dotsEl.innerHTML = '';
+    cards.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot'; d.type = 'button'; d.setAttribute('aria-label', `بازی ${fa(i + 1)}`);
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    });
+    const start = Math.max(0, cards.findIndex(c => c._featured));
+    setActive(start);
+    const recenter = () => goTo(active < 0 ? start : active, true);
+    requestAnimationFrame(recenter); setTimeout(recenter, 500); addEventListener('load', recenter); addEventListener('resize', recenter);
+  }
+
+  /* ---------- حرکت ---------- */
+  function setActive(i) {
+    if (i === active) return;
+    active = i;
+    cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
+    [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+  function goTo(i, instant) {
+    i = Math.min(cards.length - 1, Math.max(0, i));
+    setActive(i); lock = Date.now() + (instant ? 150 : 750);
+    const c = cards[i], tr = track.getBoundingClientRect(), cr = c.getBoundingClientRect();
+    track.scrollBy({ left: cr.left + cr.width / 2 - (tr.left + tr.width / 2), behavior: instant ? 'auto' : 'smooth' });
+  }
+  // وقتی با انگشت/ماوس اسکرول می‌کنی، نزدیک‌ترین کارت به مرکز فعال می‌شه
+  let tick;
+  track.addEventListener('scroll', () => {
+    if (Date.now() < lock) return;
+    cancelAnimationFrame(tick);
+    tick = requestAnimationFrame(() => {
+      const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+      let best = 0, bd = 1e9;
+      cards.forEach((c, k) => {
+        const r = c.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid);
+        if (d < bd) { bd = d; best = k; }
+      });
+      setActive(best);
+    });
+  }, { passive: true });
+
+  // در RTL کارت بعدی سمت چپ است
+  document.getElementById('goLeft').onclick = () => goTo(active + 1);
+  document.getElementById('goRight').onclick = () => goTo(active - 1);
+  track.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(active + 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(active - 1); }
+  });
+  // دست اشاره‌گر فقط تا وقتی کسی کاری نکرده نشون داده می‌شه
+  ['pointerdown', 'wheel', 'keydown'].forEach(ev => addEventListener(ev, () => hand.classList.add('hide'), { once: true }));
+
+  /* ---------- ربات ---------- */
+  const robot = document.getElementById('robot'), bubble = document.getElementById('bubble');
+  const LINES = ['سلام! بزن بریم بازی 🎮', 'دوستات رو خبر کن!', 'امروز شانست باهاته 🍀', 'من آماده‌ام، تو چی؟', 'یه دست بازز بزنیم؟ 🔴', 'بازنده‌ی این دور شیرینی می‌خره!'];
+  let li = 0, bt;
+  function say(text) {
+    bubble.textContent = text; bubble.classList.add('show');
+    clearTimeout(bt); bt = setTimeout(() => bubble.classList.remove('show'), 2600);
+  }
+  robot.onclick = () => {
+    robot.classList.remove('jump'); void robot.offsetWidth; robot.classList.add('jump');
+    say(LINES[li++ % LINES.length]);
+  };
+  setTimeout(() => say(LINES[0]), 1400);
+
+  /* ---------- تاس ---------- */
+  const dice = document.getElementById('dice'), rollEl = document.getElementById('roll');
+  let rt;
+  dice.onclick = () => {
+    dice.classList.remove('rolling'); void dice.offsetWidth; dice.classList.add('rolling');
+    rollEl.classList.remove('show');
+    clearTimeout(rt);
+    rt = setTimeout(() => {
+      const n = 1 + Math.floor(Math.random() * 6);
+      rollEl.textContent = n === 6 ? 'شش! 🎉' : `${fa(n)} اومد!`;
+      rollEl.classList.add('show');
+      rt = setTimeout(() => rollEl.classList.remove('show'), 2000);
+    }, 550);
   };
 
-  const peopleIcon = 'assets/icon-people.svg';
-  let gamesData = [];
-  let currentIndex = 0;
+  /* ---------- جعبه سؤال ---------- */
+  const block = document.getElementById('block'), coin = document.getElementById('coin');
+  const TIPS = ['برای هر بازی حداقل ۲ نفر لازمه.', 'اتاق بساز و لینکش رو برای دوستات بفرست!', 'کارت وسط رو بزن تا وارد بازی بشی.', 'بازنده‌ها هم برنده‌ی خنده‌ان 😄'];
+  let ti = 0;
+  block.onclick = () => {
+    block.classList.remove('bump'); coin.classList.remove('fly'); void block.offsetWidth;
+    block.classList.add('bump'); coin.classList.add('fly');
+    say(TIPS[ti++ % TIPS.length]);
+  };
 
-  function normalizeGame(game) {
-    const id = String(game.id || '').toLowerCase();
-    const title = String(game.title || 'بازی گروهی');
-    if (id.includes('buzzer') || title.includes('بازر')) {
-      return { ...game, id: 'buzzer' };
-    }
-    if (id.includes('esm') || id.includes('famil') || title.includes('اسم')) {
-      return { ...game, id: 'esm-famil' };
-    }
-    return game;
-  }
-
-  function createCard(game) {
-    const look = cardStyles[game.id] || cardStyles.default;
-    const card = document.createElement('a');
-    card.className = `game-card ${look.className}`;
-    card.href = game.path || '#';
-    card.setAttribute('aria-label', `${game.title}، حداقل ${game.minPlayers || 2} نفر`);
-
-    if (look.featured) {
-      const frame = document.createElement('div');
-      frame.className = 'featured-frame';
-      const badge = document.createElement('div');
-      badge.className = 'featured-badge';
-      badge.innerHTML = `<img class="crown-icon" src="assets/crown-mini.svg" alt="" aria-hidden="true"> ${look.label}`;
-      card.append(frame, badge);
-    }
-
-    const visual = document.createElement('div');
-    visual.className = 'card-top';
-    visual.innerHTML = `<img src="${look.icon}" alt="" aria-hidden="true">`;
-
-    const title = document.createElement('h3');
-    title.textContent = game.title || 'بازی گروهی';
-
-    const desc = document.createElement('p');
-    desc.textContent = game.description || look.subtitle;
-
-    const badge = document.createElement('div');
-    badge.className = 'players-badge';
-    badge.innerHTML = `<img src="${peopleIcon}" alt="" aria-hidden="true"><span>حداقل ${game.minPlayers || 2} نفر</span>`;
-
-    card.append(visual, title, desc, badge);
-    return card;
-  }
-
-  function updateDots() {
-    if (!dotsWrap) return;
-    [...dotsWrap.children].forEach((dot, index) => {
-      dot.classList.toggle('active', index === currentIndex);
-      dot.setAttribute('aria-current', index === currentIndex ? 'true' : 'false');
+  /* ---------- پارالاکس ملایم با ماوس ---------- */
+  const scene = document.getElementById('scene');
+  document.querySelectorAll('[data-depth]').forEach(el => el.style.setProperty('--d', el.dataset.depth));
+  if (matchMedia('(pointer:fine)').matches) {
+    scene.addEventListener('pointermove', e => {
+      scene.style.setProperty('--mx', (e.clientX / innerWidth - .5).toFixed(3));
+      scene.style.setProperty('--my', (e.clientY / innerHeight - .5).toFixed(3));
     });
   }
 
-  function updateButtons() {
-    const isMobile = window.innerWidth <= 980;
-    if (!prevBtn || !nextBtn) return;
-    if (!isMobile || gamesData.length <= 1) {
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      return;
-    }
-    prevBtn.disabled = currentIndex <= 0;
-    nextBtn.disabled = currentIndex >= gamesData.length - 1;
-  }
-
-  function updateCarousel() {
-    const cards = [...list.querySelectorAll('.game-card')];
-    const isMobile = window.innerWidth <= 980;
-    cards.forEach((card, index) => {
-      if (isMobile) {
-        card.style.display = index === currentIndex ? 'flex' : 'none';
-      } else {
-        card.style.display = 'flex';
-      }
-    });
-    updateDots();
-    updateButtons();
-  }
-
-  function renderDots(count) {
-    if (!dotsWrap) return;
-    dotsWrap.innerHTML = '';
-    if (count <= 1) return;
-    for (let i = 0; i < count; i += 1) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.setAttribute('aria-label', `رفتن به کارت ${i + 1}`);
-      btn.addEventListener('click', () => {
-        currentIndex = i;
-        updateCarousel();
-      });
-      dotsWrap.appendChild(btn);
-    }
-  }
-
-  async function loadGames() {
-    list.innerHTML = '<div class="loading-card"><span class="loader"></span><p>داریم کارت‌های بازی رو می‌چینیم...</p></div>';
-    try {
-      const response = await fetch('/api/games', { headers: { Accept: 'application/json' } });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const rawGames = await response.json();
-      const filtered = (Array.isArray(rawGames) ? rawGames : [])
-        .map(normalizeGame)
-        .filter(game => game.id === 'buzzer' || game.id === 'esm-famil');
-
-      const order = ['esm-famil', 'buzzer'];
-      gamesData = filtered.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-
-      list.replaceChildren();
-
-      if (gamesData.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'empty-card';
-        empty.innerHTML = '<p>فعلاً هیچ بازی آماده نیست. بعداً دوباره سر بزن.</p>';
-        list.appendChild(empty);
-        renderDots(0);
-        updateButtons();
-        return;
-      }
-
-      gamesData.forEach(game => list.appendChild(createCard(game)));
-      currentIndex = Math.min(currentIndex, Math.max(0, gamesData.length - 1));
-      renderDots(gamesData.length);
-      updateCarousel();
-    } catch (error) {
-      console.error('Could not load games:', error);
-      const errorBox = document.createElement('div');
-      errorBox.className = 'error-card';
-      errorBox.innerHTML = '<p>دریافت فهرست بازی‌ها انجام نشد؛ اتصال سرور رو بررسی کن.</p>';
-      const retry = document.createElement('button');
-      retry.type = 'button';
-      retry.textContent = 'تلاش دوباره';
-      retry.addEventListener('click', loadGames);
-      errorBox.appendChild(retry);
-      list.replaceChildren(errorBox);
-      renderDots(0);
-      updateButtons();
-    }
-  }
-
-  prevBtn?.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex -= 1;
-      updateCarousel();
-    }
-  });
-
-  nextBtn?.addEventListener('click', () => {
-    if (currentIndex < gamesData.length - 1) {
-      currentIndex += 1;
-      updateCarousel();
-    }
-  });
-
-  window.addEventListener('resize', updateCarousel);
-  loadGames();
+  load();
 })();
