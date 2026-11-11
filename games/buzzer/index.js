@@ -9,7 +9,8 @@ const meta = {
 };
 
 const VALUES = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-const WRONG_PENALTY = 0.5; // برای حذف جریمه صفر بگذارید
+const WRONG_PENALTY = 0.5;          // برای حذف جریمه صفر بگذارید
+const HOST_GRACE_MS = 60 * 1000;    // مهلت بازگشت مجری قبل از بسته شدن اتاق
 
 const rooms = new Map();
 const CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -46,8 +47,9 @@ function init(arg) {
     code: r.code,
     phase: r.phase,            // idle | open | answering
     active: r.active,
+    hostOnline: r.hostOnline,
     q: r.q ? { text: r.q.text, options: r.q.options } : null,
-    reveal: r.reveal,          // null تا پایان سوال، بعد { answer, fact, by }
+    reveal: r.reveal,
     queue: r.queue.map((t) => idOf(r, t)),
     tried: [...r.attempted].map((t) => idOf(r, t)),
     used: [...r.used],
@@ -56,7 +58,6 @@ function init(arg) {
 
   const push = (r) => {
     nsp.to(r.code).emit('state', view(r));
-    // پاسخ و توضیح فقط برای مجری
     nsp.to(r.code + ':host').emit('hostinfo',
       r.q && !r.reveal ? { answer: r.q.answer, fact: r.q.fact } : null);
   };
@@ -64,6 +65,12 @@ function init(arg) {
   const closeQuestion = (r, by = null) => {
     if (r.q) r.reveal = { answer: r.q.answer, fact: r.q.fact, by: by ? idOf(r, by) : null };
     r.phase = 'idle'; r.active = null; r.queue = []; r.attempted.clear();
+  };
+
+  const closeRoom = (r) => {
+    clearTimeout(r.closeTimer);
+    nsp.to(r.code).emit('closed');
+    rooms.delete(r.code);
   };
 
   nsp.on('connection', (socket) => {
@@ -77,8 +84,8 @@ function init(arg) {
     socket.on('host:create', (p = {}, ack) => {
       if (!p.token) return ack?.({ ok: false });
       const r = {
-        code: newCode(), hostToken: p.token, phase: 'idle', active: null,
-        q: null, reveal: null,
+        code: newCode(), hostToken: p.token, hostSid: socket.id, hostOnline: true, closeTimer: null,
+        phase: 'idle', active: null, q: null, reveal: null,
         queue: [], attempted: new Set(), used: new Set(),
         players: new Map(), nextId: 1, touched: Date.now(),
       };
@@ -115,6 +122,8 @@ function init(arg) {
       const r = rooms.get(String(p.code || '').toUpperCase());
       if (!r) return ack?.({ ok: false });
       if (p.token === r.hostToken) {
+        clearTimeout(r.closeTimer);
+        r.hostOnline = true; r.hostSid = socket.id;
         socket.data = { code: r.code, token: p.token, role: 'host' };
         socket.join(r.code + ':host');
       } else if (r.players.has(p.token)) {
@@ -127,6 +136,25 @@ function init(arg) {
       push(r);
     });
 
+    socket.on('leave', () => {
+      const r = rooms.get(socket.data?.code);
+      if (!r) return;
+      const t = socket.data.token;
+
+      if (socket.data.role === 'host' && t === r.hostToken) {
+        closeRoom(r);
+      } else if (socket.data.role === 'player') {
+        r.players.delete(t);
+        r.queue = r.queue.filter((x) => x !== t);
+        r.attempted.delete(t);
+        if (r.phase === 'answering' && r.queue.length === 0) r.phase = 'open';
+        push(r);
+      }
+      socket.leave(r.code);
+      socket.leave(r.code + ':host');
+      socket.data = {};
+    });
+
     socket.on('player:buzz', () => {
       const r = room();
       if (!r || socket.data.role !== 'player') return;
@@ -137,15 +165,22 @@ function init(arg) {
       push(r);
     });
 
-    socket.on('host:activate', ({ value } = {}) => {
+    socket.on('host:activate', ({ value } = {}, ack) => {
       const r = room();
-      if (!isHost(r) || r.phase !== 'idle') return;
-      if (!VALUES.includes(value) || r.used.has(value)) return;
+      if (!isHost(r)) return ack?.({ ok: false, error: 'شما مجری این اتاق نیستید' });
+      if (r.phase !== 'idle') return ack?.({ ok: false, error: 'سوال قبلی هنوز بسته نشده؛ «رد کردن» را بزنید' });
+      if (!VALUES.includes(value)) return ack?.({ ok: false, error: 'ارزش نامعتبر' });
+      if (r.used.has(value)) return ack?.({ ok: false, error: 'این ارزش قبلاً استفاده شده' });
+
+      const q = pickQuestion(value);
+      if (!q) return ack?.({ ok: false, error: 'برای این ارزش سوالی تعریف نشده' });
+
       r.used.add(value);
       r.active = value; r.queue = []; r.attempted.clear();
-      r.q = pickQuestion(value);
+      r.q = q;
       r.reveal = null;
       r.phase = 'open';
+      ack?.({ ok: true });
       push(r);
     });
 
@@ -175,28 +210,18 @@ function init(arg) {
       closeQuestion(r);
       push(r);
     });
-    socket.on('leave', () => {
-      const r = rooms.get(socket.data?.code);
-      if (!r) return;
-      const t = socket.data.token;
 
-      if (socket.data.role === 'host' && t === r.hostToken) {
-        nsp.to(r.code).emit('closed');
-        rooms.delete(r.code);
-      } else if (socket.data.role === 'player') {
-        r.players.delete(t);
-        r.queue = r.queue.filter((x) => x !== t);
-        r.attempted.delete(t);
-        if (r.phase === 'answering' && r.queue.length === 0) r.phase = 'open';
-        push(r);
-      }
-      socket.leave(r.code);
-      socket.leave(r.code + ':host');
-      socket.data = {};
-    });
     socket.on('disconnect', () => {
       const r = rooms.get(socket.data?.code);
-      const pl = r?.players.get(socket.data.token);
+      if (!r) return;
+      if (socket.data.role === 'host' && r.hostSid === socket.id) {
+        r.hostOnline = false;
+        clearTimeout(r.closeTimer);
+        r.closeTimer = setTimeout(() => closeRoom(r), HOST_GRACE_MS);
+        push(r);
+        return;
+      }
+      const pl = r.players.get(socket.data.token);
       if (pl && pl.sid === socket.id) { pl.online = false; push(r); }
     });
   });

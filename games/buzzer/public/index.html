@@ -27,9 +27,11 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .btns button{margin:0}
 .status{text-align:center;font-size:1.2rem;min-height:2em}
 .err{color:#f87171;text-align:center;margin-top:8px}
+.warn{text-align:center;color:#facc15;border-color:#facc15}
 
 #bar{position:fixed;top:10px;left:10px;z-index:30;display:flex;gap:8px}
 #mute,#leave{width:46px;height:46px;border-radius:50%;padding:0;margin:0;font-size:1.3rem;background:#1e293b;border:1px solid #475569;color:#fff}
+
 .badge{display:inline-block;width:18px;height:18px;vertical-align:middle;margin-inline-end:8px;background:var(--c)}
 
 .bz-wrap{width:min(78vw,320px);height:min(78vw,320px);margin:16px auto;filter:drop-shadow(0 0 18px var(--c,#38bdf8))}
@@ -73,7 +75,11 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 </head>
 <body>
 <div id="flash"></div>
-<div id="bar" class="hide"><button id="mute" title="صدا">🔊</button><button id="leave" title="خروج">🚪</button></div>
+<div id="bar" class="hide">
+  <button id="mute" title="صدا">🔊</button>
+  <button id="leave" title="خروج از اتاق">🚪</button>
+</div>
+
 <div class="wrap">
   <h1>🔔 مسابقه با بازر</h1>
 
@@ -105,15 +111,18 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
       </div>
     </div>
     <div class="card"><h3>امتیازها</h3><div id="hScores"></div></div>
+    <button class="sec leaveBtn">🚪 بستن اتاق و خروج</button>
   </div>
 
   <div id="player" class="hide">
+    <div id="offline" class="card warn hide">⚠️ ارتباط مجری قطع شده است. اگر برنگردد اتاق بسته می‌شود.</div>
     <div id="pQ" class="card hide"></div>
     <div id="pStatus" class="status"></div>
     <div id="buzzWrap" class="bz-wrap">
       <button id="buzz"><span class="beam"></span><span class="lbl">بزن!</span></button>
     </div>
     <div class="card"><h3>امتیازها</h3><div id="pScores"></div></div>
+    <button class="sec leaveBtn">🚪 خروج از اتاق</button>
   </div>
 </div>
 
@@ -134,6 +143,7 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 const sock = io('/buzzer');
 const $ = (id) => document.getElementById(id);
 const VALUES = [100,200,300,400,500,600,700,800,900,1000];
+const BUZZ_SECONDS = 4.5;
 const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
 /* ---------- بازرها: رنگ و شکل ---------- */
@@ -169,12 +179,12 @@ $('mute').onclick = () => {
   muted = !muted;
   localStorage.setItem('bz_mute', muted ? '1' : '0');
   paintMute();
-  if (!muted) ctx();
+  if (muted) stopBuzzSound(); else ctx();
 };
 paintMute();
 document.addEventListener('pointerdown', () => { try { ctx(); } catch {} }, { once: true });
 
-function tone(f, t, d, type = 'sine', v, f2) {
+function tone(f, t, d, type = 'sine', v, f2, dest) {
   if (muted) return;
   const c = ctx(), t0 = c.currentTime + t;
   const o = c.createOscillator(), g = c.createGain();
@@ -185,10 +195,11 @@ function tone(f, t, d, type = 'sine', v, f2) {
   g.gain.setValueAtTime(0.0001, t0);
   g.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
   g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
-  o.connect(g); g.connect(c.destination);
+  o.connect(g); g.connect(dest || c.destination);
   o.start(t0); o.stop(t0 + d + 0.02);
 }
 
+// [فرکانس، شروع، مدت، نوع موج، فرکانس پایانی]
 const SND = [
   [[880,0,.18,'square'],[660,.18,.18,'square'],[880,.36,.18,'square'],[660,.54,.18,'square']],
   [[1318,0,.7,'sine'],[1976,0,.5,'sine'],[1318,.25,.7,'sine'],[1976,.25,.5,'sine']],
@@ -201,8 +212,44 @@ const SND = [
   [[1000,0,.08,'sine'],[1000,.14,.08,'sine'],[1000,.28,.08,'sine']],
   [[160,0,.35,'sine',40],[80,0,.35,'sine',30]],
 ];
-const playBuzzer = (i) => SND[i % 10].forEach(([f, t, d, ty, f2]) => tone(f, t, d, ty, undefined, f2));
 
+// صدای بازر: الگو تکرار می‌شود تا مدت مورد نظر پر شود
+let bzBus = null;
+function stopBuzzSound() {
+  if (!bzBus) return;
+  const b = bzBus; bzBus = null;
+  try { b.gain.cancelScheduledValues(0); b.gain.setTargetAtTime(0, ctx().currentTime, 0.03); } catch {}
+  setTimeout(() => { try { b.disconnect(); } catch {} }, 400);
+}
+function playBuzzer(i, secs = BUZZ_SECONDS) {
+  if (muted) return;
+  stopBuzzSound();
+  const c = ctx();
+  const bus = c.createGain();
+  bus.connect(c.destination);
+  bzBus = bus;
+
+  const pat = SND[i % 10];
+  const len = Math.max(...pat.map(([, t, d]) => t + d)) + 0.25;
+  const reps = Math.max(1, Math.ceil(secs / len));
+  for (let r = 0; r < reps; r++) {
+    pat.forEach(([f, t, d, ty, f2]) => tone(f, t + r * len, d, ty, undefined, f2, bus));
+  }
+  const end = c.currentTime + secs;
+  bus.gain.setValueAtTime(1, Math.max(c.currentTime, end - 0.5));
+  bus.gain.linearRampToValueAtTime(0, end);
+}
+
+// ویبره: فقط در Chrome/Android کار می‌کند (iPhone پشتیبانی نمی‌کند)
+function vibrateLong(secs = BUZZ_SECONDS) {
+  if (!navigator.vibrate) return;
+  const p = []; let t = 0;
+  while (t < secs * 1000) { p.push(450, 150); t += 600; }
+  navigator.vibrate(p);
+}
+function stopVibrate() { if (navigator.vibrate) navigator.vibrate(0); }
+
+// موسیقی اینترو
 let musicTimer = null;
 const ARP = [0, 4, 7, 12, 7, 4, 0, 4];
 const ROOTS = [220, 174.6, 196, 164.8];
@@ -266,6 +313,29 @@ $('joinBtn').onclick = () => {
   });
 };
 
+/* ---------- خروج از اتاق ---------- */
+function leaveRoom() {
+  stopMusic(); stopBuzzSound(); stopVibrate();
+  introRunning = false;
+  sessionStorage.removeItem('bz_me');
+  me = null; st = null; hostInfo = null;
+  document.body.classList.remove('alarm');
+  show('join');
+}
+function askLeave() {
+  const msg = me && me.role === 'host' ? 'اتاق بسته می‌شود و همه بازیکن‌ها خارج می‌شوند. ادامه می‌دهید؟' : 'از اتاق خارج می‌شوید؟';
+  if (!confirm(msg)) return;
+  sock.emit('leave');
+  leaveRoom();
+}
+$('leave').onclick = askLeave;
+document.querySelectorAll('.leaveBtn').forEach((b) => { b.onclick = askLeave; });
+sock.on('closed', () => {
+  if (!me) return;
+  leaveRoom();
+  alert('اتاق بسته شد');
+});
+
 /* ---------- اینترو ---------- */
 function runIntro(target) {
   introRunning = true;
@@ -291,34 +361,19 @@ function reveal(i) {
   void $('introWrap').offsetWidth;
   $('introWrap').classList.add('pop');
   [523, 659, 784, 1047].forEach((f, k) => tone(f, k * .07, .9, 'triangle', .18));
-  setTimeout(() => playBuzzer(i), 450);
+  setTimeout(() => playBuzzer(i, 1.5), 450);
   $('introBtns').classList.remove('hide');
 }
-$('testBtn').onclick = () => playBuzzer(me.bz || 0);
-function leaveRoom() {
-  stopMusic(); introRunning = false;
-  sessionStorage.removeItem('bz_me');
-  me = null; st = null; hostInfo = null;
-  document.body.classList.remove('alarm');
-  show('join');
-}
-$('leave').onclick = () => {
-  if (!confirm('از اتاق خارج می‌شوید؟')) return;
-  sock.emit('leave');
-  leaveRoom();
-};
-sock.on('closed', () => {
-  if (!me) return;
-  leaveRoom();
-  alert('مجری اتاق را بست');
-});
-$('goBtn').onclick = () => { stopMusic(); introRunning = false; show('player'); render(); };
+$('testBtn').onclick = () => { playBuzzer(me.bz || 0); vibrateLong(1.5); };
+$('goBtn').onclick = () => { stopMusic(); stopBuzzSound(); stopVibrate(); introRunning = false; show('player'); render(); };
 
 /* ---------- مجری ---------- */
 VALUES.forEach((v) => {
   const b = document.createElement('button');
   b.textContent = v; b.dataset.v = v;
-  b.onclick = () => sock.emit('host:activate', { value: v });
+  b.onclick = () => sock.emit('host:activate', { value: v }, (r) => {
+    if (r && !r.ok && r.error) alert(r.error);
+  });
   $('board').appendChild(b);
 });
 $('okBtn').onclick   = () => sock.emit('host:judge', { correct: true });
@@ -329,7 +384,7 @@ $('skipBtn').onclick = () => sock.emit('host:skip');
 $('buzz').addEventListener('pointerdown', (e) => {
   if (e.currentTarget.disabled) return;
   playBuzzer(me.bz || 0);
-  if (navigator.vibrate) navigator.vibrate(30);
+  vibrateLong();
   sock.emit('player:buzz');
 });
 
@@ -406,6 +461,7 @@ function render() {
   } else {
     const b = me.bz || 0;
     colorize($('buzzWrap'), b); shape($('buzz'), b); colorize($('flash'), b);
+    $('offline').classList.toggle('hide', st.hostOnline !== false);
 
     const idx = st.queue.indexOf(me.id);
     const tried = st.tried.includes(me.id);
@@ -417,6 +473,9 @@ function render() {
     else if (st.queue.length) txt = `${pl(st.queue[0]).name || '؟'} در حال جواب دادن است`;
     else txt = `سوال ${st.active} امتیازی باز است. بزن!`;
     $('pStatus').textContent = txt;
+
+    // وقتی سوال بسته شد یا جواب این بازیکن غلط بود، صدا و ویبره قطع شود
+    if (st.phase === 'idle' || tried) { stopBuzzSound(); stopVibrate(); }
 
     const disabled = st.phase === 'idle' || idx >= 0 || tried;
     $('buzz').disabled = disabled;
