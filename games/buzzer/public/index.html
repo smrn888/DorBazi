@@ -7,15 +7,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
 :root {
-  --bg-deep: #060913;
-  --panel-bg: rgba(15, 23, 42, 0.78);
+  --bg-deep: #050811;
+  --panel-bg: rgba(13, 20, 36, 0.78);
   --panel-border: rgba(148, 163, 184, 0.16);
   --panel-glow: rgba(56, 189, 248, 0.1);
   --primary: #38bdf8;
   --primary-glow: rgba(56, 189, 248, 0.45);
   --accent-ok: #10b981;
   --accent-no: #f43f5e;
-  --accent-warn: #f59e0b;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --c: #38bdf8;
@@ -27,9 +26,9 @@ body {
   font-family: Vazirmatn, Tahoma, sans-serif;
   background-color: var(--bg-deep);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.14) 0px, transparent 50%),
-    radial-gradient(at 50% 50%, #0c1527 0%, var(--bg-deep) 100%);
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.14) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, #0a1122 0%, var(--bg-deep) 100%);
   color: var(--text-main);
   min-height: 100vh;
   padding: 20px 16px;
@@ -39,7 +38,6 @@ body {
   position: relative;
 }
 
-/* شبکه پس‌زمینه تکنولوژی */
 body::before {
   content: "";
   position: fixed;
@@ -58,7 +56,6 @@ body::before {
   margin: 0 auto;
 }
 
-/* آیکون‌های وکتور خالص */
 .svg-icon {
   display: inline-block;
   width: 1.25em;
@@ -68,20 +65,20 @@ body::before {
   flex-shrink: 0;
 }
 
-/* هدر اصلی */
+/* هدر بازی */
 .game-header {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   margin-bottom: 22px;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .game-header .header-logo {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #0284c7, #38bdf8);
   display: flex;
   align-items: center;
@@ -91,25 +88,23 @@ body::before {
 }
 
 .game-header h1 {
-  font-size: 1.65rem;
+  font-size: 1.6rem;
   font-weight: 900;
-  letter-spacing: -0.02em;
   background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* کارت‌ها و پنل‌های شیشه‌ای */
+/* پنل‌های شیشه‌ای */
 .card {
   background: var(--panel-bg);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--panel-border);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-  transition: border-color 0.3s ease;
+  box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
 .card h3 {
@@ -122,40 +117,30 @@ body::before {
   gap: 8px;
 }
 
-/* فرم‌ها و اینپوت‌ها */
-.input-group {
-  position: relative;
-  margin-bottom: 12px;
-}
-
+/* فرم‌ها */
+.input-group { position: relative; margin-bottom: 12px; }
 input {
   width: 100%;
   font: inherit;
-  background: rgba(8, 14, 26, 0.75);
+  background: rgba(8, 14, 26, 0.85);
   color: #fff;
   border: 1.5px solid rgba(148, 163, 184, 0.22);
   border-radius: 14px;
   padding: 14px 16px;
   font-weight: 600;
   text-align: center;
-  transition: all 0.25s ease;
   outline: none;
   -webkit-user-select: text;
   user-select: text;
+  transition: all 0.25s ease;
 }
 
 input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.6);
-  background: rgba(8, 14, 26, 0.95);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
-input::placeholder {
-  color: #475569;
-  font-weight: 500;
-}
-
-/* دکمه‌های کنترلی با فیزیک سه‌بعدی */
+/* دکمه‌ها */
 button {
   font: inherit;
   font-weight: 700;
@@ -169,20 +154,14 @@ button {
   gap: 10px;
   width: 100%;
   position: relative;
-  transition: transform 0.12s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.1s ease, filter 0.2s ease, box-shadow 0.2s ease;
   background: linear-gradient(180deg, #38bdf8, #0284c7);
   color: #041226;
   box-shadow: 0 4px 0 #0369a1, 0 10px 20px rgba(2, 132, 199, 0.35);
 }
 
-button:hover:not(:disabled) {
-  filter: brightness(1.1);
-}
-
-button:active:not(:disabled) {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #0369a1, 0 4px 10px rgba(2, 132, 199, 0.2);
-}
+button:hover:not(:disabled) { filter: brightness(1.1); }
+button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #0369a1; }
 
 button.sec {
   background: linear-gradient(180deg, #334155, #1e293b);
@@ -190,30 +169,21 @@ button.sec {
   border: 1px solid rgba(148, 163, 184, 0.18);
   box-shadow: 0 4px 0 #0f172a, 0 6px 16px rgba(0, 0, 0, 0.35);
 }
-
-button.sec:active:not(:disabled) {
-  box-shadow: 0 1px 0 #0f172a;
-}
+button.sec:active:not(:disabled) { box-shadow: 0 1px 0 #0f172a; }
 
 button.ok {
   background: linear-gradient(180deg, #22c55e, #15803d);
   color: #03220e;
   box-shadow: 0 4px 0 #14532d, 0 8px 18px rgba(34, 197, 94, 0.3);
 }
-
-button.ok:active:not(:disabled) {
-  box-shadow: 0 1px 0 #14532d;
-}
+button.ok:active:not(:disabled) { box-shadow: 0 1px 0 #14532d; }
 
 button.no {
   background: linear-gradient(180deg, #f43f5e, #be123c);
   color: #fff;
   box-shadow: 0 4px 0 #881337, 0 8px 18px rgba(244, 63, 94, 0.3);
 }
-
-button.no:active:not(:disabled) {
-  box-shadow: 0 1px 0 #881337;
-}
+button.no:active:not(:disabled) { box-shadow: 0 1px 0 #881337; }
 
 button:disabled {
   opacity: 0.35;
@@ -223,7 +193,7 @@ button:disabled {
   box-shadow: none !important;
 }
 
-/* نوار ابزار بالا */
+/* نوار بالا */
 #bar {
   position: fixed;
   top: 14px;
@@ -243,30 +213,18 @@ button:disabled {
   backdrop-filter: blur(8px);
   border: 1px solid rgba(148, 163, 184, 0.25);
   color: #f8fafc;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
 }
 
-/* بورد سوالات و امتیازها */
-.board {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
+/* بورد سوالات */
+.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .board button {
   padding: 18px 0;
   font-size: 1.15rem;
   font-weight: 800;
-  margin: 0;
   background: linear-gradient(180deg, #1e293b, #0f172a);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
   box-shadow: 0 3px 0 #020617;
-}
-
-.board button:not(:disabled):hover {
-  background: linear-gradient(180deg, #24344d, #142036);
-  border-color: var(--primary);
 }
 
 .code-box {
@@ -289,17 +247,16 @@ button:disabled {
   text-shadow: 0 0 20px var(--primary-glow);
 }
 
-/* لیست صف و جدول رده‌بندی */
+/* ردیف امتیازات و نشان حیوان */
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.55);
   border: 1px solid rgba(148, 163, 184, 0.08);
   margin-bottom: 6px;
-  position: relative;
   transition: transform 0.2s, background 0.3s;
 }
 
@@ -310,19 +267,23 @@ button:disabled {
   font-weight: 800;
 }
 
-.row.bump {
-  background: rgba(245, 158, 11, 0.22);
-}
+.row.bump { background: rgba(245, 158, 11, 0.22); }
 
-.badge {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
+.animal-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   margin-inline-end: 10px;
-  background: var(--c);
+  background: color-mix(in srgb, var(--c) 20%, transparent);
+  border: 1px solid var(--c);
+  color: var(--c);
   box-shadow: 0 0 10px var(--c);
 }
+
+.animal-badge svg { width: 18px; height: 18px; fill: currentColor; }
 
 .status {
   text-align: center;
@@ -335,14 +296,13 @@ button:disabled {
   color: #e2e8f0;
 }
 
-/* تایمر پیشرفت گرافیکی */
+/* تایمر */
 .timer {
   height: 8px;
   border-radius: 999px;
   background: #1e293b;
   overflow: hidden;
   margin: 8px 0 14px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
 }
 
 .timer i {
@@ -355,20 +315,30 @@ button:disabled {
 
 .timer i.low {
   background: linear-gradient(90deg, #f43f5e, #e11d48);
-  box-shadow: 0 0 14px #f43f5e;
   animation: pulse 0.3s ease-in-out infinite alternate;
 }
 
-/* بازر تعاملی فیزیکی با رفلکس نور */
+/* بازر حیوانی اصلی */
 .bz-wrap {
-  width: min(74vw, 290px);
-  height: min(74vw, 290px);
+  width: min(76vw, 300px);
+  height: min(76vw, 300px);
   margin: 24px auto;
   position: relative;
-  filter: drop-shadow(0 14px 28px rgba(0,0,0,0.7)) drop-shadow(0 0 25px var(--c, #38bdf8));
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.bz-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c) 0%, transparent 70%);
+  opacity: 0.35;
+  filter: blur(14px);
+  pointer-events: none;
+  animation: patronus-breathe 3s ease-in-out infinite alternate;
 }
 
 #buzz {
@@ -376,55 +346,57 @@ button:disabled {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   margin: 0;
   padding: 0;
-  border: 0;
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: #fff;
+  border: 3px solid color-mix(in srgb, var(--c) 70%, #ffffff);
   background: 
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.45) 0%, transparent 60%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.25), transparent 70%),
-    var(--c, #ef4444);
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22) 0%, transparent 65%),
+    linear-gradient(145deg, color-mix(in srgb, var(--c) 45%, #080f1d), #040711);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.8), inset 0 0 24px var(--c);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   touch-action: manipulation;
   cursor: pointer;
-  box-shadow: inset 0 -8px 16px rgba(0, 0, 0, 0.6), inset 0 8px 16px rgba(255, 255, 255, 0.3);
-  transition: transform 0.08s ease, filter 0.2s ease;
+  transition: transform 0.1s ease, filter 0.25s ease;
+}
+
+#buzz .animal-spirit {
+  width: 52%;
+  height: 52%;
+  fill: var(--c);
+  filter: drop-shadow(0 0 14px var(--c)) drop-shadow(0 0 24px rgba(255,255,255,0.7));
+  z-index: 2;
+  transition: transform 0.3s ease;
 }
 
 #buzz .lbl {
   position: relative;
   z-index: 2;
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #fff;
   letter-spacing: 0.05em;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 14px var(--c);
 }
 
 #buzz .beam {
   position: absolute;
-  inset: -60%;
+  inset: -50%;
   opacity: 0;
-  background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, 0.9) 85%, transparent 100%);
+  background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, 0.8) 85%, transparent 100%);
 }
 
-#buzz.lit .beam {
-  opacity: 1;
-  animation: spin 0.7s linear infinite;
-}
+#buzz.lit .beam { opacity: 1; animation: spin 0.7s linear infinite; }
+#buzz.lit { animation: pulse 0.45s ease-in-out infinite alternate; }
+#buzz.lit .animal-spirit { transform: scale(1.15); }
+#buzz.off { filter: grayscale(0.9) brightness(0.35); cursor: not-allowed; }
+#buzz:active:not(:disabled) { transform: scale(0.93); }
 
-#buzz.lit {
-  animation: pulse 0.45s ease-in-out infinite alternate;
-}
-
-#buzz.off {
-  filter: grayscale(0.9) brightness(0.4);
-  cursor: not-allowed;
-}
-
-#buzz:active:not(:disabled) {
-  transform: scale(0.94);
-}
-
-/* پنل سوال و گزینه‌ها */
+/* سوال و گزینه‌ها */
 .qtext {
   font-size: 1.25rem;
   font-weight: 800;
@@ -444,7 +416,6 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 12px;
-  transition: all 0.25s ease;
 }
 
 .opt-index {
@@ -463,9 +434,7 @@ button:disabled {
   border-color: var(--accent-ok);
   background: rgba(16, 185, 129, 0.16);
   color: #34d399;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
 }
-
 .opt.dim { opacity: 0.35; }
 
 .fact {
@@ -479,14 +448,9 @@ button:disabled {
   color: #cbd5e1;
 }
 
-.res {
-  text-align: center;
-  margin-top: 14px;
-  font-weight: 800;
-  font-size: 1.1rem;
-}
+.res { text-align: center; margin-top: 14px; font-weight: 800; font-size: 1.1rem; }
 
-/* سکوی مدال قهرمانان */
+/* سکوی قهرمانی */
 .podium {
   display: flex;
   align-items: flex-end;
@@ -521,7 +485,7 @@ button:disabled {
 .p2 { min-height: 155px; animation-delay: 0.4s; }
 .p3 { min-height: 125px; }
 
-/* صفحه اینترو چرخان */
+/* پرده ظهور جادویی (Patronus Reveal) */
 #intro {
   position: fixed;
   inset: 0;
@@ -531,28 +495,91 @@ button:disabled {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c, #38bdf8) 35%, #050b14), #02040a 75%);
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--c, #38bdf8) 35%, #050b14), #020409 75%);
 }
 
 #intro::before {
   content: "";
   position: absolute;
   inset: -60%;
-  background: repeating-conic-gradient(rgba(255, 255, 255, 0.05) 0 8deg, transparent 8deg 16deg);
-  animation: spin 24s linear infinite;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.06) 0 8deg, transparent 8deg 16deg);
+  animation: spin 26s linear infinite;
 }
 
-#introShape {
+.patronus-stage {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
   width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.25), transparent 70%),
-    var(--c);
-  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.5);
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* انیمیشن‌ها و استیت‌ها */
+.patronus-orb {
+  width: min(65vw, 240px);
+  height: min(65vw, 240px);
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--c) 80%, #fff);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%), #040813;
+  box-shadow: 0 0 45px var(--c), inset 0 0 35px var(--c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 18px 0;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.patronus-orb svg {
+  width: 62%;
+  height: 62%;
+  fill: var(--c);
+  filter: drop-shadow(0 0 16px var(--c)) drop-shadow(0 0 30px #ffffff);
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+/* انیمیشن جهش و تغییر شکل حیوان حین رولت */
+.patronus-orb.morph {
+  transform: scale(0.85);
+  filter: blur(2px) brightness(1.7);
+}
+
+.patronus-orb.manifest {
+  animation: patronus-manifest 0.9s cubic-bezier(0.18, 1.35, 0.35, 1) forwards;
+}
+
+/* موج انرژی انفجاری بعد از فیکس شدن حیوان */
+.shockwave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--c);
+  pointer-events: none;
+  opacity: 0;
+}
+.patronus-orb.manifest .shockwave {
+  animation: shockwave-fire 0.8s ease-out forwards;
+}
+
+@keyframes patronus-manifest {
+  0% { transform: scale(0.4); filter: brightness(3); }
+  60% { transform: scale(1.18); filter: drop-shadow(0 0 50px var(--c)) brightness(1.6); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 30px var(--c)) brightness(1); }
+}
+
+@keyframes shockwave-fire {
+  0% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; border-width: 1px; }
+}
+
+@keyframes patronus-breathe {
+  from { transform: scale(0.92); opacity: 0.3; }
+  to { transform: scale(1.08); opacity: 0.55; }
+}
+
+/* انیمیشن‌ها و پایه‌ها */
 .hide { display: none !important; }
 .err { color: #fb7185; text-align: center; margin-top: 10px; font-weight: 700; font-size: 0.95rem; }
 .warn { text-align: center; color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); background: rgba(245, 158, 11, 0.1); }
@@ -592,7 +619,6 @@ body.alarm #flash { animation: siren 0.6s ease-in-out infinite alternate; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { from { filter: brightness(1); } to { filter: brightness(1.4); } }
 @keyframes siren { from { opacity: 0.1; } to { opacity: 0.75; } }
-@keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes rise { from { transform: translateY(80px); opacity: 0; } }
 @keyframes fl { to { transform: translateY(-40px); opacity: 0; } }
 @keyframes cf { to { transform: translate(var(--dx), 108vh) rotate(720deg); } }
@@ -602,30 +628,62 @@ body.shake .wrap { animation: shake 0.45s; }
 </head>
 <body>
 
+<!-- مخزن آیکون‌ها و حیوانات پاترونوس وکتور خالص -->
 <svg style="display:none;">
   <defs>
-    <!-- آیکون زنگ مسابقه -->
-    <g id="icon-bell"><path d="M12 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 5 13h14a1 1 0 0 0 .707-1.707L19 10.586V8a6 6 0 0 0-6-6zm-2 15a2 2 0 0 0 4 0h-4z"/></g>
-    <!-- آیکون خروج -->
+    <!-- ابزارها -->
     <g id="icon-door"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></g>
-    <!-- آیکون صدا روشن -->
     <g id="icon-vol-on"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></g>
-    <!-- آیکون صدا قطع -->
     <g id="icon-vol-off"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27l4.73 4.73H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></g>
-    <!-- آیکون کپی -->
     <g id="icon-copy"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></g>
-    <!-- آیکون تیک -->
     <g id="icon-check"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></g>
-    <!-- آیکون ضربدر -->
     <g id="icon-cross"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></g>
-    <!-- آیکون رفرش / ریمچ -->
     <g id="icon-refresh"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></g>
-    <!-- آیکون کاپ -->
     <g id="icon-trophy"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></g>
-    <!-- آیکون مدال اول، دوم، سوم -->
     <g id="icon-crown"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></g>
-    <!-- آیکون پرش / رد کردن -->
     <g id="icon-skip"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></g>
+
+    <!-- حیوانات پاترونوس (۱۰ روح با فرم‌های نمادین) -->
+    <!-- 0: عقاب صاعقه -->
+    <g id="patronus-eagle">
+      <path d="M12 2L9 7l-5-1 3.5 4.5L2 13l6 .5 2 7.5 2-5 2 5 2-7.5 6-.5-5.5-2.5L20 6l-5 1z"/>
+    </g>
+    <!-- 1: گرگ کهکشانی -->
+    <g id="patronus-wolf">
+      <path d="M12 3l-2.5 3.5L4 4l2 6.5L3 13l5 3-1 5 5-2.5 5 2.5-1-5 5-3-3-2.5L20 4l-5.5 2.5z"/>
+    </g>
+    <!-- 2: شیر خورشید -->
+    <g id="patronus-lion">
+      <path d="M12 2a9 9 0 0 0-9 9c0 3.5 2 6.5 5 8v2l4-2 4 2v-2c3-1.5 5-4.5 5-8a9 9 0 0 0-9-9zm-3 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 7c-1.5 0-2.5-.8-2.5-.8l1-1.5s.7.3 1.5.3 1.5-.3 1.5-.3l1 1.5s-1 .8-2.5.8z"/>
+    </g>
+    <!-- 3: اژدهای زمرد -->
+    <g id="patronus-dragon">
+      <path d="M19.5 4.5l-4 1.5-2.5-3.5-1 4-5-1.5 2.5 4.5L3 12l5.5 2.5-1.5 5.5 4.5-2.5 3 4.5.5-5 5-1.5-3.5-3.5z"/>
+    </g>
+    <!-- 4: شاهین فیروزه -->
+    <g id="patronus-falcon">
+      <path d="M12 2C8 6 3 8 2 13c3-1 6-1 8 1 0 3 1 6 2 8 1-2 2-5 2-8 2-2 5-2 8-1-1-5-6-7-10-11z"/>
+    </g>
+    <!-- 5: خرس تیتانیوم -->
+    <g id="patronus-bear">
+      <path d="M4.5 4a3.5 3.5 0 0 0 0 7c.2 0 .4 0 .6-.1C5.6 13 8.5 15 12 15s6.4-2 6.9-4.1c.2 0 .4.1.6.1a3.5 3.5 0 0 0 0-7c-1.5 0-2.8 1-3.3 2.3C14.8 6 13.5 6 12 6s-2.8 0-4.2.3C7.3 5 6 4 4.5 4zM9 10a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 6c-2 0-3.5 1.5-3.5 3.5h7c0-2-1.5-3.5-3.5-3.5z"/>
+    </g>
+    <!-- 6: روباه اسرارآمیز -->
+    <g id="patronus-fox">
+      <path d="M12 16l-7-9 1 10 6 5 6-5 1-10-7 9zm-4-3l1.5-4L8 6l-3 4 3 3zm8 0l3-3-3-4-1.5 3 1.5 4z"/>
+    </g>
+    <!-- 7: پلنگ کیهانی -->
+    <g id="patronus-panther">
+      <path d="M5 4L3 9l3 2c.5 4 3.5 7 6 7s5.5-3 6-7l3-2-2-5-3.5 3c-1.5-.7-3.5-.7-5 0L5 4zm4 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+    </g>
+    <!-- 8: قوی نقره‌ای -->
+    <g id="patronus-swan">
+      <path d="M15 3c-2.5 0-4.5 1.8-4.5 4 0 1.2.6 2.3 1.5 3L4 12c0 4 3.5 7 8 7 4.5 0 9-3 9-8 0-4.5-3.5-8-6-8zm-1 3.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </g>
+    <!-- 9: گوزن افسانه‌ای (پاترونوس هری پاتر) -->
+    <g id="patronus-stag">
+      <path d="M12 22l-2-6-3-2-3 2v-3l4-4-2-4 2-1 2 3 2-2-2-2 2-1 2 3 2-3 2 1-2 2 2 2 2-3 2 1-2 4 4 4v3l-3-2-3 2-2 6z"/>
+    </g>
   </defs>
 </svg>
 
@@ -643,12 +701,12 @@ body.shake .wrap { animation: shake 0.45s; }
 <div class="wrap">
   <header class="game-header">
     <div class="header-logo">
-      <svg class="svg-icon" style="width:24px;height:24px"><use href="#icon-bell"/></svg>
+      <svg class="svg-icon" style="width:26px;height:26px"><use href="#patronus-stag"/></svg>
     </div>
     <h1>مسابقه زنگ و هیجان</h1>
   </header>
 
-  <!-- فرم ورود اولیه -->
+  <!-- ورود بازیکن -->
   <div id="join" class="hide">
     <div class="card">
       <h3>ورود به عنوان بازیکن</h3>
@@ -659,8 +717,8 @@ body.shake .wrap { animation: shake 0.45s; }
         <input id="inCode" placeholder="کد ۴ حرفی اتاق" maxlength="4" style="text-transform:uppercase;direction:ltr">
       </div>
       <button id="joinBtn">
-        <span>پیوستن به رقابت</span>
-        <svg class="svg-icon"><use href="#icon-bell"/></svg>
+        <span>احضار حامی و ورود</span>
+        <svg class="svg-icon"><use href="#patronus-falcon"/></svg>
       </button>
       <div id="err" class="err"></div>
     </div>
@@ -674,7 +732,7 @@ body.shake .wrap { animation: shake 0.45s; }
   <!-- داشبورد مجری -->
   <div id="host" class="hide">
     <div class="card">
-      <div style="color:var(--text-muted);font-size:0.9rem;text-align:center;">کد اتاق برای اشتراک‌گذاری با دوستان:</div>
+      <div style="color:var(--text-muted);font-size:0.9rem;text-align:center;">کد اتاق برای اشتراک‌گذاری:</div>
       <div class="code-box">
         <div id="hCode" class="code"></div>
       </div>
@@ -721,7 +779,7 @@ body.shake .wrap { animation: shake 0.45s; }
     </button>
   </div>
 
-  <!-- پایان بازی و سکوی قهرمانی -->
+  <!-- پایان بازی -->
   <div id="over" class="hide">
     <div class="card">
       <h2 style="text-align:center;font-weight:900;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -741,7 +799,7 @@ body.shake .wrap { animation: shake 0.45s; }
     </button>
   </div>
 
-  <!-- صفحه اختصاصی بازیکن -->
+  <!-- صفحه بازیکن -->
   <div id="player" class="hide">
     <div id="offline" class="card warn hide">ارتباط با مجری قطع گردید. در انتظار بازگشت میزبان...</div>
     <div id="pQ" class="card hide"></div>
@@ -754,6 +812,7 @@ body.shake .wrap { animation: shake 0.45s; }
     <div id="buzzWrap" class="bz-wrap">
       <button id="buzz">
         <span class="beam"></span>
+        <svg class="animal-spirit" id="buzzIcon"><use href="#patronus-stag"/></svg>
         <span class="lbl">بزن!</span>
       </button>
     </div>
@@ -769,15 +828,18 @@ body.shake .wrap { animation: shake 0.45s; }
   </div>
 </div>
 
-<!-- پرده معرفی اختصاصی بازیکن -->
+<!-- پرده جادویی انتخاب پاترونوس (روح حیوان) -->
 <div id="intro" class="hide">
-  <div style="position:relative;z-index:2;padding:20px;width:100%;max-width:400px;">
-    <div id="introTitle" style="font-size:1.25rem;font-weight:700;margin-bottom:14px;color:#94a3b8;"></div>
-    <div id="introWrap" class="bz-wrap"><div id="introShape"></div></div>
-    <div id="introName" style="font-size:2rem;font-weight:900;margin:18px 0;color:var(--c);text-shadow:0 0 20px var(--c);"></div>
-    <div id="introBtns" class="hide" style="display:flex;flex-direction:column;gap:12px;">
-      <button id="testBtn" class="sec">تست بوق بازر</button>
-      <button id="goBtn">آماده‌ام، ورود به میدان!</button>
+  <div class="patronus-stage">
+    <div id="introTitle" style="font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#94a3b8;">در حال احضار حامی جادویی...</div>
+    <div class="patronus-orb" id="introOrb">
+      <div class="shockwave"></div>
+      <svg id="introSvg"><use href="#patronus-stag"/></svg>
+    </div>
+    <div id="introName" style="font-size:1.85rem;font-weight:900;margin:14px 0;color:var(--c);text-shadow:0 0 25px var(--c);"></div>
+    <div id="introBtns" class="hide" style="width:100%;display:flex;flex-direction:column;gap:12px;">
+      <button id="testBtn" class="sec">غرش و تست صدا</button>
+      <button id="goBtn">ورود به میدان با این روح حامی!</button>
     </div>
   </div>
 </div>
@@ -791,28 +853,32 @@ const BUZZ_SECONDS = 4.5;
 const ANSWER_MS = 10000;
 const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
-/* بازرها با اشکال ژئومتریک متمایز */
-const BZ = [
-  { name:'آژیر قرمز',      color:'#ef4444', clip:'circle(50%)' },
-  { name:'هشت‌ضلعی نارنجی', color:'#f97316', clip:'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)' },
-  { name:'ستاره طلایی',    color:'#facc15', clip:'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' },
-  { name:'الماس نئون',     color:'#10b981', clip:'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)' },
-  { name:'لیزر مثلثی',    color:'#06b6d4', clip:'polygon(50% 4%, 100% 94%, 0 94%)' },
-  { name:'کریستال آبی',    color:'#3b82f6', clip:'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' },
-  { name:'هرم بنفش',      color:'#a855f7', clip:'polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%)' },
-  { name:'سپر صورتی',     color:'#ec4899', clip:'polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%)' },
-  { name:'صلیب تیتانیوم', color:'#f1f5f9', clip:'polygon(35% 0, 65% 0, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0 65%, 0 35%, 35% 35%)' },
-  { name:'مکعب سایبر',     color:'#84cc16', clip:'inset(0 round 24%)' },
+/* ۱۰ حیوان پاترونوس با مشخصات صوتی، نوری و وکتور */
+const PATRONUS = [
+  { id: 'patronus-eagle',   name: 'عقاب صاعقه',     color: '#ef4444', noteFreq: 880 },
+  { id: 'patronus-wolf',    name: 'گرگ کهکشانی',    color: '#f97316', noteFreq: 660 },
+  { id: 'patronus-lion',    name: 'شیر طلایی',       color: '#facc15', noteFreq: 523 },
+  { id: 'patronus-dragon',  name: 'اژدهای زمرد',    color: '#10b981', noteFreq: 440 },
+  { id: 'patronus-falcon',  name: 'شاهین فیروزه',   color: '#06b6d4', noteFreq: 784 },
+  { id: 'patronus-bear',    name: 'خرس تیتانیوم',   color: '#3b82f6', noteFreq: 330 },
+  { id: 'patronus-fox',     name: 'روباه اسرارآمیز', color: '#a855f7', noteFreq: 587 },
+  { id: 'patronus-panther', name: 'پلنگ کیهانی',    color: '#ec4899', noteFreq: 494 },
+  { id: 'patronus-swan',    name: 'قوی نقره‌ای',     color: '#e2e8f0', noteFreq: 698 },
+  { id: 'patronus-stag',    name: 'گوزن سپیده‌دم',   color: '#84cc16', noteFreq: 622 }
 ];
 
-const colorize = (el, i) => el.style.setProperty('--c', BZ[i % 10].color);
-const shape    = (el, i) => { el.style.clipPath = BZ[i % 10].clip; };
-function badge(i) {
+const colorize = (el, i) => el.style.setProperty('--c', PATRONUS[i % 10].color);
+
+function animalBadge(i) {
+  const p = PATRONUS[i % 10];
   const s = document.createElement('span');
-  s.className = 'badge'; colorize(s, i); shape(s, i); return s;
+  s.className = 'animal-badge';
+  s.style.setProperty('--c', p.color);
+  s.innerHTML = `<svg><use href="#${p.id}"/></svg>`;
+  return s;
 }
 
-/* صدا (WebAudio Synth) */
+/* سیستم تولید صوت و نغمه‌های زنده (WebAudio) */
 let AC = null;
 function ctx() {
   if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
@@ -952,8 +1018,8 @@ $('createBtn').onclick = () => sock.emit('host:create', { token }, (r) => {
 $('joinBtn').onclick = () => {
   try { ctx(); } catch {}
   sock.emit('player:join', { token, code: $('inCode').value, name: $('inName').value }, (r) => {
-    if (!r || !r.ok) { $('err').textContent = (r && r.error) || 'خطا در برقراری ارتباط'; return; }
-    save({ role: 'player', code: r.code, id: r.id, bz: r.bz || 0 });
+    if (!r || !r.ok) { $('err').textContent = (r && r.error) || 'خطا در ارتباط'; return; }
+    save({ role: 'player', code: r.code, id: r.id, bz: r.bz != null ? r.bz : 0 });
     runIntro(me.bz);
   });
 };
@@ -967,7 +1033,7 @@ function leaveRoom() {
   show('join');
 }
 function askLeave() {
-  const msg = me && me.role === 'host' ? 'اتاق بسته می‌شود و همه بازیکن‌ها خارج می‌شوند. ادامه می‌دهید؟' : 'از مسابقه خارج می‌شوید؟';
+  const msg = me && me.role === 'host' ? 'اتاق بسته می‌شود و همه خارج می‌شوند. ادامه می‌دهید؟' : 'از بازی خارج می‌شوید؟';
   if (!confirm(msg)) return;
   sock.emit('leave');
   leaveRoom();
@@ -977,38 +1043,80 @@ document.querySelectorAll('.leaveBtn').forEach((b) => { b.onclick = askLeave; })
 sock.on('closed', () => {
   if (!me) return;
   leaveRoom();
-  alert('اتاق مسابقه توسط میزبان بسته شد.');
+  alert('اتاق توسط مجری بسته شد.');
 });
 
-function runIntro(target) {
+/* پروسه انتخاب جادویی و رولت انیمیشنی حیوانات */
+function runIntro(targetIndex) {
   introRunning = true;
   show('intro');
-  $('introTitle').textContent = 'در حال همگام‌سازی و انتخاب زنگ اختصاصی...';
+  $('introTitle').textContent = 'در حال جستجو و اتصال به پاترونوس شما...';
   $('introName').textContent = '';
   $('introBtns').classList.add('hide');
-  $('introWrap').classList.remove('pop');
+  
+  const orb = $('introOrb');
+  orb.className = 'patronus-orb';
   startMusic();
-  const n = 20 + target;
-  const step = (k) => {
-    const i = k % 10;
-    colorize($('intro'), i); shape($('introShape'), i);
-    tone(300 + k * 28, 0, .05, 'square', .08);
-    if (k >= n) return reveal(target);
-    setTimeout(() => step(k + 1), 55 + k * k * .22);
-  };
-  step(0);
+
+  const totalSteps = 24; // تعداد دور چرخش
+  let currentStep = 0;
+
+  function nextStep() {
+    // حیوان فعلی در چرخش
+    const isFinal = currentStep >= totalSteps;
+    const animalIdx = isFinal ? targetIndex : Math.floor(Math.random() * 10);
+    const pet = PATRONUS[animalIdx];
+
+    // تغییر رنگ و آیکون با افکت مات‌شدن سریع (Morphing)
+    colorize($('intro'), animalIdx);
+    colorize(orb, animalIdx);
+    $('introSvg').firstElementChild.setAttribute('href', `#${pet.id}`);
+
+    // انیمیشن پرش و شوک بین تغییر حیوانات
+    orb.classList.add('morph');
+    setTimeout(() => orb.classList.remove('morph'), 45);
+
+    // صدای نغمه جادویی متناسب با فرکانس هر حیوان
+    tone(pet.noteFreq, 0, 0.05, 'triangle', 0.12);
+
+    if (isFinal) {
+      revealPatronus(targetIndex);
+    } else {
+      currentStep++;
+      // کاهش شتاب چرخش به‌صورت نمایی
+      const delay = 45 + Math.pow(currentStep / totalSteps, 2.5) * 320;
+      setTimeout(nextStep, delay);
+    }
+  }
+
+  nextStep();
 }
-function reveal(i) {
-  $('introTitle').textContent = 'بازر انتخابی برای شما:';
-  $('introName').textContent = BZ[i % 10].name;
-  void $('introWrap').offsetWidth;
-  $('introWrap').classList.add('pop');
-  [523, 659, 784, 1047].forEach((f, k) => tone(f, k * .07, .9, 'triangle', .18));
-  setTimeout(() => playBuzzer(i, 1.5), 450);
+
+function revealPatronus(i) {
+  const pet = PATRONUS[i % 10];
+  const orb = $('introOrb');
+
+  // تحریک انیمیشن تجلی نهایی و انتشار موج Shockwave
+  void orb.offsetWidth;
+  orb.classList.add('manifest');
+
+  $('introTitle').textContent = 'روح حامی شما متجلی شد:';
+  $('introName').textContent = pet.name;
+
+  // ترومپت درخشان پاترونوس
+  [440, 554, 659, 880, 1108].forEach((f, k) => tone(f, k * 0.09, 1.1, 'sine', 0.22));
+  setTimeout(() => playBuzzer(i, 1.8), 500);
+
   $('introBtns').classList.remove('hide');
 }
+
 $('testBtn').onclick = () => { playBuzzer(me.bz || 0); vibrateLong(1.5); };
-$('goBtn').onclick = () => { stopMusic(); stopBuzzSound(); stopVibrate(); introRunning = false; show('player'); render(); };
+$('goBtn').onclick = () => {
+  stopMusic(); stopBuzzSound(); stopVibrate();
+  introRunning = false;
+  show('player');
+  render();
+};
 
 VALUES.forEach((v) => {
   const b = document.createElement('button');
@@ -1034,7 +1142,7 @@ const row = (a, b, cls, bz) => {
   const x = document.createElement('span');
   x.style.display = 'inline-flex';
   x.style.alignItems = 'center';
-  if (bz != null) x.append(badge(bz));
+  if (bz != null) x.append(animalBadge(bz));
   const txt = document.createElement('span');
   txt.textContent = a;
   x.append(txt);
@@ -1120,6 +1228,7 @@ function render() {
     if (!$('over').classList.contains('hide')) show(me.role);
   }
   if (!$('over').classList.contains('hide')) renderOver();
+
   if (me.role === 'host') {
     $('hCode').textContent = st.code;
     document.querySelectorAll('#board button').forEach((b) => {
@@ -1136,19 +1245,23 @@ function render() {
     renderQ($('hQ'), true);
     renderScores($('hScores'));
   } else {
-    const b = me.bz || 0;
-    colorize($('buzzWrap'), b); shape($('buzz'), b); colorize($('flash'), b);
+    const b = me.bz != null ? me.bz : 0;
+    const pet = PATRONUS[b % 10];
+    colorize($('buzzWrap'), b);
+    colorize($('buzz'), b);
+    colorize($('flash'), b);
+    $('buzzIcon').firstElementChild.setAttribute('href', `#${pet.id}`);
     $('offline').classList.toggle('hide', st.hostOnline !== false);
 
     const idx = st.queue.indexOf(me.id);
     const tried = st.tried.includes(me.id);
     let txt;
-    if (st.phase === 'idle') txt = 'در انتظار شروع دور بعدی توسط مجری...';
-    else if (idx === 0) txt = 'نوبت توست! با صدای بلند جواب بده' + (pl(me.id).rt != null ? ' (' + sec(pl(me.id).rt) + ')' : '');
+    if (st.phase === 'idle') txt = 'در انتظار سوال بعدی توسط مجری...';
+    else if (idx === 0) txt = `نوبت توست! روح ${pet.name} پیشتاز شد` + (pl(me.id).rt != null ? ' (' + sec(pl(me.id).rt) + ')' : '');
     else if (idx > 0) txt = `شما در نوبت شماره ${idx + 1} صف هستید`;
     else if (tried) txt = 'پاسخ شما اشتباه ثبت شد';
     else if (st.queue.length) txt = `${pl(st.queue[0]).name || 'بازیکن'} در حال پاسخگویی است`;
-    else txt = `سوال ${st.active} امتیازی باز است — سریع بزن!`;
+    else txt = `سوال ${st.active} امتیازی فعال است — بازر حامی خود را فعال کن!`;
     $('pStatus').textContent = txt;
 
     if (st.phase === 'idle' || tried) { stopBuzzSound(); stopVibrate(); }
@@ -1176,7 +1289,7 @@ function confetti(n = 36) {
   for (let i = 0; i < n; i++) {
     const c = document.createElement('i'); c.className = 'cf';
     c.style.left = Math.random() * 100 + 'vw';
-    c.style.background = BZ[Math.floor(Math.random() * 10)].color;
+    c.style.background = PATRONUS[Math.floor(Math.random() * 10)].color;
     c.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
     c.style.animationDelay = Math.random() * .4 + 's';
     document.body.append(c); setTimeout(() => c.remove(), 2500);
@@ -1226,7 +1339,7 @@ function renderOver() {
 
     const n = document.createElement('div');
     n.style.fontWeight = '700';
-    n.append(badge(s[i].bz), s[i].name);
+    n.append(animalBadge(s[i].bz), s[i].name);
 
     const sc = document.createElement('b');
     sc.style.fontSize = '1.4rem';
@@ -1237,8 +1350,8 @@ function renderOver() {
   const fast = s.filter((p) => p.best != null).sort((a, b) => a.best - b.best)[0];
   const most = [...s].sort((a, b) => b.ok - a.ok)[0];
   const lines = [];
-  if (fast) lines.push(`سریع‌ترین واکنش: ${fast.name} با رکورد ${sec(fast.best)}`);
-  if (most && most.ok) lines.push(`بیشترین پاسخ درست: ${most.name} با ${most.ok} پاسخ صحیح`);
+  if (fast) lines.push(`سریع‌ترین واکنش: ${fast.name} (${sec(fast.best)})`);
+  if (most && most.ok) lines.push(`بیشترین پاسخ صحیح: ${most.name} (${most.ok} پاسخ)`);
   
   $('awards').replaceChildren(...lines.map((t) => {
     const d = document.createElement('div');
@@ -1260,7 +1373,7 @@ $('copyBtn').onclick = () => {
       sp.textContent = 'کپی شد';
       setTimeout(() => { sp.textContent = 'کپی لینک دعوت'; }, 1500);
     },
-    () => prompt('لینک ورود به اتاق:', link));
+    () => prompt('لینک دعوت:', link));
 };
 const qp = new URLSearchParams(location.search);
 if (qp.get('code')) $('inCode').value = qp.get('code').toUpperCase().slice(0, 4);

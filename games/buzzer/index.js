@@ -135,12 +135,21 @@ function init(arg) {
       if (!r) return ack?.({ ok: false, error: 'اتاق پیدا نشد' });
       const name = clean(p.name);
       if (!name || !p.token) return ack?.({ ok: false, error: 'نام را وارد کنید' });
+      // در تابع init درون هندلر socket.on('player:join', ...)
       let pl = r.players.get(p.token);
       if (!pl) {
         const usedBz = new Set([...r.players.values()].map((x) => x.bz));
-        let bz = 0;
-        while (usedBz.has(bz) && bz < 10) bz++;
-        if (bz >= 10) bz = r.players.size % 10;
+        const available = [];
+        for (let i = 0; i < 10; i++) {
+          if (!usedBz.has(i)) available.push(i);
+        }
+        // انتخاب کاملاً رندوم از حیوانات آزاد، یا در صورت پر بودن یک حیوان تصادفی
+        let bz;
+        if (available.length > 0) {
+          bz = available[Math.floor(Math.random() * available.length)];
+        } else {
+          bz = Math.floor(Math.random() * 10);
+        }
         pl = { token: p.token, id: 'p' + r.nextId++, name, score: 0, bz };
         r.players.set(p.token, pl);
       }
