@@ -2,8 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#5aa9f0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#6eb3f4">
   <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
   <title>دوربازی | دنیای بازی‌های گروهی</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,52 +14,44 @@
 <body>
   <main class="scene" id="scene">
     <div class="sun" aria-hidden="true"></div>
+    <span class="spark s1" aria-hidden="true">✦</span><span class="spark s2" aria-hidden="true">✧</span>
+    <span class="spark s3" aria-hidden="true">✦</span><span class="spark s4" aria-hidden="true">✧</span>
 
-    <!-- دکور پس‌زمینه -->
-    <img class="deco foliage-l" data-depth="10" src="img/17_bottom_left_foliage.png" alt="">
-    <img class="deco foliage-r" data-depth="10" src="img/18_bottom_right_foliage.png" alt="">
-    <img class="deco cloud" data-depth="6" src="img/16_bottom_cloud.png" alt="">
+    <img class="deco cloud" data-depth="6" src="img/16_bottom_cloud.webp" alt="">
+    <img class="deco foliage-l" data-depth="10" src="img/17_bottom_left_foliage.webp" alt="">
+    <img class="deco foliage-r" data-depth="10" src="img/18_bottom_right_foliage.webp" alt="">
 
-    <!-- ربات -->
     <button class="robot" id="robot" type="button" aria-label="با ربات سلام کن" data-depth="-14">
-      <img class="bean" src="img/19_yellow_beanbag_decor.png" alt="">
-      <img class="bot" src="img/01_robot_gamer.png" alt="ربات بازی‌باز دوربازی">
+      <img class="bot" src="img/01_robot_gamer.webp" alt="ربات بازی‌باز دوربازی">
       <span class="bubble" id="bubble" role="status">سلام! بزن بریم بازی 🎮</span>
     </button>
 
-    <!-- لوگو -->
     <header class="brand">
       <h1 class="visually-hidden">دوربازی</h1>
-      <img class="logo" src="img/02_game_logo.png" alt="دوربازی" data-depth="-6">
-      <img class="subtitle" src="img/03_subtitle_banner.png" alt="دنیای بازی‌های گروهی آنلاین">
+      <img class="logo" src="img/02_game_logo.webp" alt="دوربازی" data-depth="-6">
+      <img class="subtitle" src="img/03_subtitle_banner.webp" alt="دنیای بازی‌های گروهی آنلاین">
     </header>
 
-    <!-- قفسه و تاس -->
     <div class="shelf-wrap" data-depth="12">
       <button class="shelf" id="block" type="button" aria-label="جعبه سؤال؛ یه نکته بگیر">
-        <img src="img/04_shelf_question_block.png" alt="">
+        <img src="img/04_shelf_question_block.webp" alt="">
         <span class="coin" id="coin" aria-hidden="true">؟</span>
       </button>
     </div>
     <button class="dice" id="dice" type="button" aria-label="تاس بنداز" data-depth="16">
-      <img src="img/06_dice.png" alt="">
+      <img src="img/06_dice.webp" alt="">
       <span class="roll" id="roll" aria-live="polite"></span>
     </button>
 
-    <!-- لابی بازی‌ها -->
     <section class="lobby" aria-labelledby="lobby-title">
       <h2 id="lobby-title" class="visually-hidden">کدوم بازی رو بریم؟</h2>
-      <button class="nav nav-left" id="goLeft" type="button" aria-label="بازی بعدی"><img src="img/12_left_navigation_arrow.png" alt=""></button>
-      <button class="nav nav-right" id="goRight" type="button" aria-label="بازی قبلی"><img src="img/13_right_navigation_arrow.png" alt=""></button>
-
-      <div id="games-list" class="track" tabindex="0" aria-live="polite">
+      <div id="games-list" class="track" aria-live="polite">
         <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
       </div>
-      <img class="hand" id="hand" src="img/15_hand_cursor.png" alt="" aria-hidden="true">
-      <div class="dots" id="dots" role="tablist" aria-label="انتخاب بازی"></div>
+      <img class="hand" id="hand" src="img/15_hand_cursor.webp" alt="" aria-hidden="true">
+      <div class="dots" id="dots" aria-label="انتخاب بازی"></div>
+      <p class="soon">بازی‌های بیشتر به‌زودی می‌رسن ✨</p>
     </section>
-
-    <footer class="foot">دوربازی · ساخته شده برای دورهمی‌های به‌یادموندنی</footer>
   </main>
   <script src="lobby.js"></script>
 </body>

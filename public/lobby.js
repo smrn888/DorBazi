@@ -1,155 +1,140 @@
 (() => {
-  /* ---------- نقشه‌ی بازی‌ها به تصویر و رنگ ---------- */
-  const THEMES = [
-    { key: 'bomb',    match: /بمب/,       img: '07_card_bomb_quiz',          top: '#6c32ce', bot: '#4a1ea5' },
-    { key: 'word',    match: /حدس|کلمه/,  img: '08_card_word_quiz',          top: '#13a533', bot: '#067a25' },
-    { key: 'buzzer',  match: /بازز|مسابقه/, img: '09_card_button_competition', top: '#1f66cc', bot: '#0a45a8', featured: true },
-    { key: 'charade', match: /بانتر|میم/, img: '10_card_charades',           top: '#f5911a', bot: '#dc6204' },
-    { key: 'wheel',   match: /گردونه|شانس/, img: '11_card_wheel_of_fortune',  top: '#f0609b', bot: '#cf2f6c' },
-  ];
-  // اگر API در دسترس نبود، همین نمونه‌ها نمایش داده می‌شن
-  const FALLBACK = [
-    { title: 'بمب سؤالی', description: 'پاسخ بده، قبل از انفجار!', minPlayers: 2, path: '#' },
-    { title: 'حدس کلمه', description: 'کلمه رو از روی سرنخ‌ها حدس بزن!', minPlayers: 2, path: '#' },
-    { title: 'مسابقه با بازز', description: 'رقابت هیجانی رو شروع کن!', minPlayers: 2, path: '#' },
-    { title: 'بانتر میم', description: 'با تقلید، کلمه رو به بقیه بفهمون!', minPlayers: 2, path: '#' },
-    { title: 'گردونه شانس', description: 'بچرخون و ببین شانست چیه!', minPlayers: 2, path: '#' },
-  ];
   const fa = n => Number(n).toLocaleString('fa-IR');
-  const PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>';
-
+  // هر بازی بر اساس عنوانش به یکی از تصویرها وصل می‌شه
+  const ART = [
+    { match: /بازز|مسابقه/, img: 'img/07_Buzzer_competition.webp', hero: true },
+    { match: /اسم|فامیل/,   img: 'img/08_EsmFamil_Competition.webp' },
+  ];
+  const FALLBACK = [
+    { title: 'مسابقه با بازز', description: 'اطلاعات عمومی‌تون رو به رخ هم بکشید', minPlayers: 2, path: '#' },
+    { title: 'اسم فامیل', description: 'بازی کلاسیک اسم فامیل، نسخه‌ی جدید', minPlayers: 2, path: '#' },
+  ];
   const track = document.getElementById('games-list');
   const dotsEl = document.getElementById('dots');
   const hand = document.getElementById('hand');
-  let cards = [], active = -1, lock = 0;
+  let slots = [];
 
-  /* ---------- ساخت کارت‌ها ---------- */
   async function load() {
     let games;
     try {
-      const res = await fetch('/api/games');
-      if (!res.ok) throw 0;
-      games = await res.json();
+      const r = await fetch('/api/games');
+      if (!r.ok) throw 0;
+      games = await r.json();
+      if (!Array.isArray(games) || !games.length) throw 0;
     } catch { games = FALLBACK; }
     render(games);
   }
 
   function render(games) {
     track.innerHTML = '';
-    cards = games.map((g, i) => {
-      const t = THEMES.find(t => t.match.test(g.title)) || THEMES[i % THEMES.length];
+    slots = games.map((g, i) => {
+      const art = ART.find(a => a.match.test(g.title));
+      const slot = document.createElement('div');
+      slot.className = 'slot' + (art && art.hero ? ' hero' : '');
+      slot.style.setProperty('--i', i);
       const a = document.createElement('a');
-      a.className = 'card';
-      a.href = g.path;
-      a.style.cssText = `--i:${i};--top:${t.top};--bot:${t.bot}`;
-      a.innerHTML = `
-        
-        <img class="art" src="img/${t.img}.png" alt="">
-        <div class="body"><h3></h3><p></p><span class="pill">${PERSON}<span class="min"></span></span></div>
-        <span class="play">بزن بریم! ←</span>`;
-      a.querySelector('h3').textContent = g.title;
-      a.querySelector('p').textContent = g.description;
-      a.querySelector('.min').textContent = `حداقل ${fa(g.minPlayers)} نفر`;
-      a._featured = !!t.featured;
-      // کلیک روی کارت غیرفعال → میاد وسط؛ روی کارت وسط → وارد بازی می‌شی
-      a.addEventListener('click', e => {
-        if (cards.indexOf(a) !== active) { e.preventDefault(); goTo(cards.indexOf(a)); }
-      });
-      track.appendChild(a);
-      return a;
+      a.className = 'card'; a.href = g.path;
+      a.setAttribute('aria-label', `${g.title}؛ ${g.description}؛ حداقل ${fa(g.minPlayers)} نفر`);
+      if (art) {
+        const img = document.createElement('img');
+        img.src = art.img; img.alt = ''; img.draggable = false;
+        a.appendChild(img);
+      } else {
+        a.classList.add('generic');
+        const h = document.createElement('h3'); h.textContent = g.title;
+        const p = document.createElement('p'); p.textContent = g.description;
+        a.append(h, p);
+      }
+      slot.appendChild(a); track.appendChild(slot);
+      enhance(a);
+      return slot;
     });
     dotsEl.innerHTML = '';
-    cards.forEach((_, i) => {
+    slots.forEach((s, i) => {
       const d = document.createElement('button');
-      d.className = 'dot'; d.type = 'button'; d.setAttribute('aria-label', `بازی ${fa(i + 1)}`);
-      d.onclick = () => goTo(i);
+      d.type = 'button'; d.className = 'dot'; d.setAttribute('aria-label', `بازی ${fa(i + 1)}`);
+      d.onclick = () => center(i);
       dotsEl.appendChild(d);
     });
-    const start = Math.max(0, cards.findIndex(c => c._featured));
-    setActive(start);
-    const recenter = () => goTo(active < 0 ? start : active, true);
-    requestAnimationFrame(recenter); setTimeout(recenter, 500); addEventListener('load', recenter); addEventListener('resize', recenter);
+    markDot();
   }
 
-  /* ---------- حرکت ---------- */
-  function setActive(i) {
-    if (i === active) return;
-    active = i;
-    cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
-    [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === i));
-  }
-  function goTo(i, instant) {
-    i = Math.min(cards.length - 1, Math.max(0, i));
-    setActive(i); lock = Date.now() + (instant ? 150 : 750);
-    const c = cards[i], tr = track.getBoundingClientRect(), cr = c.getBoundingClientRect();
-    track.scrollBy({ left: cr.left + cr.width / 2 - (tr.left + tr.width / 2), behavior: instant ? 'auto' : 'smooth' });
-  }
-  // وقتی با انگشت/ماوس اسکرول می‌کنی، نزدیک‌ترین کارت به مرکز فعال می‌شه
-  let tick;
-  track.addEventListener('scroll', () => {
-    if (Date.now() < lock) return;
-    cancelAnimationFrame(tick);
-    tick = requestAnimationFrame(() => {
-      const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
-      let best = 0, bd = 1e9;
-      cards.forEach((c, k) => {
-        const r = c.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid);
-        if (d < bd) { bd = d; best = k; }
+  /* ---------- تعامل کارت: تیلت سه‌بعدی + انفجار ستاره + ورود ---------- */
+  function enhance(a) {
+    if (matchMedia('(pointer:fine)').matches) {
+      a.addEventListener('pointermove', e => {
+        const r = a.getBoundingClientRect();
+        a.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 14 + 'deg');
+        a.style.setProperty('--rx', (.5 - (e.clientY - r.top) / r.height) * 12 + 'deg');
       });
-      setActive(best);
+      a.addEventListener('pointerleave', () => { a.style.setProperty('--rx', '0deg'); a.style.setProperty('--ry', '0deg'); });
+    }
+    a.addEventListener('click', e => {
+      burst(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+      hand.classList.add('hide');
+      const href = a.getAttribute('href');
+      if (!href || href === '#' || e.metaKey || e.ctrlKey || e.shiftKey) { e.preventDefault(); return; }
+      e.preventDefault();
+      a.style.setProperty('--s', '1.08');
+      setTimeout(() => (location.href = href), 320);
     });
-  }, { passive: true });
+  }
+  function burst(x, y) {
+    for (let i = 0; i < 9; i++) {
+      const s = document.createElement('span');
+      s.className = 'burst'; s.textContent = i % 2 ? '✦' : '✧';
+      const ang = (i / 9) * Math.PI * 2, d = 50 + Math.random() * 40;
+      s.style.cssText = `left:${x}px;top:${y}px;--x:${Math.cos(ang) * d}px;--y:${Math.sin(ang) * d}px`;
+      document.body.appendChild(s); setTimeout(() => s.remove(), 750);
+    }
+  }
 
-  // در RTL کارت بعدی سمت چپ است
-  document.getElementById('goLeft').onclick = () => goTo(active + 1);
-  document.getElementById('goRight').onclick = () => goTo(active - 1);
-  track.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(active + 1); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(active - 1); }
-  });
-  // دست اشاره‌گر فقط تا وقتی کسی کاری نکرده نشون داده می‌شه
+  /* ---------- نقطه‌ها (موبایل) ---------- */
+  function center(i) {
+    const t = track.getBoundingClientRect(), c = slots[i].getBoundingClientRect();
+    track.scrollBy({ left: c.left + c.width / 2 - (t.left + t.width / 2), behavior: 'smooth' });
+  }
+  function markDot() {
+    const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+    let best = 0, bd = 1e9;
+    slots.forEach((s, i) => { const r = s.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if (d < bd) { bd = d; best = i; } });
+    [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === best));
+  }
+  track.addEventListener('scroll', () => requestAnimationFrame(markDot), { passive: true });
   ['pointerdown', 'wheel', 'keydown'].forEach(ev => addEventListener(ev, () => hand.classList.add('hide'), { once: true }));
 
   /* ---------- ربات ---------- */
   const robot = document.getElementById('robot'), bubble = document.getElementById('bubble');
-  const LINES = ['سلام! بزن بریم بازی 🎮', 'دوستات رو خبر کن!', 'امروز شانست باهاته 🍀', 'من آماده‌ام، تو چی؟', 'یه دست بازز بزنیم؟ 🔴', 'بازنده‌ی این دور شیرینی می‌خره!'];
+  const LINES = ['سلام! بزن بریم بازی 🎮', 'دوستات رو خبر کن!', 'امروز شانست باهاته 🍀', 'یه دست بازز بزنیم؟ 🔴', 'اسم و فامیل؟ من آماده‌ام! ✏️', 'بازنده‌ی این دور شیرینی می‌خره!'];
   let li = 0, bt;
-  function say(text) {
-    bubble.textContent = text; bubble.classList.add('show');
-    clearTimeout(bt); bt = setTimeout(() => bubble.classList.remove('show'), 2600);
-  }
-  robot.onclick = () => {
-    robot.classList.remove('jump'); void robot.offsetWidth; robot.classList.add('jump');
-    say(LINES[li++ % LINES.length]);
-  };
-  setTimeout(() => say(LINES[0]), 1400);
+  const say = t => { bubble.textContent = t; bubble.classList.add('show'); clearTimeout(bt); bt = setTimeout(() => bubble.classList.remove('show'), 2600); };
+  robot.onclick = () => { robot.classList.remove('jump'); void robot.offsetWidth; robot.classList.add('jump'); say(LINES[li++ % LINES.length]); };
+  setTimeout(() => say(LINES[0]), 1800);
+
+  /* ---------- لوگو ---------- */
+  const logo = document.querySelector('.logo');
+  logo.addEventListener('click', () => { logo.classList.remove('wiggle'); void logo.offsetWidth; logo.classList.add('wiggle'); });
 
   /* ---------- تاس ---------- */
   const dice = document.getElementById('dice'), rollEl = document.getElementById('roll');
   let rt;
   dice.onclick = () => {
     dice.classList.remove('rolling'); void dice.offsetWidth; dice.classList.add('rolling');
-    rollEl.classList.remove('show');
-    clearTimeout(rt);
+    rollEl.classList.remove('show'); clearTimeout(rt);
     rt = setTimeout(() => {
       const n = 1 + Math.floor(Math.random() * 6);
       rollEl.textContent = n === 6 ? 'شش! 🎉' : `${fa(n)} اومد!`;
-      rollEl.classList.add('show');
-      rt = setTimeout(() => rollEl.classList.remove('show'), 2000);
+      rollEl.classList.add('show'); rt = setTimeout(() => rollEl.classList.remove('show'), 2000);
     }, 550);
   };
 
-  /* ---------- جعبه سؤال ---------- */
+  /* ---------- جعبه‌ی سؤال ---------- */
   const block = document.getElementById('block'), coin = document.getElementById('coin');
-  const TIPS = ['برای هر بازی حداقل ۲ نفر لازمه.', 'اتاق بساز و لینکش رو برای دوستات بفرست!', 'کارت وسط رو بزن تا وارد بازی بشی.', 'بازنده‌ها هم برنده‌ی خنده‌ان 😄'];
+  const TIPS = ['برای هر بازی حداقل ۲ نفر لازمه.', 'اتاق بساز و لینکش رو برای دوستات بفرست!', 'کارت رو بزن تا وارد بازی بشی.', 'بازنده‌ها هم برنده‌ی خنده‌ان 😄'];
   let ti = 0;
-  block.onclick = () => {
-    block.classList.remove('bump'); coin.classList.remove('fly'); void block.offsetWidth;
-    block.classList.add('bump'); coin.classList.add('fly');
-    say(TIPS[ti++ % TIPS.length]);
-  };
+  block.onclick = () => { block.classList.remove('bump'); coin.classList.remove('fly'); void block.offsetWidth; block.classList.add('bump'); coin.classList.add('fly'); say(TIPS[ti++ % TIPS.length]); };
 
-  /* ---------- پارالاکس ملایم با ماوس ---------- */
+  /* ---------- پارالاکس ---------- */
   const scene = document.getElementById('scene');
   document.querySelectorAll('[data-depth]').forEach(el => el.style.setProperty('--d', el.dataset.depth));
   if (matchMedia('(pointer:fine)').matches) {
@@ -158,6 +143,5 @@
       scene.style.setProperty('--my', (e.clientY / innerHeight - .5).toFixed(3));
     });
   }
-
   load();
 })();
