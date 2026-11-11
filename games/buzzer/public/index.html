@@ -244,13 +244,25 @@ sock.on('connect', () => {
   if (introRunning) return;
   if (!me) return show('join');
   sock.emit('resume', { token, code: me.code }, (r) => {
-    if (r && r.ok) { me.id = r.id; show(me.role); render(); }
-    else { sessionStorage.removeItem('bz_me'); me = null; show('join'); }
+    if (r && r.ok) {
+      me.id = r.id;
+      if (me.role === 'host') $('hCode').textContent = me.code;
+      show(me.role);
+      render();
+    } else {
+      sessionStorage.removeItem('bz_me');
+      me = null;
+      show('join');
+    }
   });
 });
 
 $('createBtn').onclick = () => sock.emit('host:create', { token }, (r) => {
-  if (r && r.ok) { save({ role: 'host', code: r.code }); show('host'); }
+  if (r && r.ok) {
+    save({ role: 'host', code: r.code });
+    $('hCode').textContent = r.code;   // نمایش مستقیم، بدون وابستگی به render
+    show('host');
+  }
 });
 $('joinBtn').onclick = () => {
   try { ctx(); } catch {}  // باز کردن قفل صدا با کلیک کاربر (لازم برای iOS)
