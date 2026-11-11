@@ -175,7 +175,25 @@ function init(arg) {
       closeQuestion(r);
       push(r);
     });
+    socket.on('leave', () => {
+      const r = rooms.get(socket.data?.code);
+      if (!r) return;
+      const t = socket.data.token;
 
+      if (socket.data.role === 'host' && t === r.hostToken) {
+        nsp.to(r.code).emit('closed');
+        rooms.delete(r.code);
+      } else if (socket.data.role === 'player') {
+        r.players.delete(t);
+        r.queue = r.queue.filter((x) => x !== t);
+        r.attempted.delete(t);
+        if (r.phase === 'answering' && r.queue.length === 0) r.phase = 'open';
+        push(r);
+      }
+      socket.leave(r.code);
+      socket.leave(r.code + ':host');
+      socket.data = {};
+    });
     socket.on('disconnect', () => {
       const r = rooms.get(socket.data?.code);
       const pl = r?.players.get(socket.data.token);

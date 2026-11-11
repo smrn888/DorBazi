@@ -28,9 +28,8 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .status{text-align:center;font-size:1.2rem;min-height:2em}
 .err{color:#f87171;text-align:center;margin-top:8px}
 
-#bar{position:fixed;top:10px;left:10px;z-index:30}
-#mute{width:46px;height:46px;border-radius:50%;padding:0;margin:0;font-size:1.3rem;background:#1e293b;border:1px solid #475569;color:#fff}
-
+#bar{position:fixed;top:10px;left:10px;z-index:30;display:flex;gap:8px}
+#mute,#leave{width:46px;height:46px;border-radius:50%;padding:0;margin:0;font-size:1.3rem;background:#1e293b;border:1px solid #475569;color:#fff}
 .badge{display:inline-block;width:18px;height:18px;vertical-align:middle;margin-inline-end:8px;background:var(--c)}
 
 .bz-wrap{width:min(78vw,320px);height:min(78vw,320px);margin:16px auto;filter:drop-shadow(0 0 18px var(--c,#38bdf8))}
@@ -74,8 +73,7 @@ body.alarm #flash{animation:siren .6s ease-in-out infinite alternate}
 </head>
 <body>
 <div id="flash"></div>
-<div id="bar" class="hide"><button id="mute" title="صدا">🔊</button></div>
-
+<div id="bar" class="hide"><button id="mute" title="صدا">🔊</button><button id="leave" title="خروج">🚪</button></div>
 <div class="wrap">
   <h1>🔔 مسابقه با بازر</h1>
 
@@ -230,7 +228,7 @@ let introRunning = false;
 
 const show = (n) => {
   ['join','host','player','intro'].forEach((x) => $(x).classList.toggle('hide', x !== n));
-  $('bar').classList.toggle('hide', n !== 'player' && n !== 'intro');
+  $('bar').classList.toggle('hide', n === 'join');
   if (n !== 'player') document.body.classList.remove('alarm');
 };
 const save = (m) => { me = m; sessionStorage.setItem('bz_me', JSON.stringify(m)); };
@@ -297,6 +295,23 @@ function reveal(i) {
   $('introBtns').classList.remove('hide');
 }
 $('testBtn').onclick = () => playBuzzer(me.bz || 0);
+function leaveRoom() {
+  stopMusic(); introRunning = false;
+  sessionStorage.removeItem('bz_me');
+  me = null; st = null; hostInfo = null;
+  document.body.classList.remove('alarm');
+  show('join');
+}
+$('leave').onclick = () => {
+  if (!confirm('از اتاق خارج می‌شوید؟')) return;
+  sock.emit('leave');
+  leaveRoom();
+};
+sock.on('closed', () => {
+  if (!me) return;
+  leaveRoom();
+  alert('مجری اتاق را بست');
+});
 $('goBtn').onclick = () => { stopMusic(); introRunning = false; show('player'); render(); };
 
 /* ---------- مجری ---------- */
