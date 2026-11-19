@@ -69,7 +69,7 @@ img{display:block;max-width:100%;user-select:none;-webkit-user-drag:none}
 @keyframes spin{to{rotate:360deg}}
 
 .slot{flex:none;width:clamp(200px,min(23vw,30vh),330px);animation:cardIn .9s var(--spring) calc(.7s + var(--i)*.18s) both,floaty 5s ease-in-out calc(1.8s + var(--i)*.9s) infinite}
-.slot.hero{width:clamp(216px,min(25vw,32.5vh),360px)}
+/* .slot.hero{width:clamp(216px,min(25vw,32.5vh),360px)} */
 @keyframes cardIn{from{opacity:0;translate:0 90px;scale:.8}}
 @keyframes floaty{50%{translate:0 -10px}}
 .card{display:block;position:relative;color:#fff;text-decoration:none;border-radius:28px;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--s,1));transition:transform .25s ease-out,filter .3s;transform-style:preserve-3d;outline:0;filter:drop-shadow(0 16px 16px #1b2a7a55)}
