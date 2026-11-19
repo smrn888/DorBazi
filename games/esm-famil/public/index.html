@@ -431,14 +431,16 @@ setInterval(()=>{
 
 // ── WebSocket + heartbeat ──
 function connect(cb) {
-  const proto=location.protocol==='https:'?'wss':'ws';
-  // const ws=new WebSocket(`${proto}://${location.host}`);
-  S.ws=ws;
-  ws.onopen=()=>{ if(cb) cb(); startHeartbeat(); startBgMusic(); };
-  ws.onerror=()=>showNotif('اتصال برقرار نشد ❌');
-  ws.onclose=()=>{ showNotif('اتصال قطع شد'); stopHeartbeat(); };
-  ws.onmessage=(e)=>handleMsg(JSON.parse(e.data));
+  S.ws = ws;
+  ws.onopen = () => { if (cb) cb(); startHeartbeat(); startBgMusic(); };
+  ws.onerror = () => showNotif('اتصال برقرار نشد ❌');
+  ws.onclose = () => { showNotif('اتصال قطع شد'); stopHeartbeat(); };
+  ws.onmessage = (e) => handleMsg(JSON.parse(e.data));
+
+  // اگر سوکت قبل از این وصل شده، onopen دیگر صدا زده نمی‌شود؛ دستی صدا بزن
+  if (_sock.connected) ws.onopen();
 }
+
 function send(obj){if(S.ws&&S.ws.readyState===1) S.ws.send(JSON.stringify(obj));}
 
 let heartbeatInterval=null;
