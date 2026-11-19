@@ -30,7 +30,7 @@
     const items = games.map(g => ({ g, art: ART.find(a => a.match.test(g.title)) })).filter(x => x.art);
     slots = items.map(({ g, art }, i) => {
       const slot = document.createElement('div');
-      slot.className = 'slot' + (art.hero ? ' hero-card' : '');
+      slot.className = 'slot';
       slot.style.setProperty('--i', i);
       const a = document.createElement('a');
       a.className = 'card'; a.href = g.path;
@@ -48,7 +48,8 @@
       d.onclick = () => center(i);
       dotsEl.appendChild(d);
     });
-    markDot();
+    dotsEl.hidden = true;
+    requestAnimationFrame(() => { dotsEl.hidden = track.scrollWidth <= track.clientWidth + 2; markDot(); });
   }
 
   function enhance(a) {
@@ -72,7 +73,7 @@
   function burst(x, y) {
     for (let i = 0; i < 9; i++) {
       const s = document.createElement('span');
-      s.className = 'burst'; s.textContent = i % 2 ? '✦' : '✧';
+      s.className = 'burst-star'; s.textContent = i % 2 ? '✦' : '✧';
       const ang = (i / 9) * Math.PI * 2, d = 50 + Math.random() * 40;
       s.style.cssText = `left:${x}px;top:${y}px;--x:${Math.cos(ang) * d}px;--y:${Math.sin(ang) * d}px`;
       document.body.appendChild(s); setTimeout(() => s.remove(), 750);
@@ -94,7 +95,7 @@
 
   // دکمه‌ی «بزن بریم!» بازی اصلی را باز می‌کند
   document.getElementById('go').onclick = () => {
-    const a = track.querySelector('.hero-card a, .slot:not(.soon) a');
+    const a = track.querySelector('.slot a');
     if (a) a.click();
   };
 

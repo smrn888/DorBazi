@@ -3,47 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#6eb3f4">
+  <meta name="theme-color" content="#4aa8ff">
   <meta name="description" content="دوربازی؛ دنیای بازی‌های گروهی آنلاین">
   <title>دوربازی | دنیای بازی‌های گروهی</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="scene" id="scene">
-    <img class="leaf leaf-l" src="img/17_bottom_left_foliage.webp" alt="" aria-hidden="true">
-    <img class="leaf leaf-r" src="img/18_bottom_right_foliage.webp" alt="" aria-hidden="true">
-    <img class="cloud cloud-l" src="img/16_bottom_cloud.webp" alt="" aria-hidden="true">
-    <img class="cloud cloud-r" src="img/16_bottom_cloud.webp" alt="" aria-hidden="true">
+    <img class="leaf leaf-l" src="img/leaf_tl.webp" alt="" aria-hidden="true">
+    <img class="leaf leaf-r" src="img/leaf_tr.webp" alt="" aria-hidden="true">
 
     <header class="top">
-      <a class="join" href="/join" id="join"><span class="join-ic">🎟️</span>ورود با کد اتاق</a>
+      <a class="join" href="/join"><img src="img/room_btn.webp" alt="ورود با کد اتاق"></a>
       <img class="logo" src="img/02_game_logo.webp" alt="دوربازی">
-      <div class="round-btns">
-        <button class="round" type="button" aria-label="پروفایل">👤</button>
-        <button class="round has-dot" type="button" aria-label="اعلان‌ها">🔔</button>
+      <div class="icons">
+        <button class="ib" type="button" aria-label="خانه"><img src="img/home_btn.webp" alt=""></button>
+        <button class="ib" type="button" aria-label="اعلان‌ها"><img src="img/bell_btn.webp" alt=""></button>
       </div>
     </header>
 
     <section class="hero" aria-labelledby="hero-title">
+      <img class="burst" src="img/burst.webp" alt="" aria-hidden="true">
       <div class="hero-text">
         <h1 id="hero-title">جمع‌تون آماده بازیه؟</h1>
         <p>یه بازی انتخاب کن، اتاق بساز و دوستات رو دعوت کن.</p>
         <button class="go" id="go" type="button"><span class="tri">▶</span> بزن بریم!</button>
       </div>
+      <img class="heart" src="img/heart.webp" alt="" aria-hidden="true">
       <img class="hero-bot" src="img/01_robot_gamer.webp" alt="ربات بازی‌باز دوربازی">
     </section>
 
     <section class="lobby" aria-labelledby="lobby-title">
-      <h2 id="lobby-title" class="sec-title"><span class="pad">🎮</span>بازی‌ها رو کشف کن</h2>
-      <div class="rail">
-        <div id="games-list" class="track" aria-live="polite">
-          <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
-        </div>
+      <h2 id="lobby-title" class="sec-title"><img src="img/controller_btn.webp" alt="">بازی‌ها رو کشف کن</h2>
+      <div id="games-list" class="track" aria-live="polite">
+        <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
       </div>
-      <div class="dots" id="dots" aria-label="انتخاب بازی"></div>
+      <div class="dots" id="dots" aria-label="انتخاب بازی" hidden></div>
     </section>
   </main>
   <script src="lobby.js"></script>
