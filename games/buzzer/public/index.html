@@ -962,6 +962,49 @@ body.in-lobby { overflow: hidden; padding: 0; }
   .lb-robot { position: relative; left: auto; bottom: auto; width: 30cqw; margin: 3cqw auto 0; }
   .lobby { min-height: 0; padding-bottom: 4cqw; }
 }
+
+/* ===== صفحه ورود جدید ===== */
+body[data-screen="join"]{
+  background:url("/img/background.webp") center bottom/cover no-repeat,linear-gradient(180deg,#3d63ff 0%,#7a4dff 55%,#b58bff 100%);
+}
+body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:none}
+#join{position:relative;min-height:calc(100dvh - 40px);display:flex;align-items:center;justify-content:center;padding:70px 0 20px}
+#join .jn-deco{position:fixed;pointer-events:none;user-select:none;z-index:0}
+#join .jn-leaf-l{top:0;left:0;width:clamp(70px,14vw,170px)}
+#join .jn-leaf-r{top:0;right:0;width:clamp(70px,14vw,170px)}
+#join .jn-fol-l{bottom:0;left:0;width:clamp(80px,16vw,200px)}
+#join .jn-fol-r{bottom:0;right:0;width:clamp(80px,16vw,200px)}
+#join .jn-cloud{bottom:0;left:50%;transform:translateX(-50%);width:min(100%,900px);opacity:.9}
+#join .jn-card{
+  position:relative;z-index:2;width:100%;max-width:420px;margin-top:clamp(40px,12vw,60px);
+  background:linear-gradient(180deg,#6b4bff,#4a2fd6);border:2px solid rgba(255,255,255,.28);border-radius:28px;
+  padding:clamp(64px,18vw,84px) clamp(16px,5vw,26px) 24px;
+  box-shadow:0 22px 50px rgba(30,10,120,.45),inset 0 2px 0 rgba(255,255,255,.3);
+}
+#join .jn-mascot{position:absolute;top:0;left:50%;transform:translate(-50%,-52%);width:clamp(120px,36vw,160px);aspect-ratio:1}
+#join .jn-mascot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#join .jn-mascot .jn-buzzer{inset:auto;width:62%;height:auto;bottom:-6%;left:50%;transform:translateX(-50%)}
+#join .jn-title{text-align:center;font-weight:900;font-size:clamp(28px,8vw,38px);line-height:1.3;color:#fff;text-shadow:0 3px 0 rgba(30,10,120,.45)}
+#join .jn-sub{text-align:center;font-weight:700;font-size:clamp(14px,3.8vw,17px);margin:6px 0 20px;color:#e6deff}
+#join .jn-field{display:flex;align-items:center;gap:10px;background:#f4f1ff;color:#2a1a7a;border-radius:16px;padding:0 14px;height:54px;margin-bottom:12px;border:2px solid transparent;box-shadow:inset 0 -3px 0 rgba(91,61,240,.12);transition:border-color .15s}
+#join .jn-field:focus-within{border-color:#ffd23a}
+#join .jn-field svg{flex:none;width:22px;height:22px;color:#5b3df0}
+#join .jn-field input{flex:1;min-width:0;height:100%;width:auto;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#2a1a7a;font:inherit;font-weight:800;font-size:16px;text-align:right}
+#join .jn-field input:focus{box-shadow:none}
+#join .jn-field input::placeholder{color:#7b6fc0;font-weight:700}
+#join .jn-field input.jn-code{letter-spacing:.2em;text-transform:uppercase;direction:ltr;text-align:right}
+#join .jn-field input.jn-code::placeholder{letter-spacing:0;direction:rtl}
+#join .jn-play,#join .jn-create{width:100%;border-radius:18px;font-weight:900;gap:10px}
+#join .jn-play{height:58px;margin-top:6px;font-size:clamp(18px,5vw,21px);color:#4a2b00;background:linear-gradient(180deg,#ffe36b,#ffa51f);box-shadow:0 6px 0 #c77a0a,0 12px 20px rgba(0,0,0,.25)}
+#join .jn-play:active:not(:disabled){box-shadow:0 2px 0 #c77a0a;transform:translateY(4px)}
+#join .jn-play svg{width:20px;height:20px;transform:scaleX(-1)}
+#join .jn-create{height:52px;font-size:clamp(16px,4.4vw,18px);color:#2a1a7a;background:#f4f1ff;border:0;box-shadow:0 5px 0 #b8aaf0}
+#join .jn-create:active:not(:disabled){box-shadow:0 2px 0 #b8aaf0;transform:translateY(3px)}
+#join .jn-create svg{width:24px;height:24px;color:#f5a623}
+#join .err{min-height:20px;color:#ffd6d6}
+#join .jn-or{display:flex;align-items:center;gap:12px;margin:10px 0 14px;color:#d9cfff;font-weight:700}
+#join .jn-or::before,#join .jn-or::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.22);border-radius:2px}
+@media (max-height:640px){#join .jn-sub{margin-bottom:12px}}
 </style>
 
 <!-- تصاویر لابی (inline شده) -->
@@ -1059,24 +1102,41 @@ body.in-lobby { overflow: hidden; padding: 0; }
 
   <!-- ورود بازیکن -->
   <div id="join" class="hide">
-    <div class="card">
-      <h3>ورود به عنوان بازیکن</h3>
-      <div class="input-group">
-        <input id="inName" placeholder="نام یا لقب شما" maxlength="20">
+    <img class="jn-deco jn-leaf-l" src="/img/leaf_tl.webp" alt="" onerror="this.remove()">
+    <img class="jn-deco jn-leaf-r" src="/img/leaf_tr.webp" alt="" onerror="this.remove()">
+    <img class="jn-deco jn-cloud" src="/img/16_bottom_cloud.webp" alt="" onerror="this.remove()">
+    <img class="jn-deco jn-fol-l" src="/img/17_bottom_left_foliage.webp" alt="" onerror="this.remove()">
+    <img class="jn-deco jn-fol-r" src="/img/18_bottom_right_foliage.webp" alt="" onerror="this.remove()">
+
+    <div class="jn-card">
+      <div class="jn-mascot" aria-hidden="true">
+        <img src="/img/01_robot_gamer.webp" alt="" onerror="this.remove()">
+        <img class="jn-buzzer" src="/img/buzzer_btn.webp" alt="" onerror="this.remove()">
       </div>
-      <div class="input-group">
-        <input id="inCode" placeholder="کد ۴ حرفی اتاق" maxlength="4" style="text-transform:uppercase;direction:ltr">
-      </div>
-      <button id="joinBtn">
-        <span>احضار حامی و ورود</span>
-        <svg class="svg-icon" viewBox="0 0 24 24"><use href="#patronus-falcon"/></svg>
+      <h2 class="jn-title">مسابقه با بازِ</h2>
+      <p class="jn-sub">مسابقه آنلاین اطلاعات عمومی</p>
+
+      <label class="jn-field">
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>
+        <input id="inName" placeholder="نام شما" maxlength="20" autocomplete="off">
+      </label>
+      <label class="jn-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h6M12 9v6"/></svg>
+        <input id="inCode" class="jn-code" placeholder="کد اتاق" maxlength="4" autocomplete="off" autocapitalize="characters">
+      </label>
+
+      <button id="joinBtn" type="button" class="jn-play">
+        <span>ورود به بازی</span>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.9l12-7.5a1 1 0 0 0 0-1.8l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
       </button>
       <div id="err" class="err"></div>
-    </div>
-    
-    <div class="card">
-      <h3>پنل داوری و مدیریت</h3>
-      <button id="createBtn" class="sec">ساخت اتاق بازی جدید</button>
+
+      <div class="jn-or">یا</div>
+
+      <button id="createBtn" type="button" class="jn-create">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18 2 7l5 4 5-7 5 7 5-4-1 11z"/><rect x="3" y="19.5" width="18" height="2" rx="1"/></svg>
+        <span>ساخت اتاق (مجری)</span>
+      </button>
     </div>
   </div>
 
@@ -1866,6 +1926,8 @@ $('lbSound').onclick = () => $('mute').click();
 $('startBtn').onclick = () => sock.emit('host:start', {}, (r) => {
   if (r && !r.ok) $('lbHint').textContent = r.error || 'شروع مسابقه ممکن نشد';
 });
+$('inName').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('inCode').focus(); });
+$('inCode').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('joinBtn').click(); });
 const qp = new URLSearchParams(location.search);
 if (qp.get('code')) $('inCode').value = qp.get('code').toUpperCase().slice(0, 4);
 $('inName').value = localStorage.getItem('bz_name') || '';
