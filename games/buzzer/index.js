@@ -48,6 +48,7 @@ function cleanName(s) {
 function freshGame(room) {
   clearTimeout(room.timer);
   room.timer = null;
+  room.started = false;      // false = در لابی (اتاق بازی)، true = مسابقه شروع شده
   room.phase = 'idle';       // idle | open | answering
   room.active = null;        // ارزش سوال فعال
   room.used = [];
@@ -82,6 +83,8 @@ function publicState(room) {
   return {
     code: room.code,
     hostOnline: room.hostSockets.size > 0,
+    started: room.started,
+    min: meta.minPlayers,
     phase: room.phase,
     active: room.active,
     used: room.used,
@@ -306,10 +309,25 @@ function init({ nsp }) {
     });
 
     /* ----- دستورهای مجری ----- */
+    socket.on('host:start', (data, ack) => {
+      const room = hostCtx();
+      const done = typeof ack === 'function' ? ack : () => {};
+      if (!room) return done({ ok: false, error: 'اتاق پیدا نشد' });
+      if (room.started) return done({ ok: true });
+      const online = [...room.players.values()].filter((p) => p.sockets.size > 0).length;
+      if (online < meta.minPlayers) {
+        return done({ ok: false, error: `حداقل ${meta.minPlayers} بازیکن آنلاین لازم است` });
+      }
+      room.started = true;
+      done({ ok: true });
+      broadcast(room);
+    });
+
     socket.on('host:activate', (data, ack) => {
       const room = hostCtx();
       const done = typeof ack === 'function' ? ack : () => {};
       if (!room) return done({ ok: false, error: 'اتاق پیدا نشد' });
+      if (!room.started) return done({ ok: false, error: 'ابتدا مسابقه را شروع کنید' });
       const value = Number(data?.value);
       if (!VALUES.includes(value)) return done({ ok: false, error: 'ارزش نامعتبر' });
       if (room.phase !== 'idle') return done({ ok: false, error: 'یک سوال در حال اجراست' });
@@ -363,7 +381,7 @@ function init({ nsp }) {
       const { room, id } = c;
       const p = room.players.get(id);
       if (!p) return;
-      if (room.phase === 'idle') return;
+      if (!room.started || room.phase === 'idle') return;
       if (room.queue.includes(id) || room.tried.includes(id)) return;
 
       const rt = Date.now() - room.openedAt;
