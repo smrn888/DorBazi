@@ -330,138 +330,6 @@ button:disabled {
   animation: pulse 0.3s ease-in-out infinite alternate;
 }
 
-/* بازر حیوانی اصلی */
-.bz-wrap {
-  width: min(76vw, 300px);
-  height: min(76vw, 300px);
-  margin: 24px auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.bz-wrap::after {
-  content: "";
-  position: absolute;
-  inset: -14px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--c) 0%, transparent 70%);
-  opacity: 0.35;
-  filter: blur(14px);
-  pointer-events: none;
-  animation: patronus-breathe 3s ease-in-out infinite alternate;
-}
-
-#buzz {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  margin: 0;
-  padding: 0;
-  border: 3px solid color-mix(in srgb, var(--c) 70%, #ffffff);
-  background: 
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22) 0%, transparent 65%),
-    linear-gradient(145deg, color-mix(in srgb, var(--c) 45%, #080f1d), #040711);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.8), inset 0 0 24px var(--c);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  touch-action: manipulation;
-  cursor: pointer;
-  transition: transform 0.1s ease, filter 0.25s ease;
-}
-
-#buzz .animal-spirit {
-  width: 52%;
-  height: 52%;
-  fill: var(--c);
-  filter: drop-shadow(0 0 14px var(--c)) drop-shadow(0 0 24px rgba(255,255,255,0.7));
-  z-index: 2;
-  transition: transform 0.3s ease;
-}
-
-#buzz .lbl {
-  position: relative;
-  z-index: 2;
-  font-size: 1.45rem;
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 14px var(--c);
-}
-
-#buzz .beam {
-  position: absolute;
-  inset: -50%;
-  opacity: 0;
-  background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, 0.8) 85%, transparent 100%);
-}
-
-#buzz.lit .beam { opacity: 1; animation: spin 0.7s linear infinite; }
-#buzz.lit { animation: pulse 0.45s ease-in-out infinite alternate; }
-#buzz.lit .animal-spirit { transform: scale(1.15); }
-#buzz.off { filter: grayscale(0.9) brightness(0.35); cursor: not-allowed; }
-#buzz:active:not(:disabled) { transform: scale(0.93); }
-
-/* سوال و گزینه‌ها */
-.qtext {
-  font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.8;
-  margin-bottom: 16px;
-  text-align: center;
-  color: #ffffff;
-}
-
-.opt {
-  padding: 14px 16px;
-  border: 1.5px solid rgba(148, 163, 184, 0.2);
-  border-radius: 14px;
-  margin-top: 10px;
-  background: rgba(11, 19, 36, 0.65);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.opt-index {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 800;
-}
-
-.opt.right {
-  border-color: var(--accent-ok);
-  background: rgba(16, 185, 129, 0.16);
-  color: #34d399;
-}
-.opt.dim { opacity: 0.35; }
-
-.fact {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(6, 11, 23, 0.75);
-  border-right: 3px solid var(--primary);
-  line-height: 1.8;
-  font-size: 0.95rem;
-  color: #cbd5e1;
-}
-
-.res { text-align: center; margin-top: 14px; font-weight: 800; font-size: 1.1rem; }
-
 /* سکوی قهرمانی */
 .podium {
   display: flex;
@@ -637,6 +505,295 @@ body.alarm #flash { animation: siren 0.6s ease-in-out infinite alternate; }
 body.shake .wrap { animation: shake 0.45s; }
 @keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
+
+/* ================= صفحه‌های بازی (مجری / بازیکن / نتایج) ================= */
+body.in-game {
+  padding: 64px 14px 28px;
+  background: var(--img-room) center bottom / cover no-repeat fixed, #0a56e6;
+}
+body.in-game::before { display: none; }
+body[data-screen="host"] .wrap { max-width: 1080px; }
+body[data-screen="player"] .wrap, body[data-screen="over"] .wrap { max-width: 520px; }
+
+.ic { width: 1.25em; height: 1.25em; fill: currentColor; flex: none; }
+
+/* پنل شیشه‌ای آبی */
+.gp {
+  position: relative; border-radius: 26px; padding: 16px 14px 18px; margin-bottom: 16px; color: #fff;
+  background: linear-gradient(180deg, #4f84ff 0%, #3b55ea 55%, #4b3fd6 100%);
+  border: 2.5px solid rgba(255, 255, 255, .6);
+  box-shadow: 0 7px 0 rgba(22, 30, 130, .55), 0 18px 30px rgba(0, 10, 80, .4),
+              inset 0 2px 0 rgba(255, 255, 255, .55), inset 0 0 28px rgba(130, 180, 255, .35);
+}
+.inset {
+  border-radius: 20px; padding: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .08));
+  border: 2px solid rgba(255, 255, 255, .55); box-shadow: inset 0 0 22px rgba(120, 160, 255, .35);
+}
+/* روبان عنوان */
+.rib {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: max-content; max-width: 100%; margin: -2px auto 14px; padding: 8px 26px; border-radius: 99px;
+  font-weight: 900; font-size: 1.15rem; color: #fff;
+  background: linear-gradient(180deg, #5aa2ff, #2f6df0);
+  border: 2px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 4px 0 rgba(20, 40, 160, .55), inset 0 2px 0 rgba(255, 255, 255, .45);
+  text-shadow: 0 2px 0 rgba(10, 20, 110, .45);
+}
+.rib svg { width: 30px; height: 30px; flex: none; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .25)); }
+.rib-red { background: linear-gradient(180deg, #ff7a99, #e11d5a); box-shadow: 0 4px 0 #9d0f3d, inset 0 2px 0 rgba(255, 255, 255, .45); }
+
+/* دکمه‌های براق */
+button.gb {
+  padding: 12px 10px; font-size: 1.05rem; font-weight: 900; border-radius: 16px; color: #fff;
+  border: 2px solid rgba(255, 255, 255, .6); text-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+}
+button.gb-ok  { background: linear-gradient(180deg, #5ee27a, #15a34a); box-shadow: 0 5px 0 #0e7a35, 0 10px 16px rgba(0, 40, 20, .3), inset 0 2px 0 rgba(255, 255, 255, .55); }
+button.gb-no  { background: linear-gradient(180deg, #ff7a8a, #e11d3a); box-shadow: 0 5px 0 #9d1428, 0 10px 16px rgba(60, 0, 10, .3), inset 0 2px 0 rgba(255, 255, 255, .55); }
+button.gb-sec { background: linear-gradient(180deg, #7aa2ff, #3f5fe0); box-shadow: 0 5px 0 #26379f, 0 10px 16px rgba(0, 10, 80, .3), inset 0 2px 0 rgba(255, 255, 255, .5); }
+button.gb:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0, 0, 0, .35), inset 0 2px 0 rgba(255, 255, 255, .4); }
+
+/* نوار بالای صفحه */
+body.in-game #bar { top: 12px; left: 12px; }
+button#mute, button#leave {
+  width: 42px; height: 42px; border-radius: 50%; padding: 0; color: #fff;
+  background: radial-gradient(circle at 35% 28%, #a8d8ff, #3b8cff 60%, #2a63e6);
+  border: 2px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 4px 0 rgba(10, 30, 120, .55), inset 0 2px 0 rgba(255, 255, 255, .5);
+}
+
+/* وضعیت و ردیف‌ها */
+.status {
+  min-height: 2.4em; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 8px 14px; margin-bottom: 10px; border-radius: 99px; font-weight: 800; font-size: 1rem; color: #fff;
+  background: rgba(10, 25, 120, .4); border: 1.5px solid rgba(255, 255, 255, .4);
+}
+.hq { margin: 0 0 12px; }
+.row {
+  color: #1d2a78; font-weight: 800; border: 1px solid rgba(255, 255, 255, .8);
+  background: linear-gradient(180deg, #f7f8ff, #e3e5fd); box-shadow: 0 2px 0 rgba(80, 90, 210, .25);
+}
+.row.first { background: linear-gradient(180deg, #d9ffe9, #a8f0c6); color: #0a5a30; border-color: #fff; }
+.row.bump { background: linear-gradient(180deg, #fff3c4, #ffe28a); }
+
+/* ----- مجری: بالا ----- */
+.hhead { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.hlabel {
+  padding: 6px 18px; border-radius: 99px; font-weight: 900; color: #fff;
+  background: linear-gradient(180deg, #5aa2ff, #3a63f0 60%, #4a4fe0); border: 2px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 3px 0 rgba(20, 40, 160, .5);
+}
+.hhead .code {
+  font-size: 1.8rem; letter-spacing: .25em; color: #fff; padding: 0 8px 0 .6em; border-radius: 14px; line-height: 1.5;
+  background: #0b2a86; border: 2px solid rgba(255, 255, 255, .6); text-shadow: none; box-shadow: inset 0 3px 8px rgba(0, 0, 0, .4);
+}
+.hhead button { width: auto; padding: 10px 16px; }
+
+.hcols { display: flex; flex-direction: column; gap: 16px; }
+.hcol { display: contents; }
+.hcols .gp { margin-bottom: 0; }
+.o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; }
+@media (min-width: 980px) {
+  .hcols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .hcol { display: flex; flex-direction: column; gap: 18px; }
+}
+
+/* ----- انتخاب امتیاز ----- */
+.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.board button.tile {
+  position: relative; aspect-ratio: 1 / 1.05; padding: 0; border-radius: 16px;
+  font-weight: 900; font-size: clamp(.95rem, 3.4vw, 1.4rem); color: #fff;
+  border: 2px solid rgba(255, 255, 255, .55); text-shadow: 0 2px 0 rgba(0, 0, 0, .28);
+  box-shadow: 0 5px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .6);
+}
+.tile.t-y { --e: #c68600; background: linear-gradient(180deg, #ffe86a, #f6b800); color: #2d2a40 !important; text-shadow: 0 1px 0 rgba(255, 255, 255, .5) !important; }
+.tile.t-b { --e: #1d46b5; background: linear-gradient(180deg, #6ea8ff, #2f6df0); }
+.tile.t-g { --e: #0e7a35; background: linear-gradient(180deg, #5ee27a, #15a34a); }
+.tile.t-r { --e: #b01f33; background: linear-gradient(180deg, #ff7a8a, #e8334a); }
+.board button.tile:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .5); }
+.board button.tile:disabled { opacity: .55; filter: saturate(.7); box-shadow: 0 5px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .5) !important; }
+.board button.tile.used:disabled { opacity: .28; filter: grayscale(1); }
+.board button.tile.act:disabled {
+  opacity: 1; filter: none; border-color: #fff;
+  box-shadow: 0 0 0 3px #4dff7a, 0 0 22px 4px rgba(77, 255, 122, .8), 0 5px 0 var(--e) !important;
+}
+.tile .tk {
+  display: none; position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; padding: 4px; border-radius: 50%;
+  background: #22c55e; fill: #fff; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
+}
+.tile.act .tk { display: block; }
+
+/* ----- کنترل مجری ----- */
+.ctl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.ctl button { flex-direction: column; gap: 4px; font-size: .95rem; }
+
+/* ----- سوال ----- */
+.qpanel { padding: 14px; }
+.qtop { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.qchip, .qclock {
+  display: flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 99px; font-weight: 900; font-size: .95rem;
+  border: 2px solid rgba(255, 255, 255, .7); text-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+}
+.qchip { background: linear-gradient(180deg, #5aa2ff, #2f6df0); box-shadow: 0 3px 0 rgba(20, 40, 160, .5); }
+.qclock { background: linear-gradient(180deg, #ff6b7f, #e11d3a); box-shadow: 0 3px 0 #9d1428; direction: ltr; font-variant-numeric: tabular-nums; }
+.qclock.idle { filter: saturate(.5) brightness(.92); }
+.qclock.low { animation: pulse .3s ease-in-out infinite alternate; }
+.qchip svg, .qclock svg { width: 26px; height: 26px; flex: none; }
+.qbar { height: 12px; border-radius: 99px; margin: 0 4px 12px; overflow: hidden; background: rgba(10, 25, 120, .45); border: 1.5px solid rgba(255, 255, 255, .5); }
+.qbar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); box-shadow: 0 0 8px #22c55e; }
+.qbar i.low { background: linear-gradient(90deg, #fb7185, #e11d48); animation: pulse .3s ease-in-out infinite alternate; }
+.qcard {
+  padding: 16px 14px; margin-bottom: 14px; border-radius: 18px; text-align: center;
+  font-weight: 900; font-size: 1.2rem; line-height: 1.8; color: #1d2a78;
+  background: linear-gradient(180deg, #f4f5ff, #dfe2fd); border: 2px solid #fff;
+  box-shadow: 0 4px 0 rgba(30, 40, 160, .35), inset 0 0 16px rgba(110, 120, 230, .3);
+}
+.qopts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qopt {
+  padding: 12px 8px; border-radius: 99px; text-align: center; font-weight: 800; line-height: 1.5; color: #fff;
+  background: linear-gradient(180deg, #4aa8ff, #2166e8); border: 2px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 4px 0 #17409f, inset 0 2px 0 rgba(255, 255, 255, .4); text-shadow: 0 2px 0 rgba(0, 0, 40, .3);
+}
+.qopt.right {
+  background: linear-gradient(180deg, #5ee27a, #15a34a);
+  box-shadow: 0 4px 0 #0e7a35, 0 0 16px rgba(60, 230, 110, .6), inset 0 2px 0 rgba(255, 255, 255, .5);
+}
+.qopt.dim { opacity: .4; }
+.res { text-align: center; margin-top: 14px; font-weight: 900; font-size: 1.05rem; text-shadow: 0 2px 0 rgba(0, 0, 40, .3); }
+.fact {
+  margin-top: 12px; padding: 12px 14px; border-radius: 12px; line-height: 1.8; font-size: .95rem; color: #fff;
+  background: rgba(10, 25, 120, .4); border-right: 3px solid #ffd84a;
+}
+
+/* ----- بازیکن: بازر ----- */
+.bzcard { padding-top: 14px; }
+.pchip {
+  direction: ltr; display: flex; align-items: center; gap: 8px; width: max-content; max-width: 100%;
+  padding: 4px 16px 4px 4px; margin-bottom: 4px; border-radius: 99px; font-weight: 800;
+  background: rgba(255, 255, 255, .18); border: 2px solid rgba(255, 255, 255, .5);
+}
+.pchip .av { width: 30px; height: 30px; }
+.pchip svg { width: 20px; height: 20px; fill: #ffd84a; }
+.pchip b { font-variant-numeric: tabular-nums; }
+.av {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid var(--c, #7aa7ff);
+  background: var(--img-boy) 50% 26% / 124% auto no-repeat, color-mix(in srgb, var(--c, #7aa7ff) 38%, #fff);
+  box-shadow: 0 2px 4px rgba(30, 40, 120, .3);
+}
+.bzcard .status { margin: 8px 0 0; }
+.bzstage { position: relative; width: min(68vw, 250px); aspect-ratio: 1 / .96; margin: 10px auto 4px; }
+.bzstage .base-b {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 34%; border-radius: 50%;
+  background: linear-gradient(180deg, #4a8dff, #1f4fd0);
+  box-shadow: 0 8px 0 #163b9a, 0 16px 22px rgba(0, 10, 80, .45), inset 0 4px 0 rgba(255, 255, 255, .45);
+}
+.bzstage .base-y {
+  position: absolute; left: 6%; right: 6%; bottom: 14%; height: 30%; border-radius: 50%;
+  background: linear-gradient(180deg, #ffe45c, #f5a800); box-shadow: 0 5px 0 #c68600, inset 0 3px 0 rgba(255, 255, 255, .55);
+}
+.rays { position: absolute; left: 0; right: 0; top: 0; height: 24%; pointer-events: none; }
+.rays i {
+  position: absolute; left: 45.5%; top: 0; width: 9%; height: 75%; border-radius: 99px;
+  background: linear-gradient(180deg, #ffe45c, #f5a800); transform-origin: 50% 140%;
+}
+.rays i:nth-child(1) { transform: rotate(-40deg); }
+.rays i:nth-child(3) { transform: rotate(40deg); }
+.bzstage.is-lit .rays i { animation: pulse .4s ease-in-out infinite alternate; }
+
+#buzz {
+  position: absolute; left: 12%; right: 12%; bottom: 24%; height: 56%; margin: 0; padding: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; border: 0; color: #fff;
+  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
+  font-size: clamp(1.7rem, 9vw, 2.4rem); font-weight: 900;
+  background: radial-gradient(ellipse at 50% 22%, #ff8a8a 0%, #f0303c 45%, #c4121f 100%);
+  box-shadow: 0 12px 0 #8f0c18, 0 20px 26px rgba(80, 0, 10, .5), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45);
+  touch-action: manipulation; cursor: pointer;
+}
+#buzz .lbl { position: relative; z-index: 2; text-shadow: 0 3px 0 rgba(120, 0, 15, .7); }
+#buzz .beam { position: absolute; inset: -50%; opacity: 0; background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, .7) 85%, transparent 100%); }
+#buzz:active:not(:disabled) { transform: translateY(9px); box-shadow: 0 3px 0 #8f0c18, 0 8px 12px rgba(80, 0, 10, .4), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45); }
+#buzz.off { filter: grayscale(.9) brightness(.6); cursor: not-allowed; }
+#buzz:disabled { opacity: .75; box-shadow: 0 12px 0 #5a4a4a !important; }
+#buzz.lit:disabled {
+  opacity: 1; filter: none; animation: pulse .45s ease-in-out infinite alternate;
+  background: radial-gradient(ellipse at 50% 22%, #fff2a0 0%, #ffc933 45%, #e89400 100%);
+  box-shadow: 0 12px 0 #a86500, 0 0 30px 6px var(--c, #ffd84a) !important;
+}
+#buzz.lit .beam { opacity: 1; animation: spin .7s linear infinite; }
+
+/* ----- جدول امتیازات ----- */
+.lbbox { border-radius: 18px; padding: 8px; background: linear-gradient(180deg, #eceeff, #d6d9fb); border: 2px solid rgba(255, 255, 255, .8); box-shadow: inset 0 0 16px rgba(110, 120, 230, .35); }
+.lbbox:empty { display: none; }
+.lbrow {
+  position: relative; display: flex; align-items: center; gap: 10px; padding: 6px 10px; margin: 4px 0; border-radius: 14px;
+  color: #1d2a78; font-weight: 800; background: linear-gradient(180deg, #f7f8ff, #e3e5fd);
+  box-shadow: 0 2px 0 rgba(80, 90, 210, .25); transition: background .3s;
+}
+.lbrow.bump { background: linear-gradient(180deg, #fff3c4, #ffe28a); }
+.lbrow.off { opacity: .55; }
+.rk {
+  flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  font-weight: 900; font-size: .95rem; color: #fff; border: 2px solid #fff;
+  background: linear-gradient(180deg, #6ea8ff, #2f6df0); box-shadow: 0 2px 0 rgba(20, 40, 160, .4);
+}
+.rk.r1 { background: linear-gradient(180deg, #ffe45c, #f5a800); color: #5a3a00; }
+.rk.r3 { background: linear-gradient(180deg, #ffb454, #f26a1b); }
+.lbrow .nm { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lbrow .crown { width: 20px; height: 20px; fill: #fbbf24; filter: drop-shadow(0 1px 0 #b45309); flex: none; }
+.lbrow .sc { min-width: 3.2em; text-align: left; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+/* ----- نتایج نهایی ----- */
+.pod {
+  color: #fff; border: 2.5px solid rgba(255, 255, 255, .8); text-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 70%, #fff), color-mix(in srgb, var(--c) 75%, #1e3a8a));
+  box-shadow: 0 6px 0 rgba(20, 30, 120, .5), 0 0 25px color-mix(in srgb, var(--c) 40%, transparent);
+}
+.pod .pm-icon { fill: #ffe45c; }
+
+/* ----- پاپ‌آپ نتیجهٔ پاسخ ----- */
+.rs-wrap {
+  position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;
+  background: rgba(5, 10, 60, .55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); animation: rs-in .25s ease-out;
+}
+.rs-card {
+  position: relative; width: min(78vw, 300px); padding: 20px 16px 18px; border-radius: 26px; text-align: center;
+  background: linear-gradient(180deg, #4f84ff, #3b55ea); border: 3px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 8px 0 rgba(22, 30, 130, .6), 0 24px 50px rgba(0, 0, 0, .5);
+  animation: rs-pop .5s cubic-bezier(.2, 1.4, .4, 1);
+}
+.rs-card::before, .rs-card::after {
+  content: ""; position: absolute; top: 14px; width: 12px; height: 32px; border-radius: 8px; background: linear-gradient(180deg, #ffe45c, #f5a800);
+}
+.rs-card::before { left: 22px; transform: rotate(-32deg); }
+.rs-card::after { right: 22px; transform: rotate(32deg); }
+.rs-robot { width: 58%; aspect-ratio: 520 / 622; margin: 0 auto -46px; background: var(--img-robot) center / contain no-repeat; }
+.rs-badge {
+  position: relative; z-index: 2; width: 76px; height: 76px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 50%;
+  border: 4px solid #fff; background: radial-gradient(circle at 35% 28%, #8cf0a4, #17a34a); box-shadow: 0 5px 0 #0e7a35, 0 8px 14px rgba(0, 0, 0, .35);
+}
+.rs-badge svg { width: 46px; height: 46px; fill: #fff; }
+.rs-title {
+  padding: 8px 14px; border-radius: 14px; font-weight: 900; font-size: 1.4rem; color: #fff; border: 2px solid rgba(255, 255, 255, .7);
+  background: linear-gradient(180deg, #5ee27a, #15a34a); box-shadow: 0 4px 0 #0e7a35; text-shadow: 0 2px 0 rgba(0, 60, 20, .5);
+}
+.rs-delta {
+  margin-top: 10px; padding: 8px; border-radius: 14px; font-weight: 900; font-size: 2.1rem; line-height: 1.3; color: #5a3a00;
+  background: linear-gradient(180deg, #ffe86a, #f6b800); border: 2px solid #fff; box-shadow: 0 5px 0 #c68600;
+}
+.rs-wrap.no .rs-badge { background: radial-gradient(circle at 35% 28%, #ff9aa8, #e11d3a); box-shadow: 0 5px 0 #9d1428, 0 8px 14px rgba(0, 0, 0, .35); }
+.rs-wrap.no .rs-title { background: linear-gradient(180deg, #ff7a8a, #e11d3a); box-shadow: 0 4px 0 #9d1428; text-shadow: 0 2px 0 rgba(90, 0, 15, .5); }
+.rs-wrap.no .rs-delta { color: #fff; background: linear-gradient(180deg, #ff8b6a, #e8442a); box-shadow: 0 5px 0 #a3260f; }
+@keyframes rs-in { from { opacity: 0; } }
+@keyframes rs-pop { from { transform: scale(.6); opacity: 0; } }
+
+.toast {
+  position: fixed; top: 68px; left: 50%; transform: translateX(-50%); z-index: 80; padding: 8px 20px; border-radius: 99px;
+  font-weight: 900; color: #fff; border: 2px solid rgba(255, 255, 255, .8); animation: rs-in .2s ease-out;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, .3), 0 10px 20px rgba(0, 0, 0, .35);
+}
+.toast.ok { background: linear-gradient(180deg, #5ee27a, #15a34a); }
+.toast.no { background: linear-gradient(180deg, #ff7a8a, #e11d3a); }
+
 /* ================= اتاق بازی (لابی) ================= */
 body.in-lobby .game-header { display: none; }
 body.in-lobby { padding-top: 14px; }
@@ -790,6 +947,15 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
 }
 @keyframes lb-float { to { transform: translateY(-1.4cqw); } }
 
+/* ===== لابی تمام‌صفحه ===== */
+body.in-lobby { overflow: hidden; padding: 0; }
+#lobby.lobby-full {
+  position: fixed; inset: 0; z-index: 20; display: flex; overflow-y: auto; padding: 0;
+  background: var(--img-room) center bottom / cover no-repeat, #0a56e6;
+}
+#lobby .lobby-cq { margin: auto; max-width: min(100%, 105dvh, 900px); }
+#lobby .lobby { background: none; box-shadow: none; border-radius: 0; overflow: visible; }
+
 /* موبایل / عرض کم: ستون عریض‌تر و ربات زیر دکمه */
 @container (max-width: 520px) {
   .lb-col { width: 90%; margin: 0 auto; }
@@ -876,17 +1042,17 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
 
 <div id="bar" class="hide">
   <button id="mute" title="صدا">
-    <svg class="svg-icon" id="mute-icon"><use href="#icon-vol-on"/></svg>
+    <svg class="svg-icon" id="mute-icon" viewBox="0 0 24 24"><use href="#icon-vol-on"/></svg>
   </button>
   <button id="leave" title="خروج">
-    <svg class="svg-icon"><use href="#icon-door"/></svg>
+    <svg class="svg-icon" viewBox="0 0 24 24"><use href="#icon-door"/></svg>
   </button>
 </div>
 
 <div class="wrap">
   <header class="game-header">
     <div class="header-logo">
-      <svg class="svg-icon" style="width:26px;height:26px"><use href="#patronus-stag"/></svg>
+      <svg class="svg-icon" viewBox="0 0 24 24" style="width:26px;height:26px"><use href="#patronus-stag"/></svg>
     </div>
     <h1>مسابقه زنگ و هیجان</h1>
   </header>
@@ -903,7 +1069,7 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
       </div>
       <button id="joinBtn">
         <span>احضار حامی و ورود</span>
-        <svg class="svg-icon"><use href="#patronus-falcon"/></svg>
+        <svg class="svg-icon" viewBox="0 0 24 24"><use href="#patronus-falcon"/></svg>
       </button>
       <div id="err" class="err"></div>
     </div>
@@ -915,7 +1081,7 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
   </div>
 
   <!-- اتاق بازی (لابی) -->
-  <div id="lobby" class="hide">
+  <div id="lobby" class="hide lobby-full">
     <div class="lobby-cq">
       <div class="lobby">
         <div class="lb-title">اتاق بازی</div>
@@ -941,102 +1107,88 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
 
   <!-- داشبورد مجری -->
   <div id="host" class="hide">
-    <div class="card">
-      <div style="color:var(--text-muted);font-size:0.9rem;text-align:center;">کد اتاق برای اشتراک‌گذاری:</div>
-      <div class="code-box">
-        <div id="hCode" class="code"></div>
+    <div class="hhead">
+      <span class="hlabel">کد اتاق</span>
+      <div id="hCode" class="code"></div>
+      <button id="copyBtn" class="gb gb-sec"><svg class="ic" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>کپی لینک دعوت</span></button>
+    </div>
+
+    <div class="hcols">
+      <div class="hcol">
+        <div class="gp o1">
+          <div class="rib"><svg viewBox="0 0 32 32"><circle cx="15" cy="17" r="12" fill="#fff"/><circle cx="15" cy="17" r="9" fill="#ef4444"/><circle cx="15" cy="17" r="6" fill="#fff"/><circle cx="15" cy="17" r="3" fill="#ef4444"/><path d="M15 17L27 5" stroke="#8b5a2b" stroke-width="2.4" stroke-linecap="round"/><path d="M27 5l3.5-1-1 3.5z" fill="#3b82f6"/></svg><span>انتخاب امتیاز</span></div>
+          <div class="inset"><div id="board" class="board"></div></div>
+        </div>
+
+        <div class="gp o3">
+          <div id="hStatus" class="status"></div>
+          <div id="hQueue" class="hq"></div>
+          <div class="ctl">
+            <button id="okBtn" class="gb gb-ok"><svg class="ic" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>درست</span></button>
+            <button id="noBtn" class="gb gb-no"><svg class="ic" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span>غلط</span></button>
+            <button id="skipBtn" class="gb gb-sec"><svg class="ic" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg><span>رد کردن</span></button>
+          </div>
+        </div>
       </div>
-      <button id="copyBtn" class="sec">
-        <svg class="svg-icon"><use href="#icon-copy"/></svg>
-        <span>کپی لینک دعوت</span>
-      </button>
-    </div>
 
-    <div class="card">
-      <h3>انتخاب ارزش سوال</h3>
-      <div id="board" class="board"></div>
-    </div>
+      <div class="hcol">
+        <div id="hQ" class="gp qpanel o2 hide"></div>
 
-    <div id="hQ" class="card hide"></div>
-
-    <div class="card">
-      <div class="timer hide"><i></i></div>
-      <div id="hStatus" class="status"></div>
-      <div id="hQueue" style="margin: 12px 0;"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        <button id="okBtn" class="ok">
-          <svg class="svg-icon"><use href="#icon-check"/></svg>
-          <span>درست</span>
-        </button>
-        <button id="noBtn" class="no">
-          <svg class="svg-icon"><use href="#icon-cross"/></svg>
-          <span>غلط</span>
-        </button>
-        <button id="skipBtn" class="sec">
-          <svg class="svg-icon"><use href="#icon-skip"/></svg>
-          <span>رد کردن</span>
-        </button>
+        <div class="gp o4">
+          <div class="rib rib-red"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span>جدول امتیازات</span></div>
+          <div id="hScores" class="lbbox"></div>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <h3>رده‌بندی شرکت‌کنندگان</h3>
-      <div id="hScores"></div>
-    </div>
-    <button class="sec leaveBtn">
-      <svg class="svg-icon"><use href="#icon-door"/></svg>
-      <span>بستن کامل اتاق و خروج</span>
-    </button>
+    <button class="gb gb-sec leaveBtn" style="margin-top:18px;"><svg class="ic" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></svg><span>بستن کامل اتاق و خروج</span></button>
   </div>
 
   <!-- پایان بازی -->
   <div id="over" class="hide">
-    <div class="card">
-      <h2 style="text-align:center;font-weight:900;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;">
-        <svg class="svg-icon" style="color:#facc15;width:28px;height:28px"><use href="#icon-trophy"/></svg>
-        <span>نتایج نهایی مسابقه</span>
-      </h2>
+    <div class="gp">
+      <div class="rib rib-red"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span>نتایج نهایی مسابقه</span></div>
       <div id="podium" class="podium"></div>
       <div id="awards" style="margin-top:16px;"></div>
     </div>
-    <button id="rematchBtn" class="hide" style="margin-bottom:12px;">
-      <svg class="svg-icon"><use href="#icon-refresh"/></svg>
-      <span>شروع مسابقه مجدد</span>
-    </button>
-    <button class="sec leaveBtn">
-      <svg class="svg-icon"><use href="#icon-door"/></svg>
-      <span>خروج</span>
-    </button>
+    <button id="rematchBtn" class="gb gb-ok hide" style="margin-bottom:14px;"><svg class="ic" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg><span>شروع مسابقه مجدد</span></button>
+    <button class="gb gb-sec leaveBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></svg><span>خروج</span></button>
   </div>
 
   <!-- صفحه بازیکن -->
   <div id="player" class="hide">
     <div id="offline" class="card warn hide">ارتباط با مجری قطع گردید. در انتظار بازگشت میزبان...</div>
-    <div id="pQ" class="card hide"></div>
-    
-    <div class="card" style="padding:16px 20px;">
+    <div id="pQ" class="gp qpanel hide"></div>
+
+    <div class="gp bzcard">
+      <div class="pchip"><span class="av" id="pAv"></span><span id="pName"></span><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><b id="pScore">۰</b></div>
+      <div id="buzzWrap" class="bzstage">
+        <div class="rays"><i></i><i></i><i></i></div>
+        <div class="base-b"></div>
+        <div class="base-y"></div>
+        <button id="buzz"><span class="beam"></span><span class="lbl">بازز</span></button>
+      </div>
       <div id="pStatus" class="status"></div>
-      <div class="timer hide"><i></i></div>
     </div>
 
-    <div id="buzzWrap" class="bz-wrap">
-      <button id="buzz">
-        <span class="beam"></span>
-        <svg class="animal-spirit" id="buzzIcon"><use href="#patronus-stag"/></svg>
-        <span class="lbl">بزن!</span>
-      </button>
+    <div class="gp">
+      <div class="rib rib-red"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span>جدول امتیازات</span></div>
+      <div id="pScores" class="lbbox"></div>
     </div>
-
-    <div class="card">
-      <h3>جدول زنده امتیازها</h3>
-      <div id="pScores"></div>
-    </div>
-    <button class="sec leaveBtn">
-      <svg class="svg-icon"><use href="#icon-door"/></svg>
-      <span>خروج از بازی</span>
-    </button>
+    <button class="gb gb-sec leaveBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></svg><span>خروج از بازی</span></button>
   </div>
 </div>
+
+<!-- نتیجهٔ پاسخ و اعلان -->
+<div id="result" class="rs-wrap hide">
+  <div class="rs-card">
+    <div class="rs-robot"></div>
+    <div class="rs-badge"><svg viewBox="0 0 24 24"><path id="rsPath" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+    <div class="rs-title" id="rsTitle"></div>
+    <div class="rs-delta" id="rsDelta"></div>
+  </div>
+</div>
+<div id="toast" class="hide"></div>
 
 <!-- پرده جادویی انتخاب پاترونوس (روح حیوان) -->
 <div id="intro" class="hide">
@@ -1044,7 +1196,7 @@ button.lb-start:disabled { opacity: .6; filter: grayscale(.6); box-shadow: 0 1.4
     <div id="introTitle" style="font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#94a3b8;">در حال احضار حامی جادویی...</div>
     <div class="patronus-orb" id="introOrb">
       <div class="shockwave"></div>
-      <svg id="introSvg"><use href="#patronus-stag"/></svg>
+      <svg id="introSvg" viewBox="0 0 24 24"><use href="#patronus-stag"/></svg>
     </div>
     <div id="introName" style="font-size:1.85rem;font-weight:900;margin:14px 0;color:var(--c);text-shadow:0 0 25px var(--c);"></div>
     <div id="introBtns" class="hide" style="width:100%;display:flex;flex-direction:column;gap:12px;">
@@ -1084,7 +1236,7 @@ function animalBadge(i) {
   const s = document.createElement('span');
   s.className = 'animal-badge';
   s.style.setProperty('--c', p.color);
-  s.innerHTML = `<svg><use href="#${p.id}"/></svg>`;
+  s.innerHTML = `<svg viewBox="0 0 24 24"><use href="#${p.id}"/></svg>`;
   return s;
 }
 
@@ -1198,6 +1350,8 @@ const show = (n) => {
   ['join','lobby','host','player','intro','over'].forEach((x) => $(x).classList.toggle('hide', x !== n));
   $('bar').classList.toggle('hide', n === 'join' || n === 'lobby');
   document.body.classList.toggle('in-lobby', n === 'lobby');
+  document.body.classList.toggle('in-game', n === 'host' || n === 'player' || n === 'over');
+  document.body.dataset.screen = n;
   if (n !== 'player') document.body.classList.remove('alarm');
 };
 const save = (m) => { me = m; sessionStorage.setItem('bz_me', JSON.stringify(m)); };
@@ -1330,9 +1484,12 @@ $('goBtn').onclick = () => {
   render();
 };
 
-VALUES.forEach((v) => {
+const TILE = ['y', 'b', 'g', 'r', 'b', 'r', 'b', 'g', 'y', 'r'];   // رنگ کاشی‌ها مثل طرح
+VALUES.forEach((v, i) => {
   const b = document.createElement('button');
-  b.textContent = v; b.dataset.v = v;
+  b.className = 'tile t-' + TILE[i];
+  b.dataset.v = v;
+  b.innerHTML = `<span>${v}</span><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
   b.onclick = () => sock.emit('host:activate', { value: v }, (r) => {
     if (r && !r.ok && r.error) alert(r.error);
   });
@@ -1363,18 +1520,32 @@ const row = (a, b, cls, bz) => {
 };
 const pl = (id) => st.players.find((p) => p.id === id) || {};
 
+const CROWN_SM = '<svg class="crown" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>';
+const COIN = '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="17" rx="8" ry="4" fill="#d98a00"/><ellipse cx="12" cy="15" rx="8" ry="4" fill="#ffc933"/><ellipse cx="12" cy="10" rx="8" ry="4" fill="#d98a00"/><ellipse cx="12" cy="8" rx="8" ry="4" fill="#ffd84a"/></svg>';
+const CLOCK = '<svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="8" fill="#fff"/><path d="M12 13.5V8.5M12 13.5l3 2" stroke="#e11d2e" stroke-width="2" stroke-linecap="round"/><rect x="9.5" y="2" width="5" height="2.4" rx="1" fill="#fbbf24"/><rect x="11" y="3.5" width="2" height="2.6" fill="#fbbf24"/></svg>';
+
 function renderScores(box) {
   const sorted = [...st.players].sort((a, b) => b.score - a.score);
   const before = new Map([...box.children].map((r) => [r.dataset.id, r.getBoundingClientRect().top]));
-  box.replaceChildren(...sorted.map((p) => {
-    const r = row((p.online ? '' : '[آفلاین] ') + p.name, '', '', p.bz);
+  box.replaceChildren(...sorted.map((p, i) => {
+    const r = document.createElement('div');
+    r.className = 'lbrow' + (p.online ? '' : ' off');
     r.dataset.id = p.id;
-    const b = document.createElement('b');
-    b.style.fontSize = '1.15rem';
-    b.style.fontVariantNumeric = 'tabular-nums';
-    r.lastChild.append(b);
+    r.style.setProperty('--c', PATRONUS[p.bz % 10].color);
+    const rk = document.createElement('span');
+    rk.className = 'rk' + (i === 0 ? ' r1' : i === 2 ? ' r3' : '');
+    rk.textContent = fa(i + 1);
+    const nm = document.createElement('span');
+    nm.className = 'nm';
+    nm.append(document.createTextNode(p.name));
+    if (i === 0 && p.score > 0) nm.insertAdjacentHTML('beforeend', CROWN_SM);
+    const sc = document.createElement('b');
+    sc.className = 'sc';
+    const av = document.createElement('span');
+    av.className = 'av';
+    r.append(rk, nm, sc, av);
     const from = shown[p.id] ?? p.score; shown[p.id] = p.score;
-    countTo(b, from, p.score);
+    countTo(sc, from, p.score);
     if (from !== p.score) { r.classList.add('bump'); setTimeout(() => r.classList.remove('bump'), 1200); }
     return r;
   }));
@@ -1394,29 +1565,28 @@ function renderQ(box, isHost) {
   const fact = st.reveal ? st.reveal.fact   : (live ? hostInfo.fact   : '');
 
   const parts = [];
-  const h = document.createElement('div');
-  h.className = 'qtext'; h.textContent = st.q.text;
-  parts.push(h);
-
+  const top = document.createElement('div');
+  top.className = 'qtop';
+  top.innerHTML = `<div class="qchip">${COIN}<span>امتیاز سوال: ${fa(st.active || 0)}</span></div>` +
+                  `<div class="qclock idle">${CLOCK}<span class="qnum">00:10</span></div>`;
+  const bar = document.createElement('div');
+  bar.className = 'qbar'; bar.innerHTML = '<i></i>';
+  const card = document.createElement('div');
+  card.className = 'qcard'; card.textContent = st.q.text;
+  const opts = document.createElement('div');
+  opts.className = 'qopts';
   st.q.options.forEach((t, i) => {
     const d = document.createElement('div');
-    d.className = 'opt' + (i === ans ? ' right' : (st.reveal ? ' dim' : ''));
-    
-    const tag = document.createElement('span');
-    tag.className = 'opt-index';
-    tag.textContent = ['۱', '۲', '۳', '۴'][i];
-    
-    const label = document.createElement('span');
-    label.textContent = t;
-
-    d.append(tag, label);
-    parts.push(d);
+    d.className = 'qopt' + (i === ans ? ' right' : (st.reveal ? ' dim' : ''));
+    d.textContent = t;
+    opts.append(d);
   });
+  parts.push(top, bar, card, opts);
 
   if (st.reveal) {
     const r = document.createElement('div');
     r.className = 'res';
-    r.style.color = st.reveal.by ? 'var(--accent-ok)' : 'var(--accent-no)';
+    r.style.color = st.reveal.by ? '#b8ffd0' : '#ffd0d6';
     r.textContent = st.reveal.by
       ? `پاسخ صحیح توسط ${pl(st.reveal.by).name || 'کاربر'} ثبت شد`
       : 'پاسخ صحیحی ثبت نشد';
@@ -1431,7 +1601,8 @@ function renderQ(box, isHost) {
   box.replaceChildren(...parts);
 }
 
-const fa = (n) => Number(n).toLocaleString('fa-IR');
+const fa = (n) => Number(n).toLocaleString('fa-IR', { useGrouping: false });
+const signed = (d) => (d > 0 ? '+' : '−') + fa(Math.abs(d));
 const CROWN = '<svg class="pl-crown" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>';
 
 function renderLobby() {
@@ -1495,11 +1666,14 @@ function render() {
   if (me.role === 'host') {
     $('hCode').textContent = st.code;
     document.querySelectorAll('#board button').forEach((b) => {
-      b.disabled = st.used.includes(+b.dataset.v) || st.phase !== 'idle';
+      const v = +b.dataset.v, used = st.used.includes(v);
+      b.disabled = used || st.phase !== 'idle';
+      b.classList.toggle('used', used);
+      b.classList.toggle('act', st.phase !== 'idle' && st.active === v);
     });
     $('hStatus').textContent =
       st.phase === 'idle' ? 'یک سوال را انتخاب کنید'
-      : st.phase === 'open' ? `سوال ${st.active} امتیازی فعال است — منتظر بازر`
+      : st.phase === 'open' ? `سوال ${fa(st.active)} امتیازی فعال است — منتظر بازر`
       : `نوبت پاسخ: ${pl(st.queue[0]).name || '؟'}`;
     $('hQueue').replaceChildren(...st.queue.map((id, i) =>
       row(`${i + 1}. ${pl(id).name || '؟'}`, pl(id).rt != null ? sec(pl(id).rt) : '', i === 0 ? 'first' : '', pl(id).bz)));
@@ -1513,7 +1687,10 @@ function render() {
     colorize($('buzzWrap'), b);
     colorize($('buzz'), b);
     colorize($('flash'), b);
-    $('buzzIcon').firstElementChild.setAttribute('href', `#${pet.id}`);
+    colorize($('pAv'), b);
+    const mine = pl(me.id);
+    $('pName').textContent = mine.name || '';
+    $('pScore').textContent = fa(mine.score || 0);
     $('offline').classList.toggle('hide', st.hostOnline !== false);
 
     const idx = st.queue.indexOf(me.id);
@@ -1524,7 +1701,7 @@ function render() {
     else if (idx > 0) txt = `شما در نوبت شماره ${idx + 1} صف هستید`;
     else if (tried) txt = 'پاسخ شما اشتباه ثبت شد';
     else if (st.queue.length) txt = `${pl(st.queue[0]).name || 'بازیکن'} در حال پاسخگویی است`;
-    else txt = `سوال ${st.active} امتیازی فعال است — بازر حامی خود را فعال کن!`;
+    else txt = `سوال ${fa(st.active)} امتیازی فعال است — بازز را بزن!`;
     $('pStatus').textContent = txt;
 
     if (st.phase === 'idle' || tried) { stopBuzzSound(); stopVibrate(); }
@@ -1532,20 +1709,22 @@ function render() {
     const disabled = st.phase === 'idle' || idx >= 0 || tried;
     $('buzz').disabled = disabled;
     $('buzz').classList.toggle('lit', idx >= 0);
+    $('buzzWrap').classList.toggle('is-lit', idx >= 0);
     $('buzz').classList.toggle('off', disabled && idx < 0);
     document.body.classList.toggle('alarm', idx === 0 && !introRunning);
     renderQ($('pQ'), false);
     renderScores($('pScores'));
   }
+  runTimer();
 }
 
 let overShown = false;
 const shown = {};
 const sec = (ms) => (ms / 1000).toFixed(2) + ' ثانیه';
 function countTo(el, from, to) {
-  if (from === to) { el.textContent = to; return; }
+  if (from === to) { el.textContent = fa(to); return; }
   const t0 = performance.now();
-  const f = (t) => { const k = Math.min(1, (t - t0) / 600); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(f); };
+  const f = (t) => { const k = Math.min(1, (t - t0) / 600); el.textContent = fa(Math.round(from + (to - from) * k)); if (k < 1) requestAnimationFrame(f); };
   requestAnimationFrame(f);
 }
 function confetti(n = 36) {
@@ -1562,27 +1741,64 @@ function sfx(ok) {
   if (ok) [523, 659, 784, 1047, 1319].forEach((f, k) => tone(f, k * .08, .5, 'triangle', .2));
   else { tone(220, 0, .55, 'sawtooth', .14, 90); tone(165, .12, .5, 'square', .08, 70); }
 }
-function runTimer() {
-  document.querySelectorAll('.timer').forEach((t) => {
-    clearTimeout(t._lt);
-    const i = t.firstChild, on = st && st.dl != null && st.phase === 'answering';
-    t.classList.toggle('hide', !on); if (!on) return;
-    i.classList.remove('low'); i.style.transition = 'none';
-    i.style.width = (st.dl / ANSWER_MS * 100) + '%'; void i.offsetWidth;
-    i.style.transition = `width ${st.dl}ms linear`; i.style.width = '0%';
-    t._lt = setTimeout(() => i.classList.add('low'), Math.max(0, st.dl - 3000));
+let dlAt = 0;   // زمان پایان مهلت پاسخ (برحسب ساعت کلاینت)
+function tickNum() {
+  const left = dlAt ? Math.max(0, dlAt - Date.now()) : null;
+  const txt = '00:' + String(left == null ? ANSWER_MS / 1000 : Math.ceil(left / 1000)).padStart(2, '0');
+  document.querySelectorAll('.qnum').forEach((n) => {
+    if (n.textContent !== txt) n.textContent = txt;
+    const c = n.parentElement;
+    c.classList.toggle('idle', left == null);
+    c.classList.toggle('low', left != null && left <= 3000);
   });
 }
+setInterval(tickNum, 200);
+function runTimer() {
+  const left = dlAt ? Math.max(0, dlAt - Date.now()) : null;
+  document.querySelectorAll('.qbar').forEach((bar) => {
+    const i = bar.firstChild;
+    clearTimeout(bar._lt);
+    i.classList.remove('low'); i.style.transition = 'none';
+    if (left == null) { i.style.width = '100%'; return; }
+    i.style.width = (left / ANSWER_MS * 100) + '%'; void i.offsetWidth;
+    i.style.transition = `width ${left}ms linear`; i.style.width = '0%';
+    bar._lt = setTimeout(() => i.classList.add('low'), Math.max(0, left - 3000));
+  });
+  tickNum();
+}
+
+function showResult(correct, delta) {
+  const box = $('result');
+  box.className = 'rs-wrap ' + (correct ? 'ok' : 'no');
+  $('rsPath').setAttribute('d', correct
+    ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
+    : 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z');
+  $('rsTitle').textContent = correct ? 'پاسخ صحیح!' : 'پاسخ اشتباه!';
+  $('rsDelta').textContent = signed(delta);
+  clearTimeout(box._t);
+  box._t = setTimeout(() => box.classList.add('hide'), 2400);
+}
+$('result').onclick = () => $('result').classList.add('hide');
+function showToast(text, ok) {
+  const t = $('toast');
+  t.className = 'toast ' + (ok ? 'ok' : 'no');
+  t.textContent = text;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.add('hide'), 2000);
+}
+
 sock.on('judged', ({ id, correct, delta }) => {
   if (!me) return;
-  const r = document.querySelector(`.row[data-id="${id}"]`);
+  const r = document.querySelector(`.lbrow[data-id="${id}"]`);
   if (r) {
     const f = document.createElement('span');
     f.className = 'float ' + (correct ? 'up' : 'dn');
-    f.textContent = (delta > 0 ? '+' : '') + delta;
+    f.textContent = signed(delta);
     r.append(f); setTimeout(() => f.remove(), 1300);
   }
   sfx(correct);
+  if (me.role === 'player' && id === me.id) showResult(correct, delta);
+  else showToast(`${pl(id).name || 'بازیکن'}  ${signed(delta)}`, correct);
   if (correct) { confetti(); setTimeout(() => navigator.vibrate && navigator.vibrate([80, 40, 80]), 80); }
   else { document.body.classList.add('shake'); setTimeout(() => document.body.classList.remove('shake'), 500); }
 });
@@ -1595,6 +1811,7 @@ function renderOver() {
     const crownWrap = document.createElement('div');
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'pm-icon');
+    svg.setAttribute('viewBox', '0 0 24 24');
     const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
     use.setAttribute('href', '#icon-crown');
     svg.appendChild(use);
@@ -1655,7 +1872,7 @@ $('inName').value = localStorage.getItem('bz_name') || '';
 $('joinBtn').addEventListener('click', () => localStorage.setItem('bz_name', $('inName').value));
 
 sock.on('hostinfo', (h) => { hostInfo = h; render(); });
-sock.on('state', (s) => { st = s; render(); runTimer(); });
+sock.on('state', (s) => { st = s; dlAt = (s.phase === 'answering' && s.dl != null) ? Date.now() + s.dl : 0; render(); });
 </script>
 </body>
 </html>
