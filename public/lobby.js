@@ -11,7 +11,7 @@
   ];
   const track = document.getElementById('games-list');
   const dotsEl = document.getElementById('dots');
-  const hand = document.getElementById('hand');
+  // const hand = document.getElementById('hand');
   let slots = [];
 
   async function load() {
@@ -71,7 +71,7 @@
     }
     a.addEventListener('click', e => {
       burst(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
-      hand.classList.add('hide');
+      // hand.classList.add('hide');
       const href = a.getAttribute('href');
       if (!href || href === '#' || e.metaKey || e.ctrlKey || e.shiftKey) { e.preventDefault(); return; }
       e.preventDefault();
@@ -101,7 +101,7 @@
     [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === best));
   }
   track.addEventListener('scroll', () => requestAnimationFrame(markDot), { passive: true });
-  ['pointerdown', 'wheel', 'keydown'].forEach(ev => addEventListener(ev, () => hand.classList.add('hide'), { once: true }));
+  // ['pointerdown', 'wheel', 'keydown'].forEach(ev => addEventListener(ev, () => hand.classList.add('hide'), { once: true }));
 
   /* ---------- ربات ---------- */
   const robot = document.getElementById('robot'), bubble = document.getElementById('bubble');
