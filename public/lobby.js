@@ -143,5 +143,23 @@
       scene.style.setProperty('--my', (e.clientY / innerHeight - .5).toFixed(3));
     });
   }
+
+  /* ---------- نشانگر دست ---------- */
+if (matchMedia('(pointer:fine)').matches) {
+  const cur = document.createElement('img');
+  cur.src = 'img/15_hand_cursor.webp';
+  cur.alt = ''; cur.setAttribute('aria-hidden', 'true');
+  cur.className = 'hand-cursor';
+  document.body.appendChild(cur);
+  document.documentElement.classList.add('custom-cursor');
+
+  addEventListener('pointermove', e => {
+    cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    cur.style.opacity = 1;
+  });
+  document.addEventListener('pointerleave', () => cur.style.opacity = 0);
+  addEventListener('pointerdown', () => cur.classList.add('down'));
+  addEventListener('pointerup',   () => cur.classList.remove('down'));
+}
   load();
 })();
