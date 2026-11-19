@@ -13,44 +13,39 @@
 </head>
 <body>
   <main class="scene" id="scene">
-    <div class="sun" aria-hidden="true"></div>
-    <span class="spark s1" aria-hidden="true">✦</span><span class="spark s2" aria-hidden="true">✧</span>
-    <span class="spark s3" aria-hidden="true">✦</span><span class="spark s4" aria-hidden="true">✧</span>
+    <img class="leaf leaf-l" src="img/17_bottom_left_foliage.webp" alt="" aria-hidden="true">
+    <img class="leaf leaf-r" src="img/18_bottom_right_foliage.webp" alt="" aria-hidden="true">
+    <img class="cloud cloud-l" src="img/16_bottom_cloud.webp" alt="" aria-hidden="true">
+    <img class="cloud cloud-r" src="img/16_bottom_cloud.webp" alt="" aria-hidden="true">
 
-    <img class="deco cloud" data-depth="6" src="img/16_bottom_cloud.webp" alt="">
-    <img class="deco foliage-l" data-depth="10" src="img/17_bottom_left_foliage.webp" alt="">
-    <img class="deco foliage-r" data-depth="10" src="img/18_bottom_right_foliage.webp" alt="">
-
-    <button class="robot" id="robot" type="button" aria-label="با ربات سلام کن" data-depth="-14">
-      <img class="bot" src="img/01_robot_gamer.webp" alt="ربات بازی‌باز دوربازی">
-      <span class="bubble" id="bubble" role="status">سلام! بزن بریم بازی 🎮</span>
-    </button>
-
-    <header class="brand">
-      <h1 class="visually-hidden">دوربازی</h1>
-      <img class="logo" src="img/02_game_logo.webp" alt="دوربازی" data-depth="-6">
-      <img class="subtitle" src="img/03_subtitle_banner.webp" alt="دنیای بازی‌های گروهی آنلاین">
+    <header class="top">
+      <a class="join" href="/join" id="join"><span class="join-ic">🎟️</span>ورود با کد اتاق</a>
+      <img class="logo" src="img/02_game_logo.webp" alt="دوربازی">
+      <div class="round-btns">
+        <button class="round" type="button" aria-label="پروفایل">👤</button>
+        <button class="round has-dot" type="button" aria-label="اعلان‌ها">🔔</button>
+      </div>
     </header>
 
-    <div class="shelf-wrap" data-depth="12">
-      <button class="shelf" id="block" type="button" aria-label="جعبه سؤال؛ یه نکته بگیر">
-        <img src="img/04_shelf_question_block.webp" alt="">
-        <span class="coin" id="coin" aria-hidden="true">؟</span>
-      </button>
-    </div>
-    <button class="dice" id="dice" type="button" aria-label="تاس بنداز" data-depth="16">
-      <img src="img/06_dice.webp" alt="">
-      <span class="roll" id="roll" aria-live="polite"></span>
-    </button>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-text">
+        <h1 id="hero-title">جمع‌تون آماده بازیه؟</h1>
+        <p>یه بازی انتخاب کن، اتاق بساز و دوستات رو دعوت کن.</p>
+        <button class="go" id="go" type="button"><span class="tri">▶</span> بزن بریم!</button>
+      </div>
+      <img class="hero-bot" src="img/01_robot_gamer.webp" alt="ربات بازی‌باز دوربازی">
+    </section>
 
     <section class="lobby" aria-labelledby="lobby-title">
-      <h2 id="lobby-title" class="visually-hidden">کدوم بازی رو بریم؟</h2>
-      <div id="games-list" class="track" aria-live="polite">
-        <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
+      <h2 id="lobby-title" class="sec-title"><span class="pad">🎮</span>بازی‌ها رو کشف کن</h2>
+      <div class="rail">
+        <button class="arrow next" id="next" type="button" aria-label="بازی بعدی">‹</button>
+        <div id="games-list" class="track" aria-live="polite">
+          <div class="loading"><span class="loader"></span> داریم بازی‌ها رو می‌چینیم...</div>
+        </div>
+        <button class="arrow prev" id="prev" type="button" aria-label="بازی قبلی">›</button>
       </div>
-      <!-- <img class="hand" id="hand" src="img/15_hand_cursor.webp" alt="" aria-hidden="true"> -->
       <div class="dots" id="dots" aria-label="انتخاب بازی"></div>
-      <p class="soon">بازی‌های بیشتر به‌زودی می‌رسن ✨</p>
     </section>
   </main>
   <script src="lobby.js"></script>
