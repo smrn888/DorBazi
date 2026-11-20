@@ -6,6 +6,9 @@ const QUESTIONS = require('./questions');
 const VALUES = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
 const ANSWER_MS = 10000;          // باید با ANSWER_MS کلاینت یکی باشد
 const WRONG_PENALTY_RATIO = 0.5;  // پاسخ غلط: نصف ارزش سوال کم می‌شود (0 = بدون جریمه، 1 = کل ارزش)
+const BUZZER_COUNT = 9;          // تعداد تصاویر بازر (buzzers (1..9).png)
+const MIN_ANSWER_MS = 3000;       // کمترین زمان قابل تنظیم
+const MAX_ANSWER_MS = 120000;     // بیشترین زمان قابل تنظیم (۰ = بدون محدودیت زمانی)
 const MAX_PLAYERS = 30;
 const MAX_NAME = 20;
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -93,6 +96,7 @@ function publicState(room) {
     q: room.q,
     reveal: room.reveal,
     over: room.over,
+    answerMs: room.answerMs,
     dl: room.phase === 'answering' && room.deadline ? Math.max(0, room.deadline - Date.now()) : null,
     players: [...room.players.values()].map((p) => ({
       id: p.id,
@@ -133,9 +137,14 @@ function init({ nsp }) {
 
   function startAnswering(room) {
     room.phase = 'answering';
-    room.deadline = Date.now() + ANSWER_MS;
     clearTimeout(room.timer);
-    room.timer = setTimeout(() => judge(room, false), ANSWER_MS);
+    room.timer = null;
+    if (room.answerMs > 0) {
+      room.deadline = Date.now() + room.answerMs;
+      room.timer = setTimeout(() => judge(room, false), room.answerMs);
+    } else {
+      room.deadline = null; // بدون محدودیت زمانی؛ فقط مجری داوری می‌کند
+    }
   }
 
   function judge(room, correct) {
@@ -227,6 +236,7 @@ function init({ nsp }) {
           hostSockets: new Set(),
           players: new Map(),
           seen: new Map(),
+          answerMs: ANSWER_MS,
           timer: null,
           lastSeen: Date.now(),
         };
@@ -257,9 +267,9 @@ function init({ nsp }) {
         const taken = [...room.players.values()].some((x) => x.name.toLowerCase() === name.toLowerCase());
         if (taken) return ack({ ok: false, error: 'این نام قبلاً در اتاق استفاده شده' });
         const usedBz = new Set([...room.players.values()].map((x) => x.bz));
-        let bz = 0;
-        while (usedBz.has(bz) && bz < 10) bz++;
-        if (bz >= 10) bz = room.players.size % 10;
+        const free = [...Array(BUZZER_COUNT).keys()].filter((i) => !usedBz.has(i));
+        const pool = free.length ? free : [...Array(BUZZER_COUNT).keys()];
+        const bz = pool[Math.floor(Math.random() * pool.length)];
         p = { id: newId(), token, name, bz, score: 0, ok: 0, best: null, rt: null, sockets: new Set() };
         room.players.set(p.id, p);
       }
@@ -351,6 +361,18 @@ function init({ nsp }) {
       done({ ok: true });
       broadcast(room);
       sendHostInfo(room);
+    });
+
+    socket.on('host:settings', (data, ack) => {
+      const room = hostCtx();
+      const done = typeof ack === 'function' ? ack : () => {};
+      if (!room) return done({ ok: false, error: 'اتاق پیدا نشد' });
+      const ms = Number(data?.answerMs);
+      const valid = Number.isInteger(ms) && (ms === 0 || (ms >= MIN_ANSWER_MS && ms <= MAX_ANSWER_MS));
+      if (!valid) return done({ ok: false, error: 'زمان نامعتبر است' });
+      room.answerMs = ms; // از نوبت پاسخ بعدی اعمال می‌شود
+      done({ ok: true });
+      broadcast(room);
     });
 
     socket.on('host:judge', (data) => {

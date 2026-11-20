@@ -681,45 +681,22 @@ button#mute, button#leave {
   box-shadow: 0 2px 4px rgba(30, 40, 120, .3);
 }
 .bzcard .status { margin: 8px 0 0; }
-.bzstage { position: relative; width: min(68vw, 250px); aspect-ratio: 1 / .96; margin: 10px auto 4px; }
-.bzstage .base-b {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 34%; border-radius: 50%;
-  background: linear-gradient(180deg, #4a8dff, #1f4fd0);
-  box-shadow: 0 8px 0 #163b9a, 0 16px 22px rgba(0, 10, 80, .45), inset 0 4px 0 rgba(255, 255, 255, .45);
-}
-.bzstage .base-y {
-  position: absolute; left: 6%; right: 6%; bottom: 14%; height: 30%; border-radius: 50%;
-  background: linear-gradient(180deg, #ffe45c, #f5a800); box-shadow: 0 5px 0 #c68600, inset 0 3px 0 rgba(255, 255, 255, .55);
-}
-.rays { position: absolute; left: 0; right: 0; top: 0; height: 24%; pointer-events: none; }
-.rays i {
-  position: absolute; left: 45.5%; top: 0; width: 9%; height: 75%; border-radius: 99px;
-  background: linear-gradient(180deg, #ffe45c, #f5a800); transform-origin: 50% 140%;
-}
-.rays i:nth-child(1) { transform: rotate(-40deg); }
-.rays i:nth-child(3) { transform: rotate(40deg); }
-.bzstage.is-lit .rays i { animation: pulse .4s ease-in-out infinite alternate; }
-
+.bzstage { position: relative; width: min(74vw, 290px); aspect-ratio: 1 / 1; margin: 6px auto 4px; }
 #buzz {
-  position: absolute; left: 12%; right: 12%; bottom: 24%; height: 56%; margin: 0; padding: 0; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; border: 0; color: #fff;
-  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
-  font-size: clamp(1.7rem, 9vw, 2.4rem); font-weight: 900;
-  background: radial-gradient(ellipse at 50% 22%, #ff8a8a 0%, #f0303c 45%, #c4121f 100%);
-  box-shadow: 0 12px 0 #8f0c18, 0 20px 26px rgba(80, 0, 10, .5), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45);
-  touch-action: manipulation; cursor: pointer;
+  position: absolute; inset: 0; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; transform: none;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; opacity: 1;
 }
-#buzz .lbl { position: relative; z-index: 2; text-shadow: 0 3px 0 rgba(120, 0, 15, .7); }
-#buzz .beam { position: absolute; inset: -50%; opacity: 0; background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, .7) 85%, transparent 100%); }
-#buzz:active:not(:disabled) { transform: translateY(9px); box-shadow: 0 3px 0 #8f0c18, 0 8px 12px rgba(80, 0, 10, .4), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45); }
-#buzz.off { filter: grayscale(.9) brightness(.6); cursor: not-allowed; }
-#buzz:disabled { opacity: .75; box-shadow: 0 12px 0 #5a4a4a !important; }
-#buzz.lit:disabled {
-  opacity: 1; filter: none; animation: pulse .45s ease-in-out infinite alternate;
-  background: radial-gradient(ellipse at 50% 22%, #fff2a0 0%, #ffc933 45%, #e89400 100%);
-  box-shadow: 0 12px 0 #a86500, 0 0 30px 6px var(--c, #ffd84a) !important;
+#buzz img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: transform .08s, filter .15s;
+  filter: drop-shadow(0 12px 12px rgba(0, 10, 80, .45)); }
+#buzz:active:not(:disabled) img { transform: translateY(10px) scale(.97); }
+#buzz:disabled { opacity: 1; box-shadow: none !important; }
+#buzz:disabled:not(.lit) { cursor: not-allowed; }
+#buzz:disabled:not(.lit) img { filter: grayscale(.85) brightness(.75) drop-shadow(0 10px 10px rgba(0, 10, 80, .35)); }
+#buzz.lit img { animation: buzzGlow .45s ease-in-out infinite alternate; }
+@keyframes buzzGlow {
+  from { filter: drop-shadow(0 0 10px var(--c, #ffd84a)) brightness(1); }
+  to   { filter: drop-shadow(0 0 36px var(--c, #ffd84a)) brightness(1.25); }
 }
-#buzz.lit .beam { opacity: 1; animation: spin .7s linear infinite; }
 
 /* ----- جدول امتیازات ----- */
 .lbbox { border-radius: 18px; padding: 8px; background: linear-gradient(180deg, #eceeff, #d6d9fb); border: 2px solid rgba(255, 255, 255, .8); box-shadow: inset 0 0 16px rgba(110, 120, 230, .35); }
@@ -982,7 +959,7 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
 /* پنل نئونی با نور متحرک */
 #join .jn-card::before{
   content:"";position:absolute;inset:-10px;z-index:-2;border:46px solid transparent;
-  border-image:url("/img/Glowing_Purple-Blue_Neon_Panel.png") 170 fill/46px stretch;
+  border-image:url("img/Glowing_Purple-Blue_Neon_Panel.png") 170 fill/46px stretch;
   animation:jnGlow 6s ease-in-out infinite alternate;
 }
 #join .jn-card::after{
@@ -1024,6 +1001,31 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
 #join .jn-or{display:flex;align-items:center;gap:12px;margin:10px 0 14px;color:#d9cfff;font-weight:700}
 #join .jn-or::before,#join .jn-or::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.22);border-radius:2px}
 @media (max-height:640px){#join .jn-sub{margin-bottom:12px}}
+
+/* ----- چیپ‌های امتیاز ----- */
+.board button.tile.chip { aspect-ratio: 1; background: none; border: 0; border-radius: 50%; box-shadow: none; font-size: 0; }
+.board button.tile.chip img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: transform .1s, filter .15s; filter: drop-shadow(0 5px 4px rgba(0, 10, 80, .4)); }
+.board button.tile.chip:not(:disabled):hover img { transform: translateY(-3px); }
+.board button.tile.chip:active:not(:disabled) { transform: none; box-shadow: none; }
+.board button.tile.chip:active:not(:disabled) img { transform: translateY(4px) scale(.96); }
+.board button.tile.chip:disabled { opacity: .6; filter: none; box-shadow: none !important; }
+.board button.tile.chip.used:disabled { opacity: .3; filter: grayscale(1); }
+.board button.tile.chip.act:disabled { opacity: 1; filter: none; box-shadow: none !important; }
+.board button.tile.chip.act:disabled img { filter: drop-shadow(0 0 8px #4dff7a) drop-shadow(0 0 18px rgba(77, 255, 122, .85)); }
+.tile.chip .tk { top: -2px; right: -2px; }
+.animal-badge { padding: 2px; }
+.animal-badge img { width: 100%; height: 100%; object-fit: contain; }
+.patronus-orb img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 0 16px var(--c)); }
+
+/* ----- تنظیمات ----- */
+#settings { position: fixed; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(5, 10, 60, .6); backdrop-filter: blur(3px); }
+#settings .gp { width: 100%; max-width: 400px; margin: 0; }
+.st-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 4px; font-weight: 800; }
+.st-sub { font-size: .85rem; opacity: .9; margin: 0 4px 10px; font-weight: 700; line-height: 1.7; }
+.st-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+button.st-opt { padding: 10px 4px; border-radius: 14px; font-weight: 900; font-size: .95rem; color: #fff; background: linear-gradient(180deg, #7aa2ff, #3f5fe0); border: 2px solid rgba(255, 255, 255, .5); box-shadow: 0 4px 0 #26379f; }
+button.st-opt.on { background: linear-gradient(180deg, #ffe86a, #f6b800); color: #3a2a00; box-shadow: 0 4px 0 #c68600; }
+button.st-opt:disabled { opacity: .6; }
 </style>
 
 <!-- تصاویر لابی (inline شده) -->
@@ -1189,6 +1191,7 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
       <span class="hlabel">کد اتاق</span>
       <div id="hCode" class="code"></div>
       <button id="copyBtn" class="gb gb-sec"><svg class="ic" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg><span>کپی لینک دعوت</span></button>
+      <button id="hSettings" class="gb gb-sec" type="button"><svg class="ic" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>تنظیمات</span></button>
     </div>
 
     <div class="hcols">
@@ -1241,10 +1244,7 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
     <div class="gp bzcard">
       <div class="pchip"><span class="av" id="pAv"></span><span id="pName"></span><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><b id="pScore">۰</b></div>
       <div id="buzzWrap" class="bzstage">
-        <div class="rays"><i></i><i></i><i></i></div>
-        <div class="base-b"></div>
-        <div class="base-y"></div>
-        <button id="buzz"><span class="beam"></span><span class="lbl">بازز</span></button>
+        <button id="buzz" aria-label="بازز"><img id="buzzImg" alt="" src="img/buzzers%20(1).png"></button>
       </div>
       <div id="pStatus" class="status"></div>
     </div>
@@ -1254,6 +1254,21 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
       <div id="pScores" class="lbbox"></div>
     </div>
     <button class="gb gb-sec leaveBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></svg><span>خروج از بازی</span></button>
+  </div>
+</div>
+
+<!-- تنظیمات -->
+<div id="settings" class="hide">
+  <div class="gp">
+    <div class="rib"><svg class="ic" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>تنظیمات</span></div>
+    <div class="st-row"><span>صدا</span><button id="stMute" class="gb gb-sec" type="button"></button></div>
+    <div id="stHost" class="hide">
+      <div class="st-row" style="padding-bottom:2px"><span>زمان پاسخ‌دادن</span></div>
+      <div class="st-sub">مدتی که هر بازیکن بعد از زدن بازر برای جواب دادن دارد. تغییر از نوبت پاسخ بعدی اعمال می‌شود.</div>
+      <div id="stOpts" class="st-opts"></div>
+      <div id="stErr" class="err"></div>
+    </div>
+    <button id="stClose" class="gb gb-ok" type="button" style="width:100%;margin-top:14px"><span>تأیید</span></button>
   </div>
 </div>
 
@@ -1271,15 +1286,15 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
 <!-- پرده جادویی انتخاب پاترونوس (روح حیوان) -->
 <div id="intro" class="hide">
   <div class="patronus-stage">
-    <div id="introTitle" style="font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#94a3b8;">در حال احضار حامی جادویی...</div>
+    <div id="introTitle" style="font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#94a3b8;">در حال انتخاب بازر شما...</div>
     <div class="patronus-orb" id="introOrb">
       <div class="shockwave"></div>
-      <svg id="introSvg" viewBox="0 0 24 24"><use href="#patronus-stag"/></svg>
+      <img id="introImg" alt="" src="img/buzzers%20(1).png">
     </div>
     <div id="introName" style="font-size:1.85rem;font-weight:900;margin:14px 0;color:var(--c);text-shadow:0 0 25px var(--c);"></div>
     <div id="introBtns" class="hide" style="width:100%;display:flex;flex-direction:column;gap:12px;">
-      <button id="testBtn" class="sec">غرش و تست صدا</button>
-      <button id="goBtn">ورود به میدان با این روح حامی!</button>
+      <button id="testBtn" class="sec">تست صدای بازر</button>
+      <button id="goBtn">ورود به میدان با این بازر!</button>
     </div>
   </div>
 </div>
@@ -1293,28 +1308,28 @@ const BUZZ_SECONDS = 4.5;
 const ANSWER_MS = 10000;
 const rnd = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
-/* ۱۰ حیوان پاترونوس با مشخصات صوتی، نوری و وکتور */
-const PATRONUS = [
-  { id: 'patronus-eagle',   name: 'عقاب صاعقه',     color: '#ef4444', noteFreq: 880 },
-  { id: 'patronus-wolf',    name: 'گرگ کهکشانی',    color: '#f97316', noteFreq: 660 },
-  { id: 'patronus-lion',    name: 'شیر طلایی',       color: '#facc15', noteFreq: 523 },
-  { id: 'patronus-dragon',  name: 'اژدهای زمرد',    color: '#10b981', noteFreq: 440 },
-  { id: 'patronus-falcon',  name: 'شاهین فیروزه',   color: '#06b6d4', noteFreq: 784 },
-  { id: 'patronus-bear',    name: 'خرس تیتانیوم',   color: '#3b82f6', noteFreq: 330 },
-  { id: 'patronus-fox',     name: 'روباه اسرارآمیز', color: '#a855f7', noteFreq: 587 },
-  { id: 'patronus-panther', name: 'پلنگ کیهانی',    color: '#ec4899', noteFreq: 494 },
-  { id: 'patronus-swan',    name: 'قوی نقره‌ای',     color: '#e2e8f0', noteFreq: 698 },
-  { id: 'patronus-stag',    name: 'گوزن سپیده‌دم',   color: '#84cc16', noteFreq: 622 }
+/* ۹ بازر؛ سرور به هر بازیکن یکی از این‌ها را (تصادفی و غیرتکراری) می‌دهد */
+const BZ = [
+  { img: 'img/buzzers%20(1).png', name: 'نارنجی',      color: '#fb923c', noteFreq: 660 },
+  { img: 'img/buzzers%20(2).png', name: 'قرمز',        color: '#ef4444', noteFreq: 880 },
+  { img: 'img/buzzers%20(3).png', name: 'بنفش',        color: '#8b5cf6', noteFreq: 587 },
+  { img: 'img/buzzers%20(4).png', name: 'صورتی',       color: '#d946ef', noteFreq: 494 },
+  { img: 'img/buzzers%20(5).png', name: 'آبی آسمانی',  color: '#22d3ee', noteFreq: 784 },
+  { img: 'img/buzzers%20(6).png', name: 'سرمه‌ای',     color: '#4f7de8', noteFreq: 330 },
+  { img: 'img/buzzers%20(7).png', name: 'زرد',         color: '#facc15', noteFreq: 523 },
+  { img: 'img/buzzers%20(8).png', name: 'سبز',         color: '#22c55e', noteFreq: 440 },
+  { img: 'img/buzzers%20(9).png', name: 'سبز لیمویی',  color: '#84cc16', noteFreq: 622 }
 ];
+BZ.forEach((x) => { const im = new Image(); im.src = x.img; });
 
-const colorize = (el, i) => el.style.setProperty('--c', PATRONUS[i % 10].color);
+const colorize = (el, i) => el.style.setProperty('--c', BZ[i % BZ.length].color);
 
 function animalBadge(i) {
-  const p = PATRONUS[i % 10];
+  const p = BZ[i % BZ.length];
   const s = document.createElement('span');
   s.className = 'animal-badge';
   s.style.setProperty('--c', p.color);
-  s.innerHTML = `<svg viewBox="0 0 24 24"><use href="#${p.id}"/></svg>`;
+  s.innerHTML = `<img src="${p.img}" alt="">`;
   return s;
 }
 
@@ -1328,7 +1343,6 @@ function ctx() {
 let muted = localStorage.getItem('bz_mute') === '1';
 const paintMute = () => {
   $('mute-icon').firstElementChild.setAttribute('href', muted ? '#icon-vol-off' : '#icon-vol-on');
-  $('lbSound').classList.toggle('muted', muted);
 };
 $('mute').onclick = () => {
   muted = !muted;
@@ -1494,7 +1508,7 @@ sock.on('closed', () => {
 function runIntro(targetIndex) {
   introRunning = true;
   show('intro');
-  $('introTitle').textContent = 'در حال جستجو و اتصال به پاترونوس شما...';
+  $('introTitle').textContent = 'در حال انتخاب بازر شما...';
   $('introName').textContent = '';
   $('introBtns').classList.add('hide');
   
@@ -1508,13 +1522,13 @@ function runIntro(targetIndex) {
   function nextStep() {
     // حیوان فعلی در چرخش
     const isFinal = currentStep >= totalSteps;
-    const animalIdx = isFinal ? targetIndex : Math.floor(Math.random() * 10);
-    const pet = PATRONUS[animalIdx];
+    const animalIdx = isFinal ? targetIndex : Math.floor(Math.random() * BZ.length);
+    const pet = BZ[animalIdx];
 
     // تغییر رنگ و آیکون با افکت مات‌شدن سریع (Morphing)
     colorize($('intro'), animalIdx);
     colorize(orb, animalIdx);
-    $('introSvg').firstElementChild.setAttribute('href', `#${pet.id}`);
+    $('introImg').src = pet.img;
 
     // انیمیشن پرش و شوک بین تغییر حیوانات
     orb.classList.add('morph');
@@ -1537,14 +1551,14 @@ function runIntro(targetIndex) {
 }
 
 function revealPatronus(i) {
-  const pet = PATRONUS[i % 10];
+  const pet = BZ[i % BZ.length];
   const orb = $('introOrb');
 
   // تحریک انیمیشن تجلی نهایی و انتشار موج Shockwave
   void orb.offsetWidth;
   orb.classList.add('manifest');
 
-  $('introTitle').textContent = 'روح حامی شما متجلی شد:';
+  $('introTitle').textContent = 'بازر شما:';
   $('introName').textContent = pet.name;
 
   // ترومپت درخشان پاترونوس
@@ -1565,9 +1579,10 @@ $('goBtn').onclick = () => {
 const TILE = ['y', 'b', 'g', 'r', 'b', 'r', 'b', 'g', 'y', 'r'];   // رنگ کاشی‌ها مثل طرح
 VALUES.forEach((v, i) => {
   const b = document.createElement('button');
-  b.className = 'tile t-' + TILE[i];
+  b.className = 'tile chip';
+  b.setAttribute('aria-label', String(v));
   b.dataset.v = v;
-  b.innerHTML = `<span>${v}</span><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+  b.innerHTML = `<img src="img/${v}.png" alt="${v}"><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
   b.onclick = () => sock.emit('host:activate', { value: v }, (r) => {
     if (r && !r.ok && r.error) alert(r.error);
   });
@@ -1609,7 +1624,7 @@ function renderScores(box) {
     const r = document.createElement('div');
     r.className = 'lbrow' + (p.online ? '' : ' off');
     r.dataset.id = p.id;
-    r.style.setProperty('--c', PATRONUS[p.bz % 10].color);
+    r.style.setProperty('--c', BZ[p.bz % BZ.length].color);
     const rk = document.createElement('span');
     rk.className = 'rk' + (i === 0 ? ' r1' : i === 2 ? ' r3' : '');
     rk.textContent = fa(i + 1);
@@ -1700,7 +1715,7 @@ function renderLobby() {
     const av = document.createElement('span'); av.className = 'pl-av';
     const nm = document.createElement('span'); nm.className = 'pl-name';
     if (p) {
-      cell.style.setProperty('--c', PATRONUS[p.bz % 10].color);
+      cell.style.setProperty('--c', BZ[p.bz % BZ.length].color);
       nm.textContent = p.name;
       cell.append(av, nm);
       if (i === 0) cell.insertAdjacentHTML('beforeend', CROWN);   // تاج: اولین بازیکنی که وارد اتاق شده
@@ -1761,9 +1776,10 @@ function render() {
     renderScores($('hScores'));
   } else {
     const b = me.bz != null ? me.bz : 0;
-    const pet = PATRONUS[b % 10];
+    const pet = BZ[b % BZ.length];
     colorize($('buzzWrap'), b);
     colorize($('buzz'), b);
+    if ($('buzzImg').getAttribute('src') !== pet.img) $('buzzImg').setAttribute('src', pet.img);
     colorize($('flash'), b);
     colorize($('pAv'), b);
     const mine = pl(me.id);
@@ -1775,7 +1791,7 @@ function render() {
     const tried = st.tried.includes(me.id);
     let txt;
     if (st.phase === 'idle') txt = 'در انتظار سوال بعدی توسط مجری...';
-    else if (idx === 0) txt = `نوبت توست! روح ${pet.name} پیشتاز شد` + (pl(me.id).rt != null ? ' (' + sec(pl(me.id).rt) + ')' : '');
+    else if (idx === 0) txt = `نوبت توست! بازر ${pet.name} پیشتاز شد` + (pl(me.id).rt != null ? ' (' + sec(pl(me.id).rt) + ')' : '');
     else if (idx > 0) txt = `شما در نوبت شماره ${idx + 1} صف هستید`;
     else if (tried) txt = 'پاسخ شما اشتباه ثبت شد';
     else if (st.queue.length) txt = `${pl(st.queue[0]).name || 'بازیکن'} در حال پاسخگویی است`;
@@ -1809,7 +1825,7 @@ function confetti(n = 36) {
   for (let i = 0; i < n; i++) {
     const c = document.createElement('i'); c.className = 'cf';
     c.style.left = Math.random() * 100 + 'vw';
-    c.style.background = PATRONUS[Math.floor(Math.random() * 10)].color;
+    c.style.background = BZ[Math.floor(Math.random() * BZ.length)].color;
     c.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
     c.style.animationDelay = Math.random() * .4 + 's';
     document.body.append(c); setTimeout(() => c.remove(), 2500);
@@ -1819,10 +1835,13 @@ function sfx(ok) {
   if (ok) [523, 659, 784, 1047, 1319].forEach((f, k) => tone(f, k * .08, .5, 'triangle', .2));
   else { tone(220, 0, .55, 'sawtooth', .14, 90); tone(165, .12, .5, 'square', .08, 70); }
 }
+const amOf = () => (st && st.answerMs != null) ? st.answerMs : ANSWER_MS;
+const fmtMs = (ms) => { const t = Math.ceil(ms / 1000); return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); };
 let dlAt = 0;   // زمان پایان مهلت پاسخ (برحسب ساعت کلاینت)
 function tickNum() {
   const left = dlAt ? Math.max(0, dlAt - Date.now()) : null;
-  const txt = '00:' + String(left == null ? ANSWER_MS / 1000 : Math.ceil(left / 1000)).padStart(2, '0');
+  const am = amOf();
+  const txt = am === 0 ? '∞' : fmtMs(left == null ? am : left);
   document.querySelectorAll('.qnum').forEach((n) => {
     if (n.textContent !== txt) n.textContent = txt;
     const c = n.parentElement;
@@ -1838,7 +1857,7 @@ function runTimer() {
     clearTimeout(bar._lt);
     i.classList.remove('low'); i.style.transition = 'none';
     if (left == null) { i.style.width = '100%'; return; }
-    i.style.width = (left / ANSWER_MS * 100) + '%'; void i.offsetWidth;
+    i.style.width = (left / amOf() * 100) + '%'; void i.offsetWidth;
     i.style.transition = `width ${left}ms linear`; i.style.width = '0%';
     bar._lt = setTimeout(() => i.classList.add('low'), Math.max(0, left - 3000));
   });
@@ -1940,7 +1959,32 @@ $('lbCopy').onclick = () => copyInvite(() => {
   setTimeout(() => { t.textContent = 'کد اتاق'; }, 1500);
 });
 $('lbBack').onclick = askLeave;
-$('lbSound').onclick = () => $('mute').click();
+const TIME_OPTS = [[5000, '۵ ثانیه'], [10000, '۱۰ ثانیه'], [15000, '۱۵ ثانیه'], [20000, '۲۰ ثانیه'], [30000, '۳۰ ثانیه'], [60000, '۶۰ ثانیه'], [0, 'بدون محدودیت']];
+function renderSettings() {
+  if ($('settings').classList.contains('hide')) return;
+  $('stMute').querySelector('span') || ($('stMute').innerHTML = '<span></span>');
+  $('stMute').firstElementChild.textContent = muted ? 'خاموش' : 'روشن';
+  const isHost = me && me.role === 'host';
+  $('stHost').classList.toggle('hide', !isHost);
+  if (!isHost) return;
+  const cur = st && st.answerMs != null ? st.answerMs : ANSWER_MS;
+  $('stOpts').replaceChildren(...TIME_OPTS.map(([ms, label]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'st-opt' + (ms === cur ? ' on' : ''); b.textContent = label;
+    b.onclick = () => {
+      $('stErr').textContent = '';
+      sock.emit('host:settings', { answerMs: ms }, (r) => { if (r && !r.ok) $('stErr').textContent = r.error || 'تغییر ممکن نشد'; });
+    };
+    return b;
+  }));
+}
+function openSettings() { $('settings').classList.remove('hide'); renderSettings(); }
+$('lbSound').onclick = openSettings;
+$('lbSound').title = 'تنظیمات';
+$('hSettings').onclick = openSettings;
+$('stMute').onclick = () => { $('mute').click(); renderSettings(); };
+$('stClose').onclick = () => $('settings').classList.add('hide');
+$('settings').addEventListener('click', (e) => { if (e.target === $('settings')) $('settings').classList.add('hide'); });
 $('startBtn').onclick = () => sock.emit('host:start', {}, (r) => {
   if (r && !r.ok) $('lbHint').textContent = r.error || 'شروع مسابقه ممکن نشد';
 });
@@ -1952,7 +1996,7 @@ $('inName').value = localStorage.getItem('bz_name') || '';
 $('joinBtn').addEventListener('click', () => localStorage.setItem('bz_name', $('inName').value));
 
 sock.on('hostinfo', (h) => { hostInfo = h; render(); });
-sock.on('state', (s) => { st = s; dlAt = (s.phase === 'answering' && s.dl != null) ? Date.now() + s.dl : 0; render(); });
+sock.on('state', (s) => { st = s; dlAt = (s.phase === 'answering' && s.dl != null) ? Date.now() + s.dl : 0; render(); renderSettings(); });
 </script>
 </body>
 </html>
