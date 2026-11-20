@@ -58,6 +58,7 @@ function freshGame(room) {
   room.queue = [];
   room.tried = [];
   room.q = null;             // { text, options } برای نمایش
+  room.wrongOpts = [];       // گزینه‌هایی که بازیکنان اشتباه انتخاب کرده‌اند
   room.answer = -1;          // اندیس پاسخ درست بعد از به‌هم‌ریختن گزینه‌ها
   room.fact = '';
   room.reveal = null;        // { answer, fact, by }
@@ -96,6 +97,7 @@ function publicState(room) {
     q: room.q,
     reveal: room.reveal,
     over: room.over,
+    wrong: room.wrongOpts,
     answerMs: room.answerMs,
     dl: room.phase === 'answering' && room.deadline ? Math.max(0, room.deadline - Date.now()) : null,
     players: [...room.players.values()].map((p) => ({
@@ -147,7 +149,7 @@ function init({ nsp }) {
     }
   }
 
-  function judge(room, correct) {
+  function judge(room, correct, pick) {
     if (room.phase !== 'answering' || !room.queue.length) return;
     const id = room.queue[0];
     const p = room.players.get(id);
@@ -164,7 +166,7 @@ function init({ nsp }) {
       const delta = room.active;
       p.score += delta;
       p.ok += 1;
-      nsp.to(room.code).emit('judged', { id, correct: true, delta });
+      nsp.to(room.code).emit('judged', { id, correct: true, delta, pick: pick ?? null });
       finishQuestion(room, id);
       return broadcast(room);
     }
@@ -173,7 +175,8 @@ function init({ nsp }) {
     p.score += delta;
     room.tried.push(id);
     room.queue.shift();
-    nsp.to(room.code).emit('judged', { id, correct: false, delta });
+    if (Number.isInteger(pick) && !room.wrongOpts.includes(pick)) room.wrongOpts.push(pick);
+    nsp.to(room.code).emit('judged', { id, correct: false, delta, pick: pick ?? null });
 
     if (room.queue.length) {
       startAnswering(room);
@@ -351,6 +354,7 @@ function init({ nsp }) {
       room.answer = opts.findIndex((x) => x.correct);
       room.fact = item.f || '';
       room.reveal = null;
+      room.wrongOpts = [];
       room.active = value;
       room.queue = [];
       room.tried = [];
@@ -412,6 +416,18 @@ function init({ nsp }) {
       room.queue.push(id);
       if (room.phase === 'open') startAnswering(room);
       broadcast(room);
+    });
+
+    // بازیکنی که نوبتش است گزینه‌ی خودش را انتخاب می‌کند؛ سرور درست یا غلط بودن را تعیین می‌کند
+    socket.on('player:answer', (data) => {
+      const c = ctx();
+      if (!c || c.role !== 'player') return;
+      const { room, id } = c;
+      if (room.phase !== 'answering' || room.queue[0] !== id || !room.q) return;
+      const i = Number(data?.index);
+      if (!Number.isInteger(i) || i < 0 || i >= room.q.options.length) return;
+      if (room.wrongOpts.includes(i)) return;
+      judge(room, i === room.answer, i);
     });
 
     socket.on('disconnect', () => {

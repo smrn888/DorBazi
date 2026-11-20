@@ -659,6 +659,23 @@ button#mute, button#leave {
   box-shadow: 0 4px 0 #0e7a35, 0 0 16px rgba(60, 230, 110, .6), inset 0 2px 0 rgba(255, 255, 255, .5);
 }
 .qopt.dim { opacity: .4; }
+.qopt.pick { cursor: pointer; transition: transform .1s; }
+.qopt.pick:hover { transform: translateY(-2px); }
+.qopt.pick:active { transform: translateY(3px); box-shadow: 0 1px 0 #17409f; }
+.qopt.sent { pointer-events: none; opacity: .75; }
+.qopt.wrong {
+  background: linear-gradient(180deg, #ff7a8a, #e11d3a); opacity: 1;
+  box-shadow: 0 4px 0 #9d1428, 0 0 16px rgba(255, 70, 90, .6), inset 0 2px 0 rgba(255, 255, 255, .5);
+}
+/* پاپ‌آپ «... اول زد» */
+#buzzPop { position: fixed; left: 50%; top: 22%; z-index: 250; transform: translateX(-50%); pointer-events: none;
+  display: flex; align-items: center; gap: 12px; padding: 10px 22px 10px 12px; border-radius: 99px; max-width: 92vw;
+  background: linear-gradient(180deg, #ffe86a, #f6b800); color: #3a2a00; font-weight: 900; font-size: clamp(1.05rem, 4.6vw, 1.5rem);
+  border: 3px solid #fff; box-shadow: 0 6px 0 #c68600, 0 0 30px 6px var(--c, #ffd84a), 0 14px 26px rgba(0, 10, 80, .4);
+  animation: bpPop .45s cubic-bezier(.3, 1.6, .5, 1) both; }
+#buzzPop img { width: 54px; height: 54px; object-fit: contain; flex: none; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .3)); }
+#buzzPop span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes bpPop { from { opacity: 0; transform: translateX(-50%) scale(.5); } }
 .res { text-align: center; margin-top: 14px; font-weight: 900; font-size: 1.05rem; text-shadow: 0 2px 0 rgba(0, 0, 40, .3); }
 .fact {
   margin-top: 12px; padding: 12px 14px; border-radius: 12px; line-height: 1.8; font-size: .95rem; color: #fff;
@@ -1004,15 +1021,17 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
 
 /* ----- چیپ‌های امتیاز ----- */
 .board button.tile.chip { aspect-ratio: 1; background: none; border: 0; border-radius: 50%; box-shadow: none; font-size: 0; }
-.board button.tile.chip img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: transform .1s, filter .15s; filter: drop-shadow(0 5px 4px rgba(0, 10, 80, .4)); }
-.board button.tile.chip:not(:disabled):hover img { transform: translateY(-3px); }
+.board button.tile.chip img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transform: scale(var(--chip-s, 1.75)); transition: transform .1s, filter .15s; filter: drop-shadow(0 5px 4px rgba(0, 10, 80, .4)); }
+.board button.tile.chip:not(:disabled):hover img { transform: translateY(-3px) scale(var(--chip-s, 1.75)); }
 .board button.tile.chip:active:not(:disabled) { transform: none; box-shadow: none; }
-.board button.tile.chip:active:not(:disabled) img { transform: translateY(4px) scale(.96); }
+.board button.tile.chip:active:not(:disabled) img { transform: translateY(4px) scale(calc(var(--chip-s, 1.75) * .96)); }
 .board button.tile.chip:disabled { opacity: .6; filter: none; box-shadow: none !important; }
 .board button.tile.chip.used:disabled { opacity: .3; filter: grayscale(1); }
 .board button.tile.chip.act:disabled { opacity: 1; filter: none; box-shadow: none !important; }
 .board button.tile.chip.act:disabled img { filter: drop-shadow(0 0 8px #4dff7a) drop-shadow(0 0 18px rgba(77, 255, 122, .85)); }
-.tile.chip .tk { top: -2px; right: -2px; }
+.tile.chip .tk { top: -6px; right: -6px; z-index: 2; }
+.board:has(.chip) { gap: 4px 2px; }
+.inset:has(.chip) { padding: 10px 4px; }
 .animal-badge { padding: 2px; }
 .animal-badge img { width: 100%; height: 100%; object-fit: contain; }
 .patronus-orb img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(0 0 16px var(--c)); }
@@ -1282,6 +1301,7 @@ button.st-opt:disabled { opacity: .6; }
   </div>
 </div>
 <div id="toast" class="hide"></div>
+<div id="buzzPop" class="hide"><img id="buzzPopImg" alt=""><span id="buzzPopTxt"></span></div>
 
 <!-- پرده جادویی انتخاب پاترونوس (روح حیوان) -->
 <div id="intro" class="hide">
@@ -1668,10 +1688,20 @@ function renderQ(box, isHost) {
   card.className = 'qcard'; card.textContent = st.q.text;
   const opts = document.createElement('div');
   opts.className = 'qopts';
+  const wrong = st.wrong || [];
+  const canPick = !isHost && me && st.phase === 'answering' && st.queue[0] === me.id && !st.reveal;
   st.q.options.forEach((t, i) => {
     const d = document.createElement('div');
-    d.className = 'qopt' + (i === ans ? ' right' : (st.reveal ? ' dim' : ''));
+    d.className = 'qopt' + (i === ans ? ' right' : wrong.includes(i) ? ' wrong' : (st.reveal ? ' dim' : ''));
     d.textContent = t;
+    if (canPick && !wrong.includes(i)) {
+      d.classList.add('pick');
+      d.onclick = () => {
+        if (d.classList.contains('sent')) return;
+        opts.querySelectorAll('.qopt').forEach((x) => x.classList.add('sent'));
+        sock.emit('player:answer', { index: i });
+      };
+    }
     opts.append(d);
   });
   parts.push(top, bar, card, opts);
@@ -1996,7 +2026,23 @@ $('inName').value = localStorage.getItem('bz_name') || '';
 $('joinBtn').addEventListener('click', () => localStorage.setItem('bz_name', $('inName').value));
 
 sock.on('hostinfo', (h) => { hostInfo = h; render(); });
-sock.on('state', (s) => { st = s; dlAt = (s.phase === 'answering' && s.dl != null) ? Date.now() + s.dl : 0; render(); renderSettings(); });
+let buzzPopT = 0;
+function showFirstBuzz(p, first) {
+  if (!p) return;
+  $('buzzPopImg').src = BZ[(p.bz || 0) % BZ.length].img;
+  $('buzzPop').style.setProperty('--c', BZ[(p.bz || 0) % BZ.length].color);
+  $('buzzPopTxt').textContent = `${p.name} ${first ? 'اول زد!' : 'بازر زد!'}`;
+  const el = $('buzzPop');
+  el.classList.remove('hide'); el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  clearTimeout(buzzPopT);
+  buzzPopT = setTimeout(() => el.classList.add('hide'), 2000);
+}
+sock.on('state', (s) => {
+  const prev = st;
+  if (me && prev && prev.phase === 'open' && s.phase === 'answering' && !prev.queue.length && s.queue.length) {
+    showFirstBuzz(s.players.find((p) => p.id === s.queue[0]), !(s.tried && s.tried.length));
+  }
+  st = s; dlAt = (s.phase === 'answering' && s.dl != null) ? Date.now() + s.dl : 0; render(); renderSettings(); });
 </script>
 </body>
 </html>
