@@ -1269,6 +1269,14 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
     <div id="offline" class="card warn hide">ارتباط با ادمین قطع گردید. در انتظار بازگشت ادمین...</div>
     <div id="pQ" class="gp qpanel hide"></div>
 
+        <div class="gp bzcard">
+      <div class="pchip"><span class="av" id="pAv"></span><span id="pName"></span><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><b id="pScore">۰</b></div>
+      <div id="buzzWrap" class="bzstage">
+        <button id="buzz" type="button" aria-label="بازر"><img id="buzzImg" alt="" draggable="false" onerror="this.parentNode.classList.add('noimg')"></button>
+      </div>
+      <div id="pStatus" class="status"></div>
+    </div>
+
     <!-- پنل ادمین (فقط برای سازندهٔ اتاق): انتخاب سطح سوال و کنترل بازی. پاسخ درست اینجا هم نمایش داده نمی‌شود -->
     <div id="adminPanel" class="gp hide">
       <div class="rib"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg><span>پنل ادمین</span></div>
@@ -1283,14 +1291,6 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
         <button id="skipBtn" class="gb gb-sec"><svg class="ic" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg><span>رد کردن سوال</span></button>
         <button id="passBtn" class="gb gb-no"><svg class="ic" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span>رد کردن نوبت</span></button>
       </div>
-    </div>
-
-    <div class="gp bzcard">
-      <div class="pchip"><span class="av" id="pAv"></span><span id="pName"></span><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><b id="pScore">۰</b></div>
-      <div id="buzzWrap" class="bzstage">
-        <button id="buzz" type="button" aria-label="بازر"><img id="buzzImg" alt="" draggable="false" onerror="this.parentNode.classList.add('noimg')"></button>
-      </div>
-      <div id="pStatus" class="status"></div>
     </div>
 
     
@@ -1358,7 +1358,31 @@ const colorize = (el, i) => el.style.setProperty('--c', PATRONUS[i % 10].color);
 
 /* تصاویر بازر: /img/buzzers (1..9).webp — رنگ درخشش هر بازر */
 const BZ_COUNT = 9;
-const buzzSrc = (i) => `/img/buzzers%20(${(i % BZ_COUNT) + 1}).webp`;
+const buzzFile = (i) => `buzzers (${(i % BZ_COUNT) + 1}).webp`;
+
+/* مسیر پوشهٔ img بسته به نحوهٔ سرو شدن بازی فرق می‌کند؛ اولین مسیری که کار کند انتخاب می‌شود */
+let IMG_BASE = null;
+function fixImgs(root) {
+  if (!IMG_BASE) return;
+  (root || document).querySelectorAll('img[data-img]').forEach((im) => {
+    const u = IMG_BASE + encodeURI(im.dataset.img);
+    if (im.getAttribute('src') === u) return;
+    if (im.parentNode) im.parentNode.classList.remove('noimg');
+    im.src = u;
+  });
+}
+(function probeImgBase() {
+  const dir = location.pathname.replace(/[^/]*$/, '');
+  const list = [...new Set([dir + 'img/', '/img/', '/buzzer/img/', '/games/buzzer/img/', '/buzzer/public/img/', 'img/'])];
+  const next = (k) => {
+    if (k >= list.length) { console.warn('پوشهٔ img پیدا نشد؛ مسیرهای امتحان‌شده:', list); return; }
+    const im = new Image();
+    im.onload = () => { IMG_BASE = list[k]; fixImgs(document); };
+    im.onerror = () => next(k + 1);
+    im.src = list[k] + '100.webp';
+  };
+  next(0);
+})();
 const BZ_COLORS = ['#ff9b73', '#ef2b2b', '#8b5cf6', '#d97bff', '#22d3ee', '#3b6fd8', '#fbbf24', '#22c55e', '#a3e635'];
 
 function animalBadge(i) {
@@ -1636,7 +1660,7 @@ VALUES.forEach((v) => {
   b.className = 'tile';
   b.dataset.v = v;
   b.setAttribute('aria-label', v + ' امتیاز');
-  b.innerHTML = `<img class="coin" src="/img/${v}.webp" alt="${v}" draggable="false"><small class="cnt"></small><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+  b.innerHTML = `<img class="coin" data-img="${v}.webp" alt="${v}" draggable="false"><small class="cnt"></small><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
   b.onclick = () => sock.emit('admin:pick', { value: v }, (r) => {
     if (r && !r.ok && r.error) alert(r.error);
   });
@@ -1714,7 +1738,7 @@ function renderQ(box) {
   const parts = [];
   const top = document.createElement('div');
   top.className = 'qtop';
-  const coin = st.active ? `<img class="qcoin" src="/img/${st.active}.webp" alt="" draggable="false" onerror="this.remove()">` : '';
+  const coin = st.active ? `<img class="qcoin" data-img="${st.active}.webp" alt="" draggable="false" onerror="this.remove()">` : '';
   top.innerHTML = `<div class="qchip">${coin}<span>امتیاز سوال: ${fa(st.active || 0)}</span></div>` +
                   (timed ? `<div class="qclock idle">${CLOCK}<span class="qnum">00:00</span></div>` : '');
   const meta = document.createElement('div');
@@ -1767,6 +1791,7 @@ function renderQ(box) {
     parts.push(f);
   }
   box.replaceChildren(...parts);
+  fixImgs(box);
 }
 
 const fa = (n) => Number(n).toLocaleString('fa-IR', { useGrouping: false });
@@ -1848,9 +1873,8 @@ function render() {
 function renderPlayer() {
   const b = me.bz != null ? me.bz : 0;
   const pet = PATRONUS[b % 10];
-  const bzSrc = buzzSrc(b);
-  const bzImg = $('buzzImg');
-  if (bzImg.getAttribute('src') !== bzSrc) { $('buzz').classList.remove('noimg'); bzImg.src = bzSrc; }
+  $('buzzImg').dataset.img = buzzFile(b);
+  fixImgs($('buzzWrap'));
   const bzc = BZ_COLORS[b % BZ_COUNT];
   $('buzzWrap').style.setProperty('--bzc', bzc);
   $('flash').style.setProperty('--c', bzc);
