@@ -77,35 +77,6 @@ body::before {
   flex-shrink: 0;
 }
 
-/* هدر بازی */
-.game-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 22px;
-  padding: 8px 0;
-}
-
-.game-header .header-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #0284c7, #38bdf8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
-  color: #031120;
-}
-
-.game-header h1 {
-  font-size: 1.6rem;
-  font-weight: 900;
-  background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 
 /* پنل‌های شیشه‌ای */
 .card {
@@ -215,7 +186,7 @@ button:disabled {
   gap: 10px;
 }
 
-#mute, #leave {
+#mute, #leave, #tableBtn {
   width: 44px;
   height: 44px;
   border-radius: 12px;
@@ -508,7 +479,7 @@ body.shake .wrap { animation: shake 0.45s; }
 
 /* ================= صفحه‌های بازی (مجری / بازیکن / نتایج) ================= */
 body.in-game {
-  padding: 64px 14px 28px;
+  padding: 58px 14px 28px;
   background: var(--img-room) center bottom / cover no-repeat fixed, #0a56e6;
 }
 body.in-game::before { display: none; }
@@ -555,7 +526,7 @@ button.gb:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 
 
 /* نوار بالای صفحه */
 body.in-game #bar { top: 12px; left: 12px; }
-button#mute, button#leave {
+button#mute, button#leave, button#tableBtn {
   width: 42px; height: 42px; border-radius: 50%; padding: 0; color: #fff;
   background: radial-gradient(circle at 35% 28%, #a8d8ff, #3b8cff 60%, #2a63e6);
   border: 2px solid rgba(255, 255, 255, .85);
@@ -591,26 +562,22 @@ button#mute, button#leave {
 
 
 /* ----- انتخاب امتیاز ----- */
-.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .board button.tile {
-  position: relative; aspect-ratio: 1 / 1.05; padding: 0; border-radius: 16px;
-  font-weight: 900; font-size: clamp(.95rem, 3.4vw, 1.4rem); color: #fff;
-  border: 2px solid rgba(255, 255, 255, .55); text-shadow: 0 2px 0 rgba(0, 0, 0, .28);
-  box-shadow: 0 5px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .6);
+  position: relative; aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; background: none; box-shadow: none; color: #fff;
+  transition: transform .12s ease, filter .2s ease, opacity .2s ease;
 }
-.tile.t-y { --e: #c68600; background: linear-gradient(180deg, #ffe86a, #f6b800); color: #2d2a40 !important; text-shadow: 0 1px 0 rgba(255, 255, 255, .5) !important; }
-.tile.t-b { --e: #1d46b5; background: linear-gradient(180deg, #6ea8ff, #2f6df0); }
-.tile.t-g { --e: #0e7a35; background: linear-gradient(180deg, #5ee27a, #15a34a); }
-.tile.t-r { --e: #b01f33; background: linear-gradient(180deg, #ff7a8a, #e8334a); }
-.board button.tile:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .5); }
-.board button.tile:disabled { opacity: .55; filter: saturate(.7); box-shadow: 0 5px 0 var(--e), inset 0 2px 0 rgba(255, 255, 255, .5) !important; }
+.board button.tile .coin {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 4px 3px rgba(0, 10, 80, .45)); transition: filter .2s ease;
+}
+.board button.tile:active:not(:disabled) { transform: translateY(3px) scale(.95); box-shadow: none; }
+.board button.tile:disabled { opacity: .55; filter: saturate(.7); box-shadow: none !important; }
 .board button.tile.used:disabled { opacity: .28; filter: grayscale(1); }
-.board button.tile.act:disabled {
-  opacity: 1; filter: none; border-color: #fff;
-  box-shadow: 0 0 0 3px #4dff7a, 0 0 22px 4px rgba(77, 255, 122, .8), 0 5px 0 var(--e) !important;
-}
+.board button.tile.act:disabled { opacity: 1; filter: none; }
+.board button.tile.act .coin { filter: drop-shadow(0 0 4px #4dff7a) drop-shadow(0 0 12px #4dff7a); }
 .tile .tk {
-  display: none; position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; padding: 4px; border-radius: 50%;
+  display: none; position: absolute; top: -6px; right: -6px; width: 26px; height: 26px; padding: 4px; border-radius: 50%;
   background: #22c55e; fill: #fff; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
 }
 .tile.act .tk { display: block; }
@@ -631,6 +598,7 @@ button#mute, button#leave {
 .qclock.idle { filter: saturate(.5) brightness(.92); }
 .qclock.low { animation: pulse .3s ease-in-out infinite alternate; }
 .qchip svg, .qclock svg { width: 26px; height: 26px; flex: none; }
+.qchip img { width: 34px; height: 34px; margin: -6px 0; flex: none; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(0, 0, 40, .35)); }
 .qbar { height: 12px; border-radius: 99px; margin: 0 4px 12px; overflow: hidden; background: rgba(10, 25, 120, .45); border: 1.5px solid rgba(255, 255, 255, .5); }
 .qbar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); box-shadow: 0 0 8px #22c55e; }
 .qbar i.low { background: linear-gradient(90deg, #fb7185, #e11d48); animation: pulse .3s ease-in-out infinite alternate; }
@@ -673,45 +641,28 @@ button#mute, button#leave {
   box-shadow: 0 2px 4px rgba(30, 40, 120, .3);
 }
 .bzcard .status { margin: 8px 0 0; }
-.bzstage { position: relative; width: min(68vw, 250px); aspect-ratio: 1 / .96; margin: 10px auto 4px; }
-.bzstage .base-b {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 34%; border-radius: 50%;
-  background: linear-gradient(180deg, #4a8dff, #1f4fd0);
-  box-shadow: 0 8px 0 #163b9a, 0 16px 22px rgba(0, 10, 80, .45), inset 0 4px 0 rgba(255, 255, 255, .45);
-}
-.bzstage .base-y {
-  position: absolute; left: 6%; right: 6%; bottom: 14%; height: 30%; border-radius: 50%;
-  background: linear-gradient(180deg, #ffe45c, #f5a800); box-shadow: 0 5px 0 #c68600, inset 0 3px 0 rgba(255, 255, 255, .55);
-}
-.rays { position: absolute; left: 0; right: 0; top: 0; height: 24%; pointer-events: none; }
-.rays i {
-  position: absolute; left: 45.5%; top: 0; width: 9%; height: 75%; border-radius: 99px;
-  background: linear-gradient(180deg, #ffe45c, #f5a800); transform-origin: 50% 140%;
-}
-.rays i:nth-child(1) { transform: rotate(-40deg); }
-.rays i:nth-child(3) { transform: rotate(40deg); }
-.bzstage.is-lit .rays i { animation: pulse .4s ease-in-out infinite alternate; }
-
+.bzstage { position: relative; width: min(66vw, 250px); aspect-ratio: 1; margin: 4px auto 2px; --bzc: #ffd84a; }
 #buzz {
-  position: absolute; left: 12%; right: 12%; bottom: 24%; height: 56%; margin: 0; padding: 0; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; border: 0; color: #fff;
-  border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%;
-  font-size: clamp(1.7rem, 9vw, 2.4rem); font-weight: 900;
-  background: radial-gradient(ellipse at 50% 22%, #ff8a8a 0%, #f0303c 45%, #c4121f 100%);
-  box-shadow: 0 12px 0 #8f0c18, 0 20px 26px rgba(80, 0, 10, .5), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45);
-  touch-action: manipulation; cursor: pointer;
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: none; box-shadow: none; display: block; touch-action: manipulation; cursor: pointer;
+  -webkit-user-select: none; user-select: none; transition: transform .08s ease;
 }
-#buzz .lbl { position: relative; z-index: 2; text-shadow: 0 3px 0 rgba(120, 0, 15, .7); }
-#buzz .beam { position: absolute; inset: -50%; opacity: 0; background: conic-gradient(from 0deg, transparent 0 65%, rgba(255, 255, 255, .7) 85%, transparent 100%); }
-#buzz:active:not(:disabled) { transform: translateY(9px); box-shadow: 0 3px 0 #8f0c18, 0 8px 12px rgba(80, 0, 10, .4), inset 0 10px 14px rgba(255, 255, 255, .4), inset 0 -12px 18px rgba(110, 0, 15, .45); }
-#buzz.off { filter: grayscale(.9) brightness(.6); cursor: not-allowed; }
-#buzz:disabled { opacity: .75; box-shadow: 0 12px 0 #5a4a4a !important; }
-#buzz.lit:disabled {
-  opacity: 1; filter: none; animation: pulse .45s ease-in-out infinite alternate;
-  background: radial-gradient(ellipse at 50% 22%, #fff2a0 0%, #ffc933 45%, #e89400 100%);
-  box-shadow: 0 12px 0 #a86500, 0 0 30px 6px var(--c, #ffd84a) !important;
+#buzz img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 10px 10px rgba(0, 10, 80, .4)); transition: filter .2s ease;
 }
-#buzz.lit .beam { opacity: 1; animation: spin .7s linear infinite; }
+#buzz:active:not(:disabled) { transform: translateY(8px) scale(.97); box-shadow: none; }
+#buzz:disabled { opacity: 1; filter: none; }
+#buzz.off { cursor: not-allowed; }
+#buzz.off img { filter: grayscale(.9) brightness(.65) drop-shadow(0 6px 6px rgba(0, 10, 80, .3)); }
+#buzz.lit img { animation: bz-glow .55s ease-in-out infinite alternate; }
+@keyframes bz-glow {
+  from { filter: drop-shadow(0 0 6px var(--bzc)) drop-shadow(0 0 2px #fff) drop-shadow(0 10px 10px rgba(0, 10, 80, .4)); }
+  to   { filter: drop-shadow(0 0 22px var(--bzc)) drop-shadow(0 0 8px #fff) drop-shadow(0 10px 10px rgba(0, 10, 80, .4)); }
+}
+/* اگر تصویر بازر لود نشد */
+#buzz.noimg { border-radius: 50% 50% 46% 46% / 62% 62% 38% 38%; background: radial-gradient(ellipse at 50% 22%, #ff8a8a 0%, #f0303c 45%, #c4121f 100%); }
+#buzz.noimg img { display: none; }
 
 /* ----- جدول امتیازات ----- */
 .lbbox { border-radius: 18px; padding: 8px; background: linear-gradient(180deg, #eceeff, #d6d9fb); border: 2px solid rgba(255, 255, 255, .8); box-shadow: inset 0 0 16px rgba(110, 120, 230, .35); }
@@ -786,8 +737,29 @@ button#mute, button#leave {
 .toast.ok { background: linear-gradient(180deg, #5ee27a, #15a34a); }
 .toast.no { background: linear-gradient(180deg, #ff7a8a, #e11d3a); }
 
+/* ----- دکمهٔ جدول (نوار بالا) و پاپ‌آپ جدول امتیازات ----- */
+button#tableBtn {
+  background: radial-gradient(circle at 35% 28%, #fff0b0, #ffc21a 60%, #f29a00);
+  color: #5a3a00;
+  box-shadow: 0 4px 0 rgba(150, 85, 0, .6), inset 0 2px 0 rgba(255, 255, 255, .6);
+}
+.tb-wrap {
+  position: fixed; inset: 0; z-index: 85; display: flex; align-items: center; justify-content: center; padding: 16px;
+  background: rgba(5, 10, 60, .6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: rs-in .2s ease-out;
+}
+.tb-card {
+  position: relative; width: min(100%, 440px); max-height: 100%; display: flex; flex-direction: column; gap: 12px;
+  padding: 16px 14px; border-radius: 26px; color: #fff;
+  background: linear-gradient(180deg, #4f84ff 0%, #3b55ea 55%, #4b3fd6 100%);
+  border: 2.5px solid rgba(255, 255, 255, .6);
+  box-shadow: 0 7px 0 rgba(22, 30, 130, .55), 0 24px 50px rgba(0, 0, 0, .5), inset 0 2px 0 rgba(255, 255, 255, .55);
+  animation: rs-pop .35s cubic-bezier(.2, 1.4, .4, 1);
+}
+.tb-card .rib { flex: none; margin: -2px auto 2px; }
+.tb-card .lbbox { flex: 1 1 auto; min-height: 0; overflow-y: auto; max-height: calc(100vh - 230px); max-height: calc(100dvh - 230px); }
+.tb-card button.gb { flex: none; }
+
 /* ================= اتاق بازی (لابی) ================= */
-body.in-lobby .game-header { display: none; }
 body.in-lobby { padding-top: 14px; }
 
 #lobby .lobby-cq { container-type: inline-size; width: 100%; max-width: 640px; margin: 0 auto; }
@@ -959,7 +931,7 @@ body.in-lobby { overflow: hidden; padding: 0; }
 body[data-screen="join"]{
   background:url("/img/background.webp") center bottom/cover no-repeat,linear-gradient(180deg,#3d63ff 0%,#7a4dff 55%,#b58bff 100%);
 }
-body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:none}
+body[data-screen="join"]::before{display:none}
 #join{position:relative;min-height:calc(100dvh - 40px);display:flex;align-items:center;justify-content:center;padding:70px 0 20px}
 #join .jn-deco{position:fixed;pointer-events:none;user-select:none;z-index:0}
 #join .jn-leaf-l{top:0;left:0;width:clamp(70px,14vw,170px)}
@@ -1024,7 +996,11 @@ body[data-screen="join"]::before,body[data-screen="join"] .game-header{display:n
 .qopt.pick:active { transform: translateY(3px); box-shadow: 0 1px 0 #17409f; }
 .qopt.bad { background: linear-gradient(180deg, #ff7a8a, #e11d3a); box-shadow: 0 4px 0 #9d1428, inset 0 2px 0 rgba(255, 255, 255, .4); text-decoration: line-through; text-decoration-thickness: 2px; }
 @keyframes pick-pulse { from { filter: brightness(1); } to { filter: brightness(1.2); } }
-.tile .cnt { position: absolute; left: 0; right: 0; bottom: 5px; font-size: .6rem; font-weight: 800; line-height: 1; opacity: .85; text-shadow: none; }
+.tile .cnt {
+  position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%); min-width: 20px; padding: 2px 6px; border-radius: 99px;
+  font-size: .68rem; font-weight: 900; line-height: 1.2; text-align: center; color: #fff; text-shadow: none;
+  background: rgba(10, 25, 120, .85); border: 1.5px solid rgba(255, 255, 255, .75); pointer-events: none;
+}
 
 /* ----- ویزارد تنظیمات ----- */
 .wz-dots { display: flex; justify-content: center; gap: 8px; margin: 0 0 12px; }
@@ -1107,6 +1083,7 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
     <g id="icon-refresh"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></g>
     <g id="icon-trophy"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></g>
     <g id="icon-crown"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></g>
+    <g id="icon-board"><path d="M7.5 21H2V9h5.5v12zm7.25-18h-5.5v18h5.5V3zM22 11h-5.5v10H22V11z"/></g>
     <g id="icon-skip"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></g>
 
     <!-- حیوانات پاترونوس (۱۰ روح با فرم‌های نمادین) -->
@@ -1156,6 +1133,9 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
 <div id="flash"></div>
 
 <div id="bar" class="hide">
+  <button id="tableBtn" class="hide" type="button" title="جدول امتیازات" aria-label="جدول امتیازات">
+    <svg class="svg-icon" viewBox="0 0 24 24"><use href="#icon-board"/></svg>
+  </button>
   <button id="mute" title="صدا">
     <svg class="svg-icon" id="mute-icon" viewBox="0 0 24 24"><use href="#icon-vol-on"/></svg>
   </button>
@@ -1165,13 +1145,7 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
 </div>
 
 <div class="wrap">
-  <header class="game-header">
-    <div class="header-logo">
-      <svg class="svg-icon" viewBox="0 0 24 24" style="width:26px;height:26px"><use href="#patronus-stag"/></svg>
-    </div>
-    <h1>مسابقه زنگ و هیجان</h1>
-  </header>
-
+  
   <!-- ورود بازیکن -->
   <div id="join" class="hide">
     <img class="jn-deco jn-leaf-l" src="/img/leaf_tl.webp" alt="" onerror="this.remove()">
@@ -1314,19 +1288,12 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
     <div class="gp bzcard">
       <div class="pchip"><span class="av" id="pAv"></span><span id="pName"></span><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><b id="pScore">۰</b></div>
       <div id="buzzWrap" class="bzstage">
-        <div class="rays"><i></i><i></i><i></i></div>
-        <div class="base-b"></div>
-        <div class="base-y"></div>
-        <button id="buzz"><span class="beam"></span><span class="lbl">بازز</span></button>
+        <button id="buzz" type="button" aria-label="بازر"><img id="buzzImg" alt="" draggable="false" onerror="this.parentNode.classList.add('noimg')"></button>
       </div>
       <div id="pStatus" class="status"></div>
     </div>
 
-    <div class="gp">
-      <div class="rib rib-red"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span>جدول امتیازات</span></div>
-      <div id="pScores" class="lbbox"></div>
-    </div>
-    <button class="gb gb-sec leaveBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 10c-.83 0-1.5-.67-1.5-1.5S11.17 10 12 10s1.5.67 1.5 1.5S12.83 13 12 13z"/></svg><span>خروج از بازی</span></button>
+    
   </div>
 </div>
 
@@ -1337,6 +1304,14 @@ button.lb-edit:active:not(:disabled) { transform: translateY(.8cqw); box-shadow:
     <div class="rs-badge"><svg viewBox="0 0 24 24"><path id="rsPath" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
     <div class="rs-title" id="rsTitle"></div>
     <div class="rs-delta" id="rsDelta"></div>
+  </div>
+</div>
+<!-- پاپ‌آپ جدول امتیازات (با دکمهٔ بالای صفحه باز می‌شود) -->
+<div id="tableModal" class="tb-wrap hide" role="dialog" aria-modal="true" aria-label="جدول امتیازات">
+  <div class="tb-card">
+    <div class="rib rib-red"><svg viewBox="0 0 24 24" fill="#ffd84a"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span>جدول امتیازات</span></div>
+    <div id="pScores" class="lbbox"></div>
+    <button id="tbClose" type="button" class="gb gb-ok"><svg class="ic" viewBox="0 0 24 24" style="transform:scaleX(-1)"><path d="M8 5v14l11-7z"/></svg><span>بازگشت به بازی</span></button>
   </div>
 </div>
 <div id="toast" class="hide"></div>
@@ -1380,6 +1355,11 @@ const PATRONUS = [
 ];
 
 const colorize = (el, i) => el.style.setProperty('--c', PATRONUS[i % 10].color);
+
+/* تصاویر بازر: /img/buzzers (1..9).webp — رنگ درخشش هر بازر */
+const BZ_COUNT = 9;
+const buzzSrc = (i) => `/img/buzzers%20(${(i % BZ_COUNT) + 1}).webp`;
+const BZ_COLORS = ['#ff9b73', '#ef2b2b', '#8b5cf6', '#d97bff', '#22d3ee', '#3b6fd8', '#fbbf24', '#22c55e', '#a3e635'];
 
 function animalBadge(i) {
   const p = PATRONUS[i % 10];
@@ -1501,6 +1481,8 @@ let catalog = null;       // فهرست دسته‌بندی‌ها از سرور
 const show = (n) => {
   ['join','setup','lobby','player','intro','over'].forEach((x) => $(x).classList.toggle('hide', x !== n));
   $('bar').classList.toggle('hide', n === 'join' || n === 'setup' || n === 'lobby');
+  $('tableBtn').classList.toggle('hide', n !== 'player');   // دکمهٔ جدول فقط داخل بازی
+  if (n !== 'player') setTable(false);
   document.body.classList.toggle('in-lobby', n === 'lobby');
   document.body.classList.toggle('in-game', n === 'setup' || n === 'player' || n === 'over');
   document.body.dataset.screen = n;
@@ -1563,6 +1545,13 @@ function askLeave() {
 }
 $('leave').onclick = askLeave;
 document.querySelectorAll('.leaveBtn').forEach((b) => { b.onclick = askLeave; });
+
+/* پاپ‌آپ جدول امتیازات */
+function setTable(open) { $('tableModal').classList.toggle('hide', !open); }
+$('tableBtn').onclick = () => setTable($('tableModal').classList.contains('hide'));
+$('tbClose').onclick = () => setTable(false);
+$('tableModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) setTable(false); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTable(false); });
 sock.on('closed', () => {
   if (!me) return;
   leaveRoom();
@@ -1641,12 +1630,13 @@ $('goBtn').onclick = () => {
   render();
 };
 
-const TILE = ['y', 'b', 'g', 'r', 'b', 'r', 'b', 'g', 'y', 'r'];   // رنگ کاشی‌ها مثل طرح
-VALUES.forEach((v, i) => {
+VALUES.forEach((v) => {
   const b = document.createElement('button');
-  b.className = 'tile t-' + TILE[i];
+  b.type = 'button';
+  b.className = 'tile';
   b.dataset.v = v;
-  b.innerHTML = `<span>${v}</span><small class="cnt"></small><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+  b.setAttribute('aria-label', v + ' امتیاز');
+  b.innerHTML = `<img class="coin" src="/img/${v}.webp" alt="${v}" draggable="false"><small class="cnt"></small><svg class="tk" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
   b.onclick = () => sock.emit('admin:pick', { value: v }, (r) => {
     if (r && !r.ok && r.error) alert(r.error);
   });
@@ -1677,7 +1667,6 @@ const row = (a, b, cls, bz) => {
 const pl = (id) => st.players.find((p) => p.id === id) || {};
 
 const CROWN_SM = '<svg class="crown" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-1h14v1z"/></svg>';
-const COIN = '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="17" rx="8" ry="4" fill="#d98a00"/><ellipse cx="12" cy="15" rx="8" ry="4" fill="#ffc933"/><ellipse cx="12" cy="10" rx="8" ry="4" fill="#d98a00"/><ellipse cx="12" cy="8" rx="8" ry="4" fill="#ffd84a"/></svg>';
 const CLOCK = '<svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="8" fill="#fff"/><path d="M12 13.5V8.5M12 13.5l3 2" stroke="#e11d2e" stroke-width="2" stroke-linecap="round"/><rect x="9.5" y="2" width="5" height="2.4" rx="1" fill="#fbbf24"/><rect x="11" y="3.5" width="2" height="2.6" fill="#fbbf24"/></svg>';
 
 function renderScores(box) {
@@ -1725,7 +1714,8 @@ function renderQ(box) {
   const parts = [];
   const top = document.createElement('div');
   top.className = 'qtop';
-  top.innerHTML = `<div class="qchip">${COIN}<span>امتیاز سوال: ${fa(st.active || 0)}</span></div>` +
+  const coin = st.active ? `<img class="qcoin" src="/img/${st.active}.webp" alt="" draggable="false" onerror="this.remove()">` : '';
+  top.innerHTML = `<div class="qchip">${coin}<span>امتیاز سوال: ${fa(st.active || 0)}</span></div>` +
                   (timed ? `<div class="qclock idle">${CLOCK}<span class="qnum">00:00</span></div>` : '');
   const meta = document.createElement('div');
   meta.className = 'qmeta';
@@ -1858,9 +1848,12 @@ function render() {
 function renderPlayer() {
   const b = me.bz != null ? me.bz : 0;
   const pet = PATRONUS[b % 10];
-  colorize($('buzzWrap'), b);
-  colorize($('buzz'), b);
-  colorize($('flash'), b);
+  const bzSrc = buzzSrc(b);
+  const bzImg = $('buzzImg');
+  if (bzImg.getAttribute('src') !== bzSrc) { $('buzz').classList.remove('noimg'); bzImg.src = bzSrc; }
+  const bzc = BZ_COLORS[b % BZ_COUNT];
+  $('buzzWrap').style.setProperty('--bzc', bzc);
+  $('flash').style.setProperty('--c', bzc);
   colorize($('pAv'), b);
   const mine = pl(me.id);
   $('pName').textContent = mine.name || '';
